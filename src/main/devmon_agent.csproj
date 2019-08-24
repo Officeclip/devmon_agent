@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <ResolveComReferenceSilent>True</ResolveComReferenceSilent>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{621B914F-1096-4AC1-85EC-9EABF5156527}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Geheb.DevMon.Agent</RootNamespace>
+    <AssemblyName>devmon_agent</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Geheb.DevMon.Agent.Program</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DryIoc, Version=4.0.5.0, Culture=neutral, PublicKeyToken=dfbf2bd50fcf7768, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DryIoc.dll.4.0.5\lib\net45\DryIoc.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NLog.4.6.6\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework" />
+    <Reference Include="RestSharp, Version=106.6.10.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\RestSharp.106.6.10\lib\net452\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\App.cs" />
+    <Compile Include="Core\AppSettings.cs" />
+    <Compile Include="Core\Base64Url.cs" />
+    <Compile Include="Core\Bootstrap.cs" />
+    <Compile Include="Core\Cancellation.cs" />
+    <Compile Include="Core\CpuCollector.cs" />
+    <Compile Include="Core\DriveCollector.cs" />
+    <Compile Include="Core\IAppSettings.cs" />
+    <Compile Include="Core\ICancellation.cs" />
+    <Compile Include="Core\ICpuCollector.cs" />
+    <Compile Include="Core\IDriveCollector.cs" />
+    <Compile Include="Core\IJsonSerializer.cs" />
+    <Compile Include="Core\IMemoryCollector.cs" />
+    <Compile Include="Core\INetworkCollector.cs" />
+    <Compile Include="Core\IOsCollector.cs" />
+    <Compile Include="Core\IRestClientFactory.cs" />
+    <Compile Include="Core\MemoryCollector.cs" />
+    <Compile Include="Core\NetworkCollector.cs" />
+    <Compile Include="Core\OsCollector.cs" />
+    <Compile Include="Core\RestClientFactory.cs" />
+    <Compile Include="Core\UpdateSearcherCallback.cs" />
+    <Compile Include="Core\VolatileDeviceCollector.cs" />
+    <Compile Include="Core\StableDeviceCollector.cs" />
+    <Compile Include="Core\JsonSerializer.cs" />
+    <Compile Include="Core\ServerConnector.cs" />
+    <Compile Include="Models\CpuUtilization.cs" />
+    <Compile Include="Models\DriveUtilization.cs" />
+    <Compile Include="Models\ExitCode.cs" />
+    <Compile Include="Models\MemoryUtilization.cs" />
+    <Compile Include="Models\NetworkUtilization.cs" />
+    <Compile Include="Models\OsUtilization.cs" />
+    <Compile Include="Models\StableDeviceInfo.cs" />
+    <Compile Include="Models\DriveInfo.cs" />
+    <Compile Include="Models\MemoryInfo.cs" />
+    <Compile Include="Models\NetworkInfo.cs" />
+    <Compile Include="Models\OsInfo.cs" />
+    <Compile Include="Models\CpuInfo.cs" />
+    <Compile Include="Models\TokenRequest.cs" />
+    <Compile Include="Models\WindowsUpdateInfo.cs" />
+    <Compile Include="Models\VolatileDeviceInfo.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="app.manifest" />
+    <None Include="appSettings.example.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="WUApiLib">
+      <Guid>{B596CC9F-56E5-419E-A622-E01BB457431E}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

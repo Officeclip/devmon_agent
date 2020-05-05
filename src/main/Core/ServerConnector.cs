@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using NLog;
 using RestSharp;
+using RestSharp.Authenticators;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -15,10 +16,11 @@ namespace Geheb.DevMon.Agent.Core
         static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private readonly ICancellation _cancellation;
         readonly IJsonSerializer _jsonSerializer;
-        readonly IRestClient _restClient;
+        readonly IRestClient _iRestClient;
         readonly TokenRequest _tokenRequest;
         readonly Uri _tokenUrl, _serverUrl;
         string _accessToken;
+        readonly RestClient _restClient;
 
         public ServerConnector(
             ICancellation cancellation,
@@ -26,13 +28,21 @@ namespace Geheb.DevMon.Agent.Core
             IJsonSerializer jsonSerializer, 
             IRestClientFactory restClientFactory)
         {
+            _serverUrl = new Uri(settings["server_url"] as string);
+            _restClient = new RestClient(_serverUrl);
+            _restClient.Authenticator =
+                                new SimpleAuthenticator(
+                                        settings["key1"] as string,
+                                        settings["value1"] as string,
+                                        settings["key2"] as string,
+                                        settings["value2"] as string);
+
             _cancellation = cancellation;
             _jsonSerializer = jsonSerializer;
 
-            _restClient = restClientFactory.Create();
+            _iRestClient = restClientFactory.Create();
 
             _tokenUrl = new Uri(settings["auth_token_url"] as string);
-            _serverUrl = new Uri(settings["server_url"] as string);
 
             _tokenRequest = new TokenRequest
             {
@@ -47,8 +57,8 @@ namespace Geheb.DevMon.Agent.Core
         {
             await RequestTokenIfRequired();
             var request = CreateRequest("/stable", deviceInfo, Method.PUT);
-            _restClient.BaseUrl = _serverUrl;
-            IRestResponse response = await _restClient.ExecuteTaskAsync(request, _cancellation.Token);
+            _iRestClient.BaseUrl = _serverUrl;
+            IRestResponse response = await _iRestClient.ExecuteTaskAsync(request, _cancellation.Token);
             if (!response.IsSuccessful)
             {
                 throw new HttpException((int)response.StatusCode, "send stable device info failed: " + 
@@ -60,8 +70,8 @@ namespace Geheb.DevMon.Agent.Core
         {
             await RequestTokenIfRequired();
             var request = CreateRequest("/volatile", deviceInfo, Method.PUT);
-            _restClient.BaseUrl = _serverUrl;
-            IRestResponse response = await _restClient.ExecuteTaskAsync(request, _cancellation.Token);
+            _iRestClient.BaseUrl = _serverUrl;
+            IRestResponse response = await _iRestClient.ExecuteTaskAsync(request, _cancellation.Token);
             if (!response.IsSuccessful)
             {
                 throw new HttpException((int)response.StatusCode, "send volatile device info failed: " +
@@ -89,9 +99,9 @@ namespace Geheb.DevMon.Agent.Core
         async Task<string> RequestToken()
         {
             var request = CreateRequest(string.Empty, _tokenRequest);
-            _restClient.BaseUrl = _tokenUrl;
+            _iRestClient.BaseUrl = _tokenUrl;
 
-            var response = await _restClient.ExecuteTaskAsync(request, _cancellation.Token);
+            var response = await _iRestClient.ExecuteTaskAsync(request, _cancellation.Token);
             if (!response.IsSuccessful)
             {
                 throw new HttpException((int)response.StatusCode, "send auth failed: " + response.Content);

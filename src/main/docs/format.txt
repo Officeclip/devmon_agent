@@ -1,0 +1,31 @@
+﻿<sites>
+	<site>
+		<id></id>
+		<url>http://....</url>
+		<checkRegex>match</checkRegex>
+	</site>
+	<site>
+		<id></id>
+		<url>http://....</url>
+		<checkRegex>match</checkRegex>
+	</site>
+</sites>
+
+<siteResponses>
+	<siteResponse>
+		<id></id>
+		<delay></delay>
+		<result></result> //success, failed, timeout
+		<value></value>
+	<siteResponse>
+	<siteResponse>
+		<id></id>
+		<delay></delay>
+		<result></result>
+		<value></value>
+	<siteResponse>
+</siteResponse>
+
+<request>
+	<key></key>
+</request>

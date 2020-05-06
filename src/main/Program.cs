@@ -1,5 +1,6 @@
 ﻿using Geheb.DevMon.Agent.Core;
 using Geheb.DevMon.Agent.Models;
+using Geheb.DevMon.Agent.Quartz;
 using NLog;
 using RestSharp;
 using System;
@@ -19,6 +20,7 @@ namespace Geheb.DevMon.Agent
         {
             try
             {
+                //JobScheduler.Start().Wait();
                 using (var boot = new Bootstrap())
                 {
                     boot.Run();

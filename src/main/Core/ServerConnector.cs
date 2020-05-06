@@ -32,27 +32,7 @@ namespace Geheb.DevMon.Agent.Core
             _serverUrl = new Uri(settings["server_url"] as string);
             _restClient = new RestClient(_serverUrl);
             _settings = settings;
-            //_restClient.Authenticator =
-            //                    new SimpleAuthenticator(
-            //                            settings["key1"] as string,
-            //                            settings["value1"] as string,
-            //                            settings["key2"] as string,
-            //                            settings["value2"] as string);
-
             _jsonSerializer = jsonSerializer;
-
-            //_cancellation = cancellation;
-            //_iRestClient = restClientFactory.Create();
-
-            //_tokenUrl = new Uri(settings["auth_token_url"] as string);
-
-            //_tokenRequest = new TokenRequest
-            //{
-            //    ClientId = settings["auth_client_id"] as string,
-            //    ClientSecret = settings["auth_client_secret"] as string,
-            //    Audience = settings["auth_audience"] as string,
-            //    GrantType = "client_credentials"
-            //};
         }
 
         public async Task AddHeaders(RestRequest request)

@@ -21,11 +21,15 @@ namespace Geheb.DevMon.Agent
             try
             {
                 //JobScheduler.Start().Wait();
-                using (var boot = new Bootstrap())
-                {
-                    boot.Run();
-                }
+                //using (var boot = new Bootstrap())
+                //{
+                //    boot.Run();
+                //}
 
+                var cpuInfo = GetCpuInfo().Result;
+                Console.WriteLine(cpuInfo.Name);
+
+                
                 return (int)ExitCode.Success;
             }
             catch (OperationCanceledException)
@@ -38,6 +42,12 @@ namespace Geheb.DevMon.Agent
                 _logger.Fatal(ex);
                 return (int)ExitCode.InternalError;
             }
+        }
+
+        static Task<CpuInfo> GetCpuInfo()
+        {
+            return (new CpuCollector(null)).ReadCpuInfo();
+
         }
     }
 }

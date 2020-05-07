@@ -1,4 +1,5 @@
 ﻿using Geheb.DevMon.Agent.Models;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
 using RestSharp;
@@ -16,17 +17,18 @@ namespace Geheb.DevMon.Agent.Core
         static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private readonly ICancellation _cancellation;
         readonly IJsonSerializer _jsonSerializer;
-        readonly IRestClient _iRestClient;
-        readonly TokenRequest _tokenRequest;
-        readonly Uri _tokenUrl, _serverUrl;
+        //readonly IRestClient _iRestClient;
+        //readonly TokenRequest _tokenRequest;
+        //readonly Uri _tokenUrl;
+        readonly Uri _serverUrl;
         string _accessToken;
         readonly RestClient _restClient;
         IAppSettings _settings;
 
         public ServerConnector(
             ICancellation cancellation,
-            IAppSettings settings, 
-            IJsonSerializer jsonSerializer, 
+            IAppSettings settings,
+            IJsonSerializer jsonSerializer,
             IRestClientFactory restClientFactory)
         {
             _serverUrl = new Uri(settings["server_url"] as string);
@@ -44,6 +46,7 @@ namespace Geheb.DevMon.Agent.Core
                         _settings["key2"] as string,
                         _settings["value2"] as string);
         }
+
         public async Task Send(StableDeviceInfo deviceInfo)
         {
             var request = CreateRequest("/stable", deviceInfo, Method.PUT);
@@ -74,6 +77,19 @@ namespace Geheb.DevMon.Agent.Core
                                         ? "no response"
                                         : response.Content));
             }
+        }
+
+        public async Task SendPing()
+        {
+            var request = new RestRequest("/pinger", Method.GET);
+            await AddHeaders(request);
+            var response = _restClient.Execute(request);
+            var body = response.Content;
+            //dynamic jsonResponse = JsonConvert.DeserializeObject(body);
+            dynamic api = JObject.Parse(body);
+
+            int x;
+            x = 2;
         }
 
         RestRequest CreateRequest(

@@ -7,6 +7,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Geheb.DevMon.Agent
@@ -20,25 +21,30 @@ namespace Geheb.DevMon.Agent
         {
             try
             {
-                //JobScheduler.Start().Wait();
-                //using (var boot = new Bootstrap())
-                //{
-                //    boot.Run();
-                //}
+                while (true)
+                {
+                    JobScheduler.Start().ConfigureAwait(false);
+                    //using (var boot = new Bootstrap())
+                    //{
+                    //    boot.Run();
+                    //}
 
-                var cpuInfo = GetCpuInfo().Result;
-                Console.WriteLine(cpuInfo.Name);
-
+                    var cpuInfo = GetCpuInfo().Result;
+                    Console.WriteLine(cpuInfo.Name);
+                    Thread.Sleep(10000 * 100000);
+                }
                 
-                return (int)ExitCode.Success;
+                //return (int)ExitCode.Success;
             }
             catch (OperationCanceledException)
             {
                 _logger.Warn("Operation cancelled");
+                Console.WriteLine("Operation cancelled");
                 return (int)ExitCode.Cancelled;
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 _logger.Fatal(ex);
                 return (int)ExitCode.InternalError;
             }

@@ -13,7 +13,8 @@ namespace Geheb.DevMon.Agent.Core
 
         public Bootstrap()
         {
-            _container.Register<IAppSettings, AppSettings>(Made.Of(() => new AppSettings(Arg.Index<string>(0)), r => "appSettings.json"));
+            _container.Register<IAppSettings, AppSettings>(
+                                    Made.Of(() => new AppSettings(Arg.Index<string>(0)), r => "appSettings.json"));
             _container.Register<ICancellation, Cancellation>(Reuse.Singleton);
             _container.Register<IJsonSerializer, JsonSerializer>();
             _container.Register<IRestClientFactory, RestClientFactory>();

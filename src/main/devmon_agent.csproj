@@ -102,6 +102,7 @@
     <Compile Include="Core\StableDeviceCollector.cs" />
     <Compile Include="Core\JsonSerializer.cs" />
     <Compile Include="Core\ServerConnector.cs" />
+    <Compile Include="Models\Command.cs" />
     <Compile Include="Models\CpuUtilization.cs" />
     <Compile Include="Models\DriveUtilization.cs" />
     <Compile Include="Models\ExitCode.cs" />

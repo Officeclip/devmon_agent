@@ -9,39 +9,44 @@ using System.Threading.Tasks;
 
 namespace Geheb.DevMon.Agent.Quartz
 {
-    public class JobScheduler
+    public static class JobScheduler
     {
-        //public static async Task Start()
-        //{
-        //    // construct a scheduler factory
-        //    NameValueCollection props = new NameValueCollection
-        //    {
-        //        { 
-        //            "quartz.serializer.type", "binary" 
-        //        }
-        //    };
-        //    StdSchedulerFactory factory = new StdSchedulerFactory(props);
+        public static async Task Start()
+        {
+            // construct a scheduler factory
+            NameValueCollection props = new NameValueCollection
+            {
+                {
+                    "quartz.serializer.type", "binary"
+                }
+            };
+            StdSchedulerFactory factory = new StdSchedulerFactory(props);
 
-        //    // get a scheduler
-        //    IScheduler sched = await factory.GetScheduler();
-        //    await sched.Start();
+            // get a scheduler
+            IScheduler scheduler = await factory.GetScheduler();
+            await scheduler.Start();
+            Console.WriteLine("Starting Scheduler");
 
-        //    // define the job and tie it to our HelloJob class
-        //    IJobDetail job = JobBuilder.Create<PingerJob>()
-        //        .WithIdentity("myJob", "group1")
-        //        .Build();
+            AddPingerJob(scheduler);
+        }
 
-        //    // Trigger the job to run now, and then every 60 seconds
-        //    ITrigger trigger = TriggerBuilder.Create()
-        //        .WithIdentity("myTrigger", "group1")
-        //        .StartNow()
-        //        .WithSimpleSchedule(x => x
-        //            .WithIntervalInSeconds(60)
-        //            .RepeatForever())
-        //    .Build();
+        public static async void AddPingerJob(IScheduler scheduler)
+        {
+            IJobDetail job = JobBuilder.Create<PingerJob>()
+                .WithIdentity("pinger-job", "group")
+                .Build();
 
-        //    await sched.ScheduleJob(job, trigger);
-        //}
+            // Trigger the job to run now, and then every 60 seconds
+            ITrigger trigger = TriggerBuilder.Create()
+                .WithIdentity("pinger-trigger", "group")
+                .StartNow()
+                .WithSimpleSchedule(x => x
+                    .WithIntervalInSeconds(6000)
+                    .RepeatForever())
+            .Build();
+
+            await scheduler.ScheduleJob(job, trigger);
+        }
 
     }
 }

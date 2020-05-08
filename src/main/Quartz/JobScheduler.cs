@@ -41,7 +41,7 @@ namespace Geheb.DevMon.Agent.Quartz
                 .WithIdentity("pinger-trigger", "group")
                 .StartNow()
                 .WithSimpleSchedule(x => x
-                    .WithIntervalInSeconds(6000)
+                    .WithIntervalInSeconds(20)
                     .RepeatForever())
             .Build();
 

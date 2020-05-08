@@ -79,17 +79,11 @@ namespace Geheb.DevMon.Agent.Core
             }
         }
 
-        public async Task SendPing()
+        public async Task<IRestResponse> SendPing()
         {
             var request = new RestRequest("/pinger", Method.GET);
             await AddHeaders(request);
-            var response = _restClient.Execute(request);
-            var body = response.Content;
-            //dynamic jsonResponse = JsonConvert.DeserializeObject(body);
-            dynamic api = JObject.Parse(body);
-
-            int x;
-            x = 2;
+            return await _restClient.ExecuteAsync(request);
         }
 
         RestRequest CreateRequest(

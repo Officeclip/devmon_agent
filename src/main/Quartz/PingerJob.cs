@@ -1,7 +1,13 @@
 ﻿using Geheb.DevMon.Agent.Core;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Quartz;
+using RestSharp;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Documents;
+using JsonSerializer = Geheb.DevMon.Agent.Core.JsonSerializer;
 
 namespace Geheb.DevMon.Agent.Quartz
 {
@@ -22,7 +28,9 @@ namespace Geheb.DevMon.Agent.Quartz
                                                     appSettings,
                                                     jsonSerializer,
                                                     restClientFactory);
-            await serverConnector.SendPing();
+            var response = serverConnector.SendPing().Result;
+            var body = response.Content;
+            var pingResults = JsonConvert.DeserializeObject<List<PingResult>>(body);
         }
     }
 }

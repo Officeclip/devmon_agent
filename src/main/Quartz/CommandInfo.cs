@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Geheb.DevMon.Agent.Quartz
 {
-    public class PingResult
+    public class CommandInfo
     {
         public string Id { get; set; }
         public string Name { get; set; }

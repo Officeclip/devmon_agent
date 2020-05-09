@@ -1,10 +1,12 @@
 ﻿using Geheb.DevMon.Agent.Models;
+using Geheb.DevMon.Agent.Quartz;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
 using RestSharp;
 using RestSharp.Authenticators;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Web;
@@ -72,12 +74,29 @@ namespace Geheb.DevMon.Agent.Core
             {
                 throw new HttpException(
                                 (int)response.StatusCode,
-                                "send stable device info failed: " +
+                                "send volatile device info failed: " +
                                         (string.IsNullOrEmpty(response.Content)
                                         ? "no response"
                                         : response.Content));
             }
         }
+
+        public async Task Send(List<PingResultInfo> resultInfos)
+        {
+            var request = CreateRequest("/result", resultInfos, Method.PUT);
+            await AddHeaders(request);
+            var response = _restClient.Execute(request);
+            if (!response.IsSuccessful)
+            {
+                throw new HttpException(
+                                (int)response.StatusCode,
+                                "send volatile device info failed: " +
+                                        (string.IsNullOrEmpty(response.Content)
+                                        ? "no response"
+                                        : response.Content));
+            }
+        }
+
 
         public async Task<IRestResponse> SendPing()
         {

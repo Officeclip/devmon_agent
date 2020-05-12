@@ -1,4 +1,5 @@
 ﻿using Geheb.DevMon.Agent.Core;
+using ImTools;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Quartz;
@@ -36,54 +37,76 @@ namespace Geheb.DevMon.Agent.Quartz
             var response = serverConnector.SendPing().Result;
             var body = response.Content;
             var commands = JsonConvert.DeserializeObject<List<CommandInfo>>(body);
-            var pingResults = await ProcessAppsAsync(commands); //.ConfigureAwait(false);
-            //var pingResults = new List<PingResultInfo>();
-            //foreach (var command in commands)
-            //{
-            //    if (command.Name == "url")
-            //    {
-            //        var isSuccess = HttpPing(command.Arg, out long elapsedMs);
-            //        var pingResult = new PingResultInfo()
-            //        {
-            //            Id = command.Id,
-            //            IsSuccess = isSuccess,
-            //            MilliSeconds = (int)elapsedMs
-            //        };
-            //        pingResults.Add(pingResult);
-            //    }
-            //}
+            var pingResults = await ProcessTasksAsync(commands); //.ConfigureAwait(false);
+            
             if (pingResults.Count > 0)
             {
                 await serverConnector.Send(pingResults);
             }
         }
 
-        private async Task<PingResultInfo> PingAsync(CommandInfo commandInfo)
+        private async Task<ResultInfo> RunTask(CommandInfo commandInfo)
         {
-            var httpClient = new HttpClient();
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            var result = await httpClient.GetAsync(commandInfo.Arg);
-            watch.Stop();
-            var pingResultInfo = new PingResultInfo()
+            switch (commandInfo.Command)
+            {
+                case "url":
+                    return await UrlTask(commandInfo);
+                case "cpu":
+                    return await CpuTask(commandInfo);
+                default:
+                    return null;
+            }
+        }
+
+        private static async Task<ResultInfo> CpuTask(CommandInfo commandInfo)
+        {
+            float loadPercentage  = 0;
+            using (var cpuTime = new PerformanceCounter(
+                                        "Processor", "% Processor Time", "_Total"))
+            {
+                int i = 0;
+                while (i++ < 3) // needs multitple times to calcuate correct value
+                {
+                    loadPercentage = cpuTime.NextValue();
+                    await Task.Delay(1000);
+                }
+            }
+            var pingResultInfo = new ResultInfo()
             {
                 Id = commandInfo.Id,
-                IsSuccess = result.IsSuccessStatusCode,
-                MilliSeconds = (int)watch.ElapsedMilliseconds
+                Value = loadPercentage.ToString("N2"),
+                Unit = "%"
             };
             return pingResultInfo;
         }
 
-
-        private async Task<List<PingResultInfo>> ProcessAppsAsync(List<CommandInfo> commandInfos)
+        private static async Task<ResultInfo> UrlTask(CommandInfo commandInfo)
         {
+            var httpClient = new HttpClient();
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var result = await httpClient.GetAsync(commandInfo.Arg1);
+            watch.Stop();
+            var pingResultInfo = new ResultInfo()
+            {
+                Id = commandInfo.Id,
+                IsSuccess = result.IsSuccessStatusCode,
+                Value = watch.ElapsedMilliseconds.ToString(),
+                ReturnCode = (int)result.StatusCode,
+                ErrorMessage = result.ReasonPhrase,
+                Unit = "ms"
+            };
+            return pingResultInfo;
+        }
 
+        private async Task<List<ResultInfo>> ProcessTasksAsync(List<CommandInfo> commandInfos)
+        {
             var appListTasks = commandInfos.Select(
-                                            commandInfo => PingAsync(commandInfo)).ToList();
+                                            commandInfo => RunTask(commandInfo)).ToList();
 
             // Wait asynchronously for all of them to finish
             await Task.WhenAll(appListTasks);
 
-            var pingResults = new List<PingResultInfo>();
+            var pingResults = new List<ResultInfo>();
 
             foreach (var appList in appListTasks)
             {
@@ -93,30 +116,5 @@ namespace Geheb.DevMon.Agent.Quartz
 
             return pingResults;
         }
-
-    //private bool HttpPing(string url, out long elapsedMs)
-    //    {
-    //        var watch = System.Diagnostics.Stopwatch.StartNew();
-    //        var returnValue = true;
-    //        try
-    //        {
-    //            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
-    //            request.Timeout = 10000;
-    //            request.AllowAutoRedirect = false; // find out if this site is up and don't follow a redirector
-    //            request.Method = "HEAD";
-    //            var response = request.GetResponse();
-    //        }
-    //        catch
-    //        {
-    //            returnValue = false;
-    //        }
-    //        finally
-    //        {
-    //            watch.Stop();
-    //            elapsedMs = watch.ElapsedMilliseconds;
-    //        }
-    //        return returnValue;
-    //    }
-
     }
 }

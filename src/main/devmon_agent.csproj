@@ -123,7 +123,7 @@
     <Compile Include="Quartz\JobScheduler.cs" />
     <Compile Include="Quartz\PingerJob.cs" />
     <Compile Include="Quartz\CommandInfo.cs" />
-    <Compile Include="Quartz\PingResultInfo.cs" />
+    <Compile Include="Quartz\ResultInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

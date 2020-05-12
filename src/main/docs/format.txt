@@ -1,26 +1,13 @@
-﻿<commands>
-	<command>
-		<id>1234</id>
-		<name>url</name>
-		<arg>http://....</arg>
-	</command>
-	<command>
-		<id>sw23</id>
-		<name>cpu</name>
-		<arg></arg>
-	</command>
-</commands>
-
-[
+﻿[
   {
   "id": 1,
-  "name": "url",
-  "arg": "1234"
+  "command": "url",
+  "arg1": "https://www.officeclip.com"
   },
   {
   "id": 2,
-  "name": "url",
-  "arg": "5678"
+  "command": "url",
+  "arg1": "https://www.google.com"
   }
 ]
 

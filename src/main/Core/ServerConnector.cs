@@ -81,7 +81,7 @@ namespace Geheb.DevMon.Agent.Core
             }
         }
 
-        public async Task Send(List<PingResultInfo> resultInfos)
+        public async Task Send(List<ResultInfo> resultInfos)
         {
             var request = CreateRequest("/result", resultInfos, Method.PUT);
             await AddHeaders(request);

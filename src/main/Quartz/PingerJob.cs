@@ -1,4 +1,5 @@
 ﻿using Geheb.DevMon.Agent.Core;
+using Geheb.DevMon.Agent.Models;
 using ImTools;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -47,15 +48,31 @@ namespace Geheb.DevMon.Agent.Quartz
 
         private async Task<ResultInfo> RunTask(CommandInfo commandInfo)
         {
+            await Console.Out.WriteLineAsync($"Command: {commandInfo.Command}");
             switch (commandInfo.Command)
             {
                 case "url":
                     return await UrlTask(commandInfo);
                 case "cpu":
                     return await CpuTask(commandInfo);
+                case "mem":
+                    return await MemTask(commandInfo);
                 default:
                     return null;
             }
+        }
+
+        private static async Task<ResultInfo> MemTask(CommandInfo commandInfo)
+        {
+            var memoryCollector = new MemoryCollector(null);
+            var memoryUtilization = await memoryCollector.ReadMemoryUtilization();
+            var pingResultInfo = new ResultInfo()
+            {
+                Id = commandInfo.Id,
+                Value = memoryUtilization.FreeBytes.ToString(),
+                Unit = "bytes"
+            };
+            return pingResultInfo;
         }
 
         private static async Task<ResultInfo> CpuTask(CommandInfo commandInfo)

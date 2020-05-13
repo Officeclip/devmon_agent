@@ -8,6 +8,14 @@
   "id": 2,
   "command": "url",
   "arg1": "https://www.google.com"
+  },
+  {
+  "id": 3,
+  "command": "cpu"
+  },
+  {
+  "id": 4,
+  "command": "mem"
   }
 ]
 

@@ -34,7 +34,7 @@ namespace Geheb.DevMon.Agent.Core
 
             foreach (var ni in GetPublicInterfaces())
             {
-                _cancellation.Token.ThrowIfCancellationRequested();
+                _cancellation?.Token.ThrowIfCancellationRequested();
                 
                 bytesSentPerSecond = bytesReceivedPerSecond = 0;
                 lastBytesSent = lastBytesReceived = 0;

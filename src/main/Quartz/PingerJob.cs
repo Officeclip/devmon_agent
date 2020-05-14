@@ -55,8 +55,14 @@ namespace Geheb.DevMon.Agent.Quartz
                     return await UrlTask(commandInfo);
                 case "cpu":
                     return await CpuTask(commandInfo);
-                case "mem":
+                case "memory":
                     return await MemTask(commandInfo);
+                case "network":
+                    return await NetworkTask(commandInfo);
+                case "drive":
+                    return await DriveTask(commandInfo);
+                case "os":
+                    return await OsTask(commandInfo);
                 default:
                     return null;
             }
@@ -66,34 +72,92 @@ namespace Geheb.DevMon.Agent.Quartz
         {
             var memoryCollector = new MemoryCollector(null);
             var memoryUtilization = await memoryCollector.ReadMemoryUtilization();
-            var pingResultInfo = new ResultInfo()
-            {
-                Id = commandInfo.Id,
-                Value = memoryUtilization.FreeBytes.ToString(),
-                Unit = "bytes"
-            };
+            var pingResultInfo = new ResultInfo(
+                                       commandInfo.Id,
+                                       memoryUtilization.FreeBytes.ToString(),
+                                       "bytes");
             return pingResultInfo;
         }
 
         private static async Task<ResultInfo> CpuTask(CommandInfo commandInfo)
         {
-            float loadPercentage  = 0;
-            using (var cpuTime = new PerformanceCounter(
-                                        "Processor", "% Processor Time", "_Total"))
-            {
-                int i = 0;
-                while (i++ < 3) // needs multitple times to calcuate correct value
-                {
-                    loadPercentage = cpuTime.NextValue();
-                    await Task.Delay(1000);
-                }
-            }
+            var cpuCollector = new CpuCollector(null);
+            var cpuUtilization = await cpuCollector.ReadCpuUtilization();
+
+            var pingResultInfo = new ResultInfo(
+                                        commandInfo.Id,
+                                        cpuUtilization.LoadPercentage.ToString("N2"),
+                                        "%");
+            return pingResultInfo;
+        }
+
+        private static async Task<ResultInfo> OsTask(CommandInfo commandInfo)
+        {
+            var osCollector = new OsCollector(null);
+            var osUtilization = await osCollector.ReadOsUtilization();
+
+            var pingResultInfo = new ResultInfo(
+                                        commandInfo.Id,
+                                        osUtilization.Processes.ToString(),
+                                        "");
+            return pingResultInfo;
+        }
+
+        private static async Task<ResultInfo> DriveTask(CommandInfo commandInfo)
+        {
+            var driveCollector = new DriveCollector(null);
+            var driveUtilizations = await driveCollector.ReadDriveUtilization();
+
             var pingResultInfo = new ResultInfo()
             {
                 Id = commandInfo.Id,
-                Value = loadPercentage.ToString("N2"),
-                Unit = "%"
+                Unit = "bytes"
             };
+
+            foreach (var driveUtilization in driveUtilizations)
+            {
+                if (commandInfo.Arg1 == driveUtilization.Name)
+                {
+                    pingResultInfo.Value = driveUtilization.FreeBytes.ToString();
+                    return pingResultInfo;
+                }
+            }
+            pingResultInfo.IsSuccess = false;
+            pingResultInfo.ReturnCode = -1;
+            pingResultInfo.ErrorMessage = "Name does not match";
+            return pingResultInfo;
+        }
+
+        private static async Task<ResultInfo> NetworkTask(
+                                                    CommandInfo commandInfo)
+        {
+            var networkCollector = new NetworkCollector(null);
+            var networkUtilizations = await networkCollector.ReadNetworkUtilization();
+            var pingResultInfo = new ResultInfo()
+            {
+                Id = commandInfo.Id,
+                Unit = "bytes/sec"
+            };
+
+            foreach (var networkUtilization in networkUtilizations)
+            {
+                if (commandInfo.Arg1 == networkUtilization.Name)
+                {
+                    switch (commandInfo.Arg2)
+                    {
+                        case "ReceivedBytesPerSeconds":
+                            pingResultInfo.Value = networkUtilization.ReceivedBytesPerSecond.ToString();
+                            break;
+                        case "SentBytesPerSecond":
+                            pingResultInfo.Value = networkUtilization.SentBytesPerSecond.ToString();
+                            break;
+                    }
+                    return pingResultInfo;
+                }
+            }
+            pingResultInfo.IsSuccess = false;
+            pingResultInfo.ReturnCode = -1;
+            pingResultInfo.ErrorMessage = "Name does not match";
             return pingResultInfo;
         }
 

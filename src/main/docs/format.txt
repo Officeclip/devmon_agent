@@ -15,7 +15,28 @@
   },
   {
   "id": 4,
-  "command": "mem"
+  "command": "memory"
+  },
+  {
+  "id": 5,
+  "command": "network",
+  "arg1": "Wi-Fi",
+  "arg2:" "ReceivedBytesPerSeconds"
+  },
+  {
+  "id": 6,
+  "command": "network",
+  "arg1": "Wi-Fi",
+  "arg2:" "SentBytesPerSeconds"
+  },
+  {
+  "id": 7,
+  "command": "drive",
+  "arg1": "C:\\"
+  },
+  {
+  "id": 8,
+  "command": "os"
   }
 ]
 

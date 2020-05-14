@@ -14,5 +14,17 @@ namespace Geheb.DevMon.Agent.Quartz
         public string ErrorMessage { get; set; } = "";
         public string Value { get; set; }
         public string Unit { get; set; }
+
+        public ResultInfo()
+        {
+
+        }
+
+        public ResultInfo(string id, string value, string unit)
+        {
+            Id = id;
+            Value = value;
+            Unit = unit;
+        }
     }
 }

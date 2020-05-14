@@ -21,6 +21,7 @@ namespace Geheb.DevMon.Agent
         {
             try
             {
+                _logger.Info("Starting the main program");
                 while (true)
                 {
                     JobScheduler.Start().ConfigureAwait(false);

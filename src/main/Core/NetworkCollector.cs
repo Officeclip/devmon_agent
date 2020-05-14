@@ -50,7 +50,14 @@ namespace Geheb.DevMon.Agent.Core
                     lastBytesSent = stat.BytesSent;
                     lastBytesReceived = stat.BytesReceived;
 
-                    await Task.Delay(1000, _cancellation.Token);
+                    if (_cancellation == null)
+                    {
+                        await Task.Delay(1000);
+                    }
+                    else
+                    {
+                        await Task.Delay(1000, _cancellation.Token);
+                    }
                 }
 
                 networks.Add(new NetworkUtilization

@@ -44,11 +44,17 @@ namespace Geheb.DevMon.Agent.Core
                 while (i++ < 3) // needs multitple times to calcuate correct value
                 {
                     cpu.LoadPercentage = cpuTime.NextValue();
-                    await Task.Delay(1000, _cancellation.Token);
+                    if (_cancellation == null) { 
+                        await Task.Delay(1000);
+                    }
+                    else
+                    {
+                        await Task.Delay(1000, _cancellation.Token);
+                    }
                 }
             }
 
-            _cancellation.Token.ThrowIfCancellationRequested();
+            _cancellation?.Token.ThrowIfCancellationRequested();
 
             using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_Processor"))
             {

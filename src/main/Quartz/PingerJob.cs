@@ -3,6 +3,7 @@ using Geheb.DevMon.Agent.Models;
 using ImTools;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NLog;
 using Quartz;
 using RestSharp;
 using System;
@@ -23,6 +24,7 @@ namespace Geheb.DevMon.Agent.Quartz
     /// </summary>
     public class PingerJob : IJob
     {
+        static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         public async Task Execute(IJobExecutionContext context)
 
         {
@@ -70,17 +72,20 @@ namespace Geheb.DevMon.Agent.Quartz
 
         private static async Task<ResultInfo> MemTask(CommandInfo commandInfo)
         {
+            _logger.Debug("Starting MemTask");
             var memoryCollector = new MemoryCollector(null);
             var memoryUtilization = await memoryCollector.ReadMemoryUtilization();
             var pingResultInfo = new ResultInfo(
                                        commandInfo.Id,
                                        memoryUtilization.FreeBytes.ToString(),
                                        "bytes");
+            _logger.Debug("Ending MemTask");
             return pingResultInfo;
         }
 
         private static async Task<ResultInfo> CpuTask(CommandInfo commandInfo)
         {
+            _logger.Debug("Starting CpuTask");
             var cpuCollector = new CpuCollector(null);
             var cpuUtilization = await cpuCollector.ReadCpuUtilization();
 
@@ -88,11 +93,13 @@ namespace Geheb.DevMon.Agent.Quartz
                                         commandInfo.Id,
                                         cpuUtilization.LoadPercentage.ToString("N2"),
                                         "%");
+            _logger.Debug("Ending CpuTask");
             return pingResultInfo;
         }
 
         private static async Task<ResultInfo> OsTask(CommandInfo commandInfo)
         {
+            _logger.Debug("Starting OsTask");
             var osCollector = new OsCollector(null);
             var osUtilization = await osCollector.ReadOsUtilization();
 
@@ -100,11 +107,13 @@ namespace Geheb.DevMon.Agent.Quartz
                                         commandInfo.Id,
                                         osUtilization.Processes.ToString(),
                                         "");
+            _logger.Debug("Ending OsTask");
             return pingResultInfo;
         }
 
         private static async Task<ResultInfo> DriveTask(CommandInfo commandInfo)
         {
+            _logger.Debug("Starting DriveTask");
             var driveCollector = new DriveCollector(null);
             var driveUtilizations = await driveCollector.ReadDriveUtilization();
 
@@ -119,18 +128,21 @@ namespace Geheb.DevMon.Agent.Quartz
                 if (commandInfo.Arg1 == driveUtilization.Name)
                 {
                     pingResultInfo.Value = driveUtilization.FreeBytes.ToString();
+                    _logger.Debug("Ending DriveTask");
                     return pingResultInfo;
                 }
             }
             pingResultInfo.IsSuccess = false;
             pingResultInfo.ReturnCode = -1;
             pingResultInfo.ErrorMessage = "Name does not match";
+            _logger.Debug("Ending DriveTask");
             return pingResultInfo;
         }
 
         private static async Task<ResultInfo> NetworkTask(
                                                     CommandInfo commandInfo)
         {
+            _logger.Debug("Starting NetworkTask");
             var networkCollector = new NetworkCollector(null);
             var networkUtilizations = await networkCollector.ReadNetworkUtilization();
             var pingResultInfo = new ResultInfo()
@@ -152,17 +164,20 @@ namespace Geheb.DevMon.Agent.Quartz
                             pingResultInfo.Value = networkUtilization.SentBytesPerSecond.ToString();
                             break;
                     }
+                    _logger.Debug("Ending NetworkTask");
                     return pingResultInfo;
                 }
             }
             pingResultInfo.IsSuccess = false;
             pingResultInfo.ReturnCode = -1;
             pingResultInfo.ErrorMessage = "Name does not match";
+            _logger.Debug("Ending NetworkTask");
             return pingResultInfo;
         }
 
         private static async Task<ResultInfo> UrlTask(CommandInfo commandInfo)
         {
+            _logger.Debug("Starting UrlTask");
             var httpClient = new HttpClient();
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var result = await httpClient.GetAsync(commandInfo.Arg1);
@@ -176,6 +191,7 @@ namespace Geheb.DevMon.Agent.Quartz
                 ErrorMessage = result.ReasonPhrase,
                 Unit = "ms"
             };
+            _logger.Debug("Ending UrlTask");
             return pingResultInfo;
         }
 

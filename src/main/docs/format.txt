@@ -21,13 +21,13 @@
   "id": 5,
   "command": "network",
   "arg1": "Wi-Fi",
-  "arg2:" "ReceivedBytesPerSeconds"
+  "arg2": "ReceivedBytesPerSeconds"
   },
   {
   "id": 6,
   "command": "network",
   "arg1": "Wi-Fi",
-  "arg2:" "SentBytesPerSeconds"
+  "arg2": "SentBytesPerSeconds"
   },
   {
   "id": 7,

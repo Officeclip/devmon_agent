@@ -21,7 +21,7 @@ namespace Geheb.DevMon.Agent.Core
             var networks = new List<NetworkInfo>();
             foreach (var ni in GetPublicInterfaces())
             {
-                _cancellation.Token.ThrowIfCancellationRequested();
+                _cancellation?.Token.ThrowIfCancellationRequested();
                 networks.Add(new NetworkInfo(ni));
             }
             return Task.FromResult(networks.ToArray());

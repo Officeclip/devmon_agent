@@ -28,6 +28,7 @@ namespace Geheb.DevMon.Agent.Quartz
             Console.WriteLine("Starting Scheduler");
 
             AddPingerJob(scheduler);
+            AddStaticJob(scheduler);
         }
 
         public static async void AddPingerJob(IScheduler scheduler)
@@ -41,7 +42,25 @@ namespace Geheb.DevMon.Agent.Quartz
                 .WithIdentity("pinger-trigger", "group")
                 .StartNow()
                 .WithSimpleSchedule(x => x
-                    .WithIntervalInSeconds(120)
+                    .WithIntervalInSeconds(300)
+                    .RepeatForever())
+            .Build();
+
+            await scheduler.ScheduleJob(job, trigger);
+        }
+
+        public static async void AddStaticJob(IScheduler scheduler)
+        {
+            IJobDetail job = JobBuilder.Create<StaticJob>()
+                .WithIdentity("static-job", "group")
+                .Build();
+
+            // Trigger the job to run now, and then every 60 seconds
+            ITrigger trigger = TriggerBuilder.Create()
+                .WithIdentity("static-trigger", "group")
+                .StartNow()
+                .WithSimpleSchedule(x => x
+                    .WithIntervalInSeconds(1800)
                     .RepeatForever())
             .Build();
 

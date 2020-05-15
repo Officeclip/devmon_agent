@@ -15,6 +15,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Documents;
+using System.Windows.Navigation;
 using JsonSerializer = Geheb.DevMon.Agent.Core.JsonSerializer;
 
 namespace Geheb.DevMon.Agent.Quartz
@@ -25,6 +26,8 @@ namespace Geheb.DevMon.Agent.Quartz
     public class PingerJob : IJob
     {
         static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+        private static HttpClient sHttpClient = new HttpClient(); //https://aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/
+
         public async Task Execute(IJobExecutionContext context)
 
         {
@@ -41,7 +44,7 @@ namespace Geheb.DevMon.Agent.Quartz
             var body = response.Content;
             var commands = JsonConvert.DeserializeObject<List<CommandInfo>>(body);
             var pingResults = await ProcessTasksAsync(commands); //.ConfigureAwait(false);
-            
+
             if (pingResults.Count > 0)
             {
                 await serverConnector.Send(pingResults);
@@ -177,10 +180,11 @@ namespace Geheb.DevMon.Agent.Quartz
 
         private static async Task<ResultInfo> UrlTask(CommandInfo commandInfo)
         {
-            _logger.Debug("Starting UrlTask");
-            var httpClient = new HttpClient();
+            _logger.Debug($"Starting UrlTask: {commandInfo.Arg1}");
+            
+            
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            var result = await httpClient.GetAsync(commandInfo.Arg1);
+            var result = await sHttpClient.GetAsync(commandInfo.Arg1);
             watch.Stop();
             var pingResultInfo = new ResultInfo()
             {
@@ -191,7 +195,7 @@ namespace Geheb.DevMon.Agent.Quartz
                 ErrorMessage = result.ReasonPhrase,
                 Unit = "ms"
             };
-            _logger.Debug("Ending UrlTask");
+            _logger.Debug($"Ending UrlTask: {commandInfo.Arg1}: {watch.ElapsedMilliseconds} ms");
             return pingResultInfo;
         }
 

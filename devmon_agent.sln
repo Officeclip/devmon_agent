@@ -1,11 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2035
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "devmon_agent", "src\main\devmon_agent.csproj", "{621B914F-1096-4AC1-85EC-9EABF5156527}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "devmon_agent_test", "src\test\devmon_agent_test.csproj", "{E315E77F-3550-44B9-9133-8C24C9BB06F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dev_web", "dev_web\dev_web.csproj", "{9F72CB7E-4ECF-4AA9-877E-086D6753BB14}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "resources", "resources", "{753F0C6E-EC0E-43DF-B799-6ABCED4F473B}"
+	ProjectSection(SolutionItems) = preProject
+		monitor.db = monitor.db
+		monitor.db-journal = monitor.db-journal
+		monitor.sqbpro = monitor.sqbpro
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +30,10 @@ Global
 		{E315E77F-3550-44B9-9133-8C24C9BB06F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E315E77F-3550-44B9-9133-8C24C9BB06F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E315E77F-3550-44B9-9133-8C24C9BB06F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F72CB7E-4ECF-4AA9-877E-086D6753BB14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F72CB7E-4ECF-4AA9-877E-086D6753BB14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F72CB7E-4ECF-4AA9-877E-086D6753BB14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F72CB7E-4ECF-4AA9-877E-086D6753BB14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

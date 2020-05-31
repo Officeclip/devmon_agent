@@ -19,5 +19,12 @@ namespace dev_web
             grdMonitor.DataSource = table;
             grdMonitor.DataBind();
         }
+
+        protected void btnPopup_Click(object sender, EventArgs e)
+        {
+            string queryString = "monitor.aspx";
+            string newWin = "window.open('" + queryString + "');";
+            ClientScript.RegisterStartupScript(this.GetType(), "pop", newWin, true);
+        }
     }
 }

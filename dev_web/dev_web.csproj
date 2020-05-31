@@ -97,12 +97,20 @@
   <ItemGroup>
     <Content Include="default.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="monitor.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusinessLayer\Agent.cs" />
     <Compile Include="BusinessLayer\MonitorCommand.cs" />
     <Compile Include="BusinessLayer\MonitorCommandValue.cs" />
+    <Compile Include="monitor.aspx.cs">
+      <DependentUpon>monitor.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="monitor.aspx.designer.cs">
+      <DependentUpon>monitor.aspx</DependentUpon>
+    </Compile>
     <Compile Include="MonitorDb.cs" />
     <Compile Include="default.aspx.cs">
       <DependentUpon>default.aspx</DependentUpon>

@@ -10,8 +10,12 @@
     <form id="form1" runat="server">
         <div>
             <asp:GridView ID="grdMonitor" runat="server">
-
             </asp:GridView>
+            <div style="margin: 20px">
+                <asp:Button ID="btnPopup" runat="server"
+                    Text="Edit Monitor"
+                    OnClick="btnPopup_Click" />
+            </div>
         </div>
     </form>
 </body>

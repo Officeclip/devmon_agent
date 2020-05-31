@@ -89,5 +89,47 @@ namespace dev_web
             SqlLiteConn.Close();
             return monitorCommandValues;
         }
+
+        public void UpdateMonitorCommand(MonitorCommand monitorCommand)
+        {
+            SqlLiteConn.Open();
+            var cmd = new SQLiteCommand(SqlLiteConn);
+            cmd.CommandText = $@"
+                    UPDATE monitorCommands
+                    SET 
+                        name = '{monitorCommand.Name}',
+                        type = '{monitorCommand.Type}',
+                        arg1 = '{monitorCommand.Arg1}',
+                        arg2 = '{monitorCommand.Arg2}'
+                    WHERE
+                        monitor_command_id = {monitorCommand.MonitorCommandId}";
+            cmd.ExecuteNonQuery();
+            SqlLiteConn.Close();
+        }
+
+        public void InsertMonitorCommand(MonitorCommand monitorCommand)
+        {
+            SqlLiteConn.Open();
+            var cmd = new SQLiteCommand(SqlLiteConn);
+            cmd.CommandText = $@"
+                    INSERT INTO monitorCommands
+                        (name, type, arg1, arg2) 
+                    VALUES
+                        ('{monitorCommand.Name}', '{monitorCommand.Type}', '{monitorCommand.Arg1}', '{monitorCommand.Arg2}')";
+            cmd.ExecuteNonQuery();
+            SqlLiteConn.Close();
+        }
+
+        public void DeleteMonitorCommand(int id)
+        {
+            SqlLiteConn.Open();
+            var cmd = new SQLiteCommand(SqlLiteConn);
+            cmd.CommandText = $@"
+                    DELETE monitorCommands
+                    WHERE
+                        monitor_command_id = {id}";
+            cmd.ExecuteNonQuery();
+            SqlLiteConn.Close();
+        }
     }
 }

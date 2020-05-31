@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Data.Sqlite;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -11,7 +12,8 @@ namespace dev_web
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            var sqlite_conn = new SqliteConnection(
+                @"Data Source=C:\OfficeClipNew\OpenSource\devmon_agent\monitor.db;Version=3;");
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using dev_web.BusinessLayer;
-using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using System.Linq;
 using System.Web;
 
@@ -9,13 +9,14 @@ namespace dev_web
 {
     public class MonitorDb
     {
-        private static SqliteConnection SqlLiteConn = new SqliteConnection(
-            @"Data Source=C:\OfficeClipNew\OpenSource\devmon_agent\monitor.db;Version=3;");
+        private static SQLiteConnection SqlLiteConn = new SQLiteConnection(
+            @"Data Source=C:\OfficeClipNew\OpenSource\devmon_agent\monitor.db");
 
         public List<Agent> GetAgents()
         {
-            SqliteDataReader sqlite_datareader;
-            SqliteCommand sqlite_cmd;
+            SQLiteDataReader sqlite_datareader;
+            SQLiteCommand sqlite_cmd;
+            SqlLiteConn.Open();
             sqlite_cmd = SqlLiteConn.CreateCommand();
             sqlite_cmd.CommandText = "SELECT * FROM agents ORDER By agent_id";
             var agents = new List<Agent>();
@@ -26,18 +27,20 @@ namespace dev_web
                 {
                     AgentId = Convert.ToInt32(sqlite_datareader["agent_id"]),
                     Guid = sqlite_datareader["guid"].ToString(),
-                    Name = sqlite_datareader["name"].ToString()
+                    MachineName = sqlite_datareader["machine_name"].ToString()
                 };
                 agents.Add(agent);
             }
             sqlite_datareader.Close();
+            SqlLiteConn.Close();
             return agents;
         }
 
         public List<MonitorCommand> GetMonitorCommands()
         {
-            SqliteDataReader sqlite_datareader;
-            SqliteCommand sqlite_cmd;
+            SQLiteDataReader sqlite_datareader;
+            SQLiteCommand sqlite_cmd;
+            SqlLiteConn.Open();
             sqlite_cmd = SqlLiteConn.CreateCommand();
             sqlite_cmd.CommandText = "SELECT * FROM monitorCommands order by monitor_command_id";
             var monitorCommands = new List<MonitorCommand>();
@@ -55,13 +58,16 @@ namespace dev_web
                 monitorCommands.Add(monitorCommand);
             }
             sqlite_datareader.Close();
+            SqlLiteConn.Close();
+
             return monitorCommands;
         }
 
         public List<MonitorCommandValue> GetMonitorCommandValues()
         {
-            SqliteDataReader sqlite_datareader;
-            SqliteCommand sqlite_cmd;
+            SQLiteDataReader sqlite_datareader;
+            SQLiteCommand sqlite_cmd;
+            SqlLiteConn.Open();
             sqlite_cmd = SqlLiteConn.CreateCommand();
             sqlite_cmd.CommandText = "SELECT * FROM monitorCommandValues ORDER BY agent_id, monitor_command_id";
             var monitorCommandValues = new List<MonitorCommandValue>();
@@ -80,6 +86,7 @@ namespace dev_web
                 monitorCommandValues.Add(monitorCommandValue);
             }
             sqlite_datareader.Close();
+            SqlLiteConn.Close();
             return monitorCommandValues;
         }
     }

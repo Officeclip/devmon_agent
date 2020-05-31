@@ -9,6 +9,6 @@ namespace dev_web.BusinessLayer
     {
         public int AgentId { get; set; }
         public string Guid { get; set; }
-        public string Name { get; set; }
+        public string MachineName { get; set; }
     }
 }

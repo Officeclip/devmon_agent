@@ -40,6 +40,7 @@ namespace dev_web
                     {
                         firstTime = false;
                     }
+                    lastAgentId = monitorCommandValue.AgentId;
                 }
                 dataRow[columnIndex++] =
                     $"{monitorCommandValue.Value} {monitorCommandValue.Unit}";
@@ -47,11 +48,11 @@ namespace dev_web
             table.Rows.Add(dataRow);
             // Now add one more column with the agent name in the beginning
             var agentColumn = new DataColumn();
-            agentColumn.SetOrdinal(0);
             table.Columns.Add(agentColumn);
+            agentColumn.SetOrdinal(0);
             for (int i=0; i<agents.Count; i++)
             {
-                table.Rows[i][0] = agents[i].Name;
+                table.Rows[i][0] = agents[i].MachineName;
             }
             return table;
         }

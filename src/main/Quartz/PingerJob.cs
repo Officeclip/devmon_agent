@@ -53,8 +53,8 @@ namespace Geheb.DevMon.Agent.Quartz
 
         private async Task<ResultInfo> RunTask(CommandInfo commandInfo)
         {
-            await Console.Out.WriteLineAsync($"Command: {commandInfo.Command}");
-            switch (commandInfo.Command)
+            await Console.Out.WriteLineAsync($"Command: {commandInfo.Type}");
+            switch (commandInfo.Type)
             {
                 case "url":
                     return await UrlTask(commandInfo);
@@ -79,7 +79,7 @@ namespace Geheb.DevMon.Agent.Quartz
             var memoryCollector = new MemoryCollector(null);
             var memoryUtilization = await memoryCollector.ReadMemoryUtilization();
             var pingResultInfo = new ResultInfo(
-                                       commandInfo.Id,
+                                       commandInfo.MonitorCommandId,
                                        memoryUtilization.FreeBytes.ToString(),
                                        "bytes");
             _logger.Debug("Ending MemTask");
@@ -93,7 +93,7 @@ namespace Geheb.DevMon.Agent.Quartz
             var cpuUtilization = await cpuCollector.ReadCpuUtilization();
 
             var pingResultInfo = new ResultInfo(
-                                        commandInfo.Id,
+                                        commandInfo.MonitorCommandId,
                                         cpuUtilization.LoadPercentage.ToString("N2"),
                                         "%");
             _logger.Debug("Ending CpuTask");
@@ -107,7 +107,7 @@ namespace Geheb.DevMon.Agent.Quartz
             var osUtilization = await osCollector.ReadOsUtilization();
 
             var pingResultInfo = new ResultInfo(
-                                        commandInfo.Id,
+                                        commandInfo.MonitorCommandId,
                                         osUtilization.Processes.ToString(),
                                         "");
             _logger.Debug("Ending OsTask");
@@ -122,7 +122,7 @@ namespace Geheb.DevMon.Agent.Quartz
 
             var pingResultInfo = new ResultInfo()
             {
-                Id = commandInfo.Id,
+                Id = commandInfo.MonitorCommandId,
                 Unit = "bytes"
             };
 
@@ -150,7 +150,7 @@ namespace Geheb.DevMon.Agent.Quartz
             var networkUtilizations = await networkCollector.ReadNetworkUtilization();
             var pingResultInfo = new ResultInfo()
             {
-                Id = commandInfo.Id,
+                Id = commandInfo.MonitorCommandId,
                 Unit = "bytes/sec"
             };
 
@@ -188,7 +188,7 @@ namespace Geheb.DevMon.Agent.Quartz
             watch.Stop();
             var pingResultInfo = new ResultInfo()
             {
-                Id = commandInfo.Id,
+                Id = commandInfo.MonitorCommandId,
                 IsSuccess = result.IsSuccessStatusCode,
                 Value = watch.ElapsedMilliseconds.ToString(),
                 ReturnCode = (int)result.StatusCode,

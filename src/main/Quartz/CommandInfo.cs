@@ -9,9 +9,9 @@ namespace Geheb.DevMon.Agent.Quartz
 {
     public class CommandInfo
     {
-        public string Id { get; set; }
-
-        public string Command { get; set; }
+        public string MonitorCommandId { get; set; }
+        public string Name { get; set; }
+        public string Type { get; set; }
 
         [DefaultValue("")]
         public string Arg1 { get; set; }

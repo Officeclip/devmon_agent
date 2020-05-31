@@ -17,7 +17,7 @@ namespace dev_web
             SqliteDataReader sqlite_datareader;
             SqliteCommand sqlite_cmd;
             sqlite_cmd = SqlLiteConn.CreateCommand();
-            sqlite_cmd.CommandText = "SELECT * FROM agents";
+            sqlite_cmd.CommandText = "SELECT * FROM agents ORDER By agent_id";
             var agents = new List<Agent>();
             sqlite_datareader = sqlite_cmd.ExecuteReader();
             while (sqlite_datareader.Read())
@@ -39,7 +39,7 @@ namespace dev_web
             SqliteDataReader sqlite_datareader;
             SqliteCommand sqlite_cmd;
             sqlite_cmd = SqlLiteConn.CreateCommand();
-            sqlite_cmd.CommandText = "SELECT * FROM monitorCommands";
+            sqlite_cmd.CommandText = "SELECT * FROM monitorCommands order by monitor_command_id";
             var monitorCommands = new List<MonitorCommand>();
             sqlite_datareader = sqlite_cmd.ExecuteReader();
             while (sqlite_datareader.Read())
@@ -63,7 +63,7 @@ namespace dev_web
             SqliteDataReader sqlite_datareader;
             SqliteCommand sqlite_cmd;
             sqlite_cmd = SqlLiteConn.CreateCommand();
-            sqlite_cmd.CommandText = "SELECT * FROM monitorCommandValues";
+            sqlite_cmd.CommandText = "SELECT * FROM monitorCommandValues ORDER BY agent_id, monitor_command_id";
             var monitorCommandValues = new List<MonitorCommandValue>();
             sqlite_datareader = sqlite_cmd.ExecuteReader();
             while (sqlite_datareader.Read())

@@ -9,6 +9,9 @@
 <body>
     <form id="form1" runat="server">
         <div>
+            <asp:GridView ID="grdMonitor" runat="server">
+
+            </asp:GridView>
         </div>
     </form>
 </body>

@@ -12,8 +12,13 @@ namespace dev_web
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            var sqlite_conn = new SqliteConnection(
-                @"Data Source=C:\OfficeClipNew\OpenSource\devmon_agent\monitor.db;Version=3;");
+            var monitorDb = new MonitorDb();
+            var agents = monitorDb.GetAgents();
+            var monitorCommands = monitorDb.GetMonitorCommands();
+            var monitorCommandValues = monitorDb.GetMonitorCommandValues();
+            var table = Util.GetMonitorTable(agents, monitorCommands, monitorCommandValues);
+            grdMonitor.DataSource = table;
+            grdMonitor.DataBind();
         }
     }
 }

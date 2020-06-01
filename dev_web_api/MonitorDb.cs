@@ -107,6 +107,25 @@ namespace dev_web_api
             SqlLiteConn.Close();
         }
 
+        public void UpdateMonitorCommandValue(MonitorCommandValue monitorCommandValue)
+        {
+            SqlLiteConn.Open();
+            var cmd = new SQLiteCommand(SqlLiteConn);
+            cmd.CommandText = $@"
+                    UPDATE monitorCommands
+                    SET 
+                        agent_id = {monitorCommandValue.AgentId},
+                        error_message = '{monitorCommandValue.ErrorMessage}',
+                        return_code = {monitorCommandValue.ReturnCode},
+                        monitor_command_id = '{monitorCommandValue.MonitorCommandId}',
+                        unit = '{monitorCommandValue.Unit}',
+                        value = {monitorCommandValue.Value}
+                    WHERE
+                        monitor_command_id = {monitorCommandValue.MonitorCommandId}";
+            cmd.ExecuteNonQuery();
+            SqlLiteConn.Close();
+        }
+
         public void InsertMonitorCommand(MonitorCommand monitorCommand)
         {
             SqlLiteConn.Open();

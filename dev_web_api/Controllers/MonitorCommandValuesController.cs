@@ -1,9 +1,5 @@
 ﻿using dev_web_api.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 
 namespace dev_web_api.Controllers
@@ -13,7 +9,19 @@ namespace dev_web_api.Controllers
         [HttpPost]
         public IHttpActionResult Post([FromBody]List<MonitorCommandValue> commandValues)
         {
-            //var monitorCommandValues = MonitorCommandValue.FromJson(jsonString);
+            foreach (var commandValue in commandValues)
+            {
+                var monitorCommandValue = new BusinessLayer.MonitorCommandValue()
+                {
+                    AgentId = 1,
+                    MonitorCommandId = commandValue.Id,
+                    ReturnCode = commandValue.ReturnCode,
+                    Value = commandValue.Value,
+                    Unit = commandValue.Unit,
+                    ErrorMessage = commandValue.ErrorMessage
+                };
+                (new MonitorDb()).UpdateMonitorCommandValue(monitorCommandValue);
+            }
             return Ok();
         }
     }

@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace dev_web
+namespace dev_web_api
 {
     public partial class _default : System.Web.UI.Page
     {
@@ -14,8 +14,8 @@ namespace dev_web
             var monitorDb = new MonitorDb();
             var agents = monitorDb.GetAgents();
             var monitorCommands = monitorDb.GetMonitorCommands();
-            var monitorCommandValues = monitorDb.GetMonitorCommandValues();
-            var table = Util.GetMonitorTable(agents, monitorCommands, monitorCommandValues);
+            var MonitorValues = monitorDb.GetMonitorValues();
+            var table = Util.GetMonitorTable(agents, monitorCommands, MonitorValues);
             grdMonitor.DataSource = table;
             grdMonitor.DataBind();
         }

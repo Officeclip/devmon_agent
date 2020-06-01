@@ -7,13 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "devmon_agent", "src\main\de
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "devmon_agent_test", "src\test\devmon_agent_test.csproj", "{E315E77F-3550-44B9-9133-8C24C9BB06F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dev_web", "dev_web\dev_web.csproj", "{9F72CB7E-4ECF-4AA9-877E-086D6753BB14}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "resources", "resources", "{753F0C6E-EC0E-43DF-B799-6ABCED4F473B}"
 	ProjectSection(SolutionItems) = preProject
 		monitor.db = monitor.db
 		monitor.db-journal = monitor.db-journal
 		monitor.sqbpro = monitor.sqbpro
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dev_web_api", "dev_web_api\dev_web_api.csproj", "{BA47E60C-4E3E-4A4C-9D20-A6593A1035A0}"
@@ -32,10 +31,6 @@ Global
 		{E315E77F-3550-44B9-9133-8C24C9BB06F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E315E77F-3550-44B9-9133-8C24C9BB06F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E315E77F-3550-44B9-9133-8C24C9BB06F6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9F72CB7E-4ECF-4AA9-877E-086D6753BB14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9F72CB7E-4ECF-4AA9-877E-086D6753BB14}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9F72CB7E-4ECF-4AA9-877E-086D6753BB14}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9F72CB7E-4ECF-4AA9-877E-086D6753BB14}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BA47E60C-4E3E-4A4C-9D20-A6593A1035A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BA47E60C-4E3E-4A4C-9D20-A6593A1035A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA47E60C-4E3E-4A4C-9D20-A6593A1035A0}.Release|Any CPU.ActiveCfg = Release|Any CPU

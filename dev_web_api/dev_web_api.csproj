@@ -96,23 +96,41 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="default.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="monitor.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="BusinessLayer\MonitorCommandValue.cs" />
+    <Compile Include="BusinessLayer\AgentResource.cs" />
+    <Compile Include="BusinessLayer\MonitorValue.cs" />
     <Compile Include="BusinessLayer\Agent.cs" />
     <Compile Include="BusinessLayer\MonitorCommand.cs" />
     <Compile Include="Controllers\HardwareController.cs" />
-    <Compile Include="Controllers\MonitorCommandValuesController.cs" />
+    <Compile Include="Controllers\MonitorValuesController.cs" />
+    <Compile Include="default.aspx.cs">
+      <DependentUpon>default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="default.aspx.designer.cs">
+      <DependentUpon>default.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Models\MonitorCommandValue.cs" />
     <Compile Include="Controllers\MonitorCommandsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="monitor.aspx.cs">
+      <DependentUpon>monitor.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="monitor.aspx.designer.cs">
+      <DependentUpon>monitor.aspx</DependentUpon>
+    </Compile>
     <Compile Include="MonitorDb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

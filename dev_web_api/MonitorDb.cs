@@ -63,18 +63,18 @@ namespace dev_web_api
             return monitorCommands;
         }
 
-        public List<MonitorCommandValue> GetMonitorCommandValues()
+        public List<MonitorValue> GetMonitorValues()
         {
             SQLiteDataReader sqlite_datareader;
             SQLiteCommand sqlite_cmd;
             SqlLiteConn.Open();
             sqlite_cmd = SqlLiteConn.CreateCommand();
-            sqlite_cmd.CommandText = "SELECT * FROM monitorCommandValues ORDER BY agent_id, monitor_command_id";
-            var monitorCommandValues = new List<MonitorCommandValue>();
+            sqlite_cmd.CommandText = "SELECT * FROM MonitorValues ORDER BY agent_id, monitor_command_id";
+            var MonitorValues = new List<MonitorValue>();
             sqlite_datareader = sqlite_cmd.ExecuteReader();
             while (sqlite_datareader.Read())
             {
-                var monitorCommandValue = new MonitorCommandValue()
+                var MonitorValue = new MonitorValue()
                 {
                     AgentId = Convert.ToInt32(sqlite_datareader["agent_id"]),
                     MonitorCommandId = Convert.ToInt32(sqlite_datareader["monitor_command_id"]),
@@ -83,11 +83,11 @@ namespace dev_web_api
                     ReturnCode = Convert.ToInt32(sqlite_datareader["return_code"]),
                     ErrorMessage = sqlite_datareader["error_message"].ToString()
                 };
-                monitorCommandValues.Add(monitorCommandValue);
+                MonitorValues.Add(MonitorValue);
             }
             sqlite_datareader.Close();
             SqlLiteConn.Close();
-            return monitorCommandValues;
+            return MonitorValues;
         }
 
         public void UpdateMonitorCommand(MonitorCommand monitorCommand)
@@ -107,21 +107,21 @@ namespace dev_web_api
             SqlLiteConn.Close();
         }
 
-        public void UpdateMonitorCommandValue(MonitorCommandValue monitorCommandValue)
+        public void UpdateMonitorValue(MonitorValue MonitorValue)
         {
             SqlLiteConn.Open();
             var cmd = new SQLiteCommand(SqlLiteConn);
             cmd.CommandText = $@"
                     UPDATE monitorCommands
                     SET 
-                        agent_id = {monitorCommandValue.AgentId},
-                        error_message = '{monitorCommandValue.ErrorMessage}',
-                        return_code = {monitorCommandValue.ReturnCode},
-                        monitor_command_id = '{monitorCommandValue.MonitorCommandId}',
-                        unit = '{monitorCommandValue.Unit}',
-                        value = {monitorCommandValue.Value}
+                        agent_id = {MonitorValue.AgentId},
+                        error_message = '{MonitorValue.ErrorMessage}',
+                        return_code = {MonitorValue.ReturnCode},
+                        monitor_command_id = '{MonitorValue.MonitorCommandId}',
+                        unit = '{MonitorValue.Unit}',
+                        value = {MonitorValue.Value}
                     WHERE
-                        monitor_command_id = {monitorCommandValue.MonitorCommandId}";
+                        monitor_command_id = {MonitorValue.MonitorCommandId}";
             cmd.ExecuteNonQuery();
             SqlLiteConn.Close();
         }
@@ -147,6 +147,22 @@ namespace dev_web_api
                     DELETE monitorCommands
                     WHERE
                         monitor_command_id = {id}";
+            cmd.ExecuteNonQuery();
+            SqlLiteConn.Close();
+        }
+
+        public void UpdateAgentResourceHardware(int agentId, string hardwareJson)
+        {
+            SqlLiteConn.Open();
+            var cmd = new SQLiteCommand(SqlLiteConn)
+            {
+                CommandText = $@"
+                    UPDATE agentResources
+                    SET 
+                        hardware_json = '{hardwareJson}'                     
+                    WHERE
+                        agent_id = {agentId}"
+            };
             cmd.ExecuteNonQuery();
             SqlLiteConn.Close();
         }

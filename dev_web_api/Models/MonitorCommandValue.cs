@@ -4,7 +4,7 @@
 //
 //    using dev_web_api.Models;
 //
-//    var monitorCommandValue = MonitorCommandValue.FromJson(jsonString);
+//    var MonitorValue = MonitorValue.FromJson(jsonString);
 
 namespace dev_web_api.Models
 {
@@ -15,7 +15,7 @@ namespace dev_web_api.Models
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 
-    public partial class MonitorCommandValue
+    public partial class MonitorValue
     {
         [JsonProperty("id")]
         public int Id { get; set; }
@@ -34,14 +34,14 @@ namespace dev_web_api.Models
         public string Unit { get; set; }
     }
 
-    public partial class MonitorCommandValue
+    public partial class MonitorValue
     {
-        public static List<MonitorCommandValue> FromJson(string json) => JsonConvert.DeserializeObject<List<MonitorCommandValue>>(json, dev_web_api.Models.Converter.Settings);
+        public static List<MonitorValue> FromJson(string json) => JsonConvert.DeserializeObject<List<MonitorValue>>(json, dev_web_api.Models.Converter.Settings);
     }
 
     public static class Serialize
     {
-        public static string ToJson(this List<MonitorCommandValue> self) => JsonConvert.SerializeObject(self, dev_web_api.Models.Converter.Settings);
+        public static string ToJson(this List<MonitorValue> self) => JsonConvert.SerializeObject(self, dev_web_api.Models.Converter.Settings);
     }
 
     internal static class Converter

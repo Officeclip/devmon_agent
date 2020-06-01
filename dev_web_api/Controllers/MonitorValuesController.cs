@@ -4,14 +4,14 @@ using System.Web.Http;
 
 namespace dev_web_api.Controllers
 {
-    public class MonitorCommandValuesController : ApiController
+    public class MonitorValuesController : ApiController
     {
         [HttpPost]
-        public IHttpActionResult Post([FromBody]List<MonitorCommandValue> commandValues)
+        public IHttpActionResult Post([FromBody]List<MonitorValue> commandValues)
         {
             foreach (var commandValue in commandValues)
             {
-                var monitorCommandValue = new BusinessLayer.MonitorCommandValue()
+                var MonitorValue = new BusinessLayer.MonitorValue()
                 {
                     AgentId = 1,
                     MonitorCommandId = commandValue.Id,
@@ -20,7 +20,7 @@ namespace dev_web_api.Controllers
                     Unit = commandValue.Unit,
                     ErrorMessage = commandValue.ErrorMessage
                 };
-                (new MonitorDb()).UpdateMonitorCommandValue(monitorCommandValue);
+                (new MonitorDb()).UpdateMonitorValue(MonitorValue);
             }
             return Ok();
         }

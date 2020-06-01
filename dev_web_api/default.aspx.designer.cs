@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace dev_web
+namespace dev_web_api
 {
 
 

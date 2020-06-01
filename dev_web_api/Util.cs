@@ -1,18 +1,18 @@
-﻿using dev_web.BusinessLayer;
+﻿using dev_web_api.BusinessLayer;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
 
-namespace dev_web
+namespace dev_web_api
 {
-    public class Util
+    public static class Util
     {
         public static DataTable GetMonitorTable(
                             List<Agent> agents,
                             List<MonitorCommand> monitorCommands,
-                            List<MonitorCommandValue> monitorCommandValues)
+                            List<MonitorValue> MonitorValues)
         {
             var table = new DataTable();
             //table.Columns.Add(new DataColumn()); // First column will contain agent name
@@ -26,9 +26,9 @@ namespace dev_web
             int lastAgentId = 0;
             bool firstTime = true;
             dataRow = table.NewRow();
-            foreach (var monitorCommandValue in monitorCommandValues)
+            foreach (var MonitorValue in MonitorValues)
             {
-                if (monitorCommandValue.AgentId != lastAgentId)
+                if (MonitorValue.AgentId != lastAgentId)
                 {
                     if (!firstTime)
                     {
@@ -40,10 +40,10 @@ namespace dev_web
                     {
                         firstTime = false;
                     }
-                    lastAgentId = monitorCommandValue.AgentId;
+                    lastAgentId = MonitorValue.AgentId;
                 }
                 dataRow[columnIndex++] =
-                    $"{monitorCommandValue.Value} {monitorCommandValue.Unit}";
+                    $"{MonitorValue.Value} {MonitorValue.Unit}";
             }
             table.Rows.Add(dataRow);
             // Now add one more column with the agent name in the beginning

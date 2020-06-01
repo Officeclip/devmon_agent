@@ -18,18 +18,17 @@ namespace dev_web_api.Models
     public partial class MonitorCommandValue
     {
         [JsonProperty("id")]
-        [JsonConverter(typeof(ParseStringConverter))]
-        public long Id { get; set; }
+        public int Id { get; set; }
 
         [JsonProperty("return_code")]
-        public long ReturnCode { get; set; }
+        public int ReturnCode { get; set; }
 
         [JsonProperty("error_message")]
         public string ErrorMessage { get; set; }
 
         [JsonProperty("value")]
         [JsonConverter(typeof(ParseStringConverter))]
-        public long Value { get; set; }
+        public double Value { get; set; }
 
         [JsonProperty("unit")]
         public string Unit { get; set; }
@@ -66,8 +65,8 @@ namespace dev_web_api.Models
         {
             if (reader.TokenType == JsonToken.Null) return null;
             var value = serializer.Deserialize<string>(reader);
-            long l;
-            if (Int64.TryParse(value, out l))
+            double l;
+            if (double.TryParse(value, out l))
             {
                 return l;
             }

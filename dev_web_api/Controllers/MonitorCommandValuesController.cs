@@ -10,9 +10,11 @@ namespace dev_web_api.Controllers
 {
     public class MonitorCommandValuesController : ApiController
     {
-        public void Post([FromBody]string jsonString)
+        [HttpPost]
+        public IHttpActionResult Post([FromBody]List<MonitorCommandValue> commandValues)
         {
-            var monitorCommandValues = MonitorCommandValue.FromJson(jsonString);
+            //var monitorCommandValues = MonitorCommandValue.FromJson(jsonString);
+            return Ok();
         }
     }
 }

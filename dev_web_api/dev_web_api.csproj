@@ -104,6 +104,7 @@
     <Compile Include="BusinessLayer\MonitorCommandValue.cs" />
     <Compile Include="BusinessLayer\Agent.cs" />
     <Compile Include="BusinessLayer\MonitorCommand.cs" />
+    <Compile Include="Controllers\HardwareController.cs" />
     <Compile Include="Controllers\MonitorCommandValuesController.cs" />
     <Compile Include="Models\MonitorCommandValue.cs" />
     <Compile Include="Controllers\MonitorCommandsController.cs" />

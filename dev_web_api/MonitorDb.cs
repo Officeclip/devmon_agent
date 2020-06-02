@@ -70,7 +70,7 @@ namespace dev_web_api
             SqlLiteConn.Open();
             sqlite_cmd = SqlLiteConn.CreateCommand();
             sqlite_cmd.CommandText = "SELECT * FROM MonitorValues ORDER BY agent_id, monitor_command_id";
-            var MonitorValues = new List<MonitorValue>();
+            var monitorValues = new List<MonitorValue>();
             sqlite_datareader = sqlite_cmd.ExecuteReader();
             while (sqlite_datareader.Read())
             {
@@ -83,11 +83,11 @@ namespace dev_web_api
                     ReturnCode = Convert.ToInt32(sqlite_datareader["return_code"]),
                     ErrorMessage = sqlite_datareader["error_message"].ToString()
                 };
-                MonitorValues.Add(MonitorValue);
+                monitorValues.Add(MonitorValue);
             }
             sqlite_datareader.Close();
             SqlLiteConn.Close();
-            return MonitorValues;
+            return monitorValues;
         }
 
         public void UpdateMonitorCommand(MonitorCommand monitorCommand)
@@ -165,6 +165,30 @@ namespace dev_web_api
             };
             cmd.ExecuteNonQuery();
             SqlLiteConn.Close();
+        }
+
+        public AgentResource GetAgentResource(int agentId)
+        {
+            SQLiteDataReader sqlite_datareader;
+            SQLiteCommand sqlite_cmd;
+            SqlLiteConn.Open();
+            sqlite_cmd = SqlLiteConn.CreateCommand();
+            sqlite_cmd.CommandText = 
+                $"SELECT * FROM agentResources where agent_id = {agentId}";
+            sqlite_datareader = sqlite_cmd.ExecuteReader();
+            AgentResource agentResource = null;
+            while (sqlite_datareader.Read())
+            {
+                agentResource = new AgentResource()
+                {
+                    AgentId = Convert.ToInt32(sqlite_datareader["agent_id"]),
+                    HardwareJson = sqlite_datareader["hardware_json"].ToString(),
+                    SoftwareJson = sqlite_datareader["software_json"].ToString()
+                };
+            }
+            sqlite_datareader.Close();
+            SqlLiteConn.Close();
+            return agentResource;
         }
     }
 }

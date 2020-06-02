@@ -16,6 +16,10 @@
                     Text="Edit Monitor"
                     OnClick="btnPopup_Click" />
             </div>
+            <div style="margin: 20px">
+                <asp:Button ID="btnHardware" runat="server"
+                    Text="Hardware" OnClick="btnHardware_Click" />
+            </div>
         </div>
     </form>
 </body>

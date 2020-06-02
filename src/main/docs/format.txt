@@ -58,3 +58,58 @@
 <request>
 	<key></key>
 </request>
+
+
+{
+    "cpu": {
+        "name": "Intel(R) Core(TM) i5-6300U CPU @ 2.40GHz",
+        "cores": 2,
+        "threads": 4,
+        "speed_mhz": 2496
+    },
+    "mem": {
+        "total_bytes": 8511557632
+    },
+    "net": [{
+            "name": "Wi-Fi",
+            "model": "Marvell AVASTAR Wireless-AC Network Controller",
+            "type": "Wireless80211",
+            "mac_address": "98:5F:D3:4E:BA:1B",
+            "unicast_addresses": ["fe80::8ca4:8256:6222:9bc9%4", "192.168.2.241"],
+            "dns_addresses": ["192.168.2.1"],
+            "dhcp_server_addresses": ["192.168.2.1"]
+        }
+    ],
+    "drives": [{
+            "name": "C:\\",
+            "type": "Fixed",
+            "label": "Local Disk",
+            "format": "NTFS",
+            "total_bytes": 253785796608
+        }
+    ],
+    "os": {
+        "machine_name": "SKD-SURFACE-LAP",
+        "bitness": 64,
+        "edition": "Microsoft Windows 10 Pro",
+        "version": "10.0.17763.0",
+        "installed_ui_culture": "en-US",
+        "environment_variables": {
+            "ComSpec": "C:\\Windows\\system32\\cmd.exe",
+            "TEMP": "C:\\Windows\\TEMP",
+            "PROCESSOR_ARCHITECTURE": "AMD64",
+            "OS": "Windows_NT",
+            "PROCESSOR_REVISION": "4e03",
+            "USERNAME": "SYSTEM",
+            "windir": "C:\\Windows",
+            "PROCESSOR_IDENTIFIER": "Intel64 Family 6 Model 78 Stepping 3, GenuineIntel",
+            "PSModulePath": "C:\\Program Files (x86)\\WindowsPowerShell\\Modules;C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\Modules;C:\\Program Files (x86)\\Microsoft SQL Server\\120\\Tools\\PowerShell\\Modules\\",
+            "NUMBER_OF_PROCESSORS": "4",
+            "DriverData": "C:\\Windows\\System32\\Drivers\\DriverData",
+            "PROCESSOR_LEVEL": "6",
+            "Path": "C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Windows\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\TortoiseGit\\bin;C:\\Program Files\\nodejs\\;C:\\Program Files\\Microsoft SQL Server\\130\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\Client SDK\\ODBC\\170\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\Client SDK\\ODBC\\110\\Tools\\Binn\\;C:\\Program Files (x86)\\Microsoft SQL Server\\120\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\120\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\120\\DTS\\Binn\\;C:\\Program Files (x86)\\Microsoft SQL Server\\120\\DTS\\Binn\\;C:\\Program Files\\dotnet\\;C:\\Program Files (x86)\\Microsoft SQL Server\\120\\Tools\\Binn\\ManagementStudio\\",
+            "TMP": "C:\\Windows\\TEMP",
+            "PATHEXT": ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC"
+        }
+    }
+}

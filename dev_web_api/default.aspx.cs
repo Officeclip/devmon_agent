@@ -24,7 +24,14 @@ namespace dev_web_api
         {
             string queryString = "monitor.aspx";
             string newWin = "window.open('" + queryString + "');";
-            ClientScript.RegisterStartupScript(this.GetType(), "pop", newWin, true);
+            ClientScript.RegisterStartupScript(this.GetType(), "monitor", newWin, true);
+        }
+
+        protected void btnHardware_Click(object sender, EventArgs e)
+        {
+            string queryString = "hardware.aspx";
+            string newWin = "window.open('" + queryString + "');";
+            ClientScript.RegisterStartupScript(this.GetType(), "hardware", newWin, true);
         }
     }
 }

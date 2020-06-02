@@ -11,7 +11,7 @@ namespace dev_web_api
 {
 
 
-    public partial class _default
+    public partial class hardware
     {
 
         /// <summary>
@@ -24,30 +24,12 @@ namespace dev_web_api
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// grdMonitor control.
+        /// treeView1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView grdMonitor;
-
-        /// <summary>
-        /// btnPopup control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnPopup;
-
-        /// <summary>
-        /// btnHardware control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnHardware;
+        protected global::System.Web.UI.WebControls.TreeView treeView1;
     }
 }

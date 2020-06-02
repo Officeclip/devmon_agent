@@ -98,6 +98,7 @@
   <ItemGroup>
     <Content Include="default.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="hardware.aspx" />
     <Content Include="monitor.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -120,6 +121,13 @@
     <Compile Include="Controllers\MonitorCommandsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="hardware.aspx.cs">
+      <DependentUpon>hardware.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hardware.aspx.designer.cs">
+      <DependentUpon>hardware.aspx</DependentUpon>
     </Compile>
     <Compile Include="monitor.aspx.cs">
       <DependentUpon>monitor.aspx</DependentUpon>

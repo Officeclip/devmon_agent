@@ -41,7 +41,7 @@ namespace dev_web_api
             }
 
             var @object = JObject.Parse(json);
-            AddObjectNodes(@object, "JSON", treeView.Nodes);
+            AddObjectNodes(@object, "Hardware", treeView.Nodes);
         }
 
         void AddObjectNodes(JObject @object, string name, TreeNodeCollection parent)

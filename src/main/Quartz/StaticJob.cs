@@ -33,7 +33,7 @@ namespace Geheb.DevMon.Agent.Quartz
 
             var stableDeviceInfo = stableCollector.Read();
 
-            await serverConnector.Send(await stableDeviceInfo);
+//            await serverConnector.Send(await stableDeviceInfo);
         }
         
     }

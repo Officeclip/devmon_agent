@@ -47,11 +47,14 @@ namespace Geheb.DevMon.Agent.Core
             request.AddHeader(
                         _settings["key2"] as string,
                         _settings["value2"] as string);
+            request.AddHeader(
+                        "agent-guid",
+                        _settings["agent_guid"] as string);
         }
 
         public async Task Send(StableDeviceInfo deviceInfo)
         {
-            var request = CreateRequest("/stable", deviceInfo, Method.PUT);
+            var request = CreateRequest("/hardware", deviceInfo, Method.PUT);
             await AddHeaders(request);
             var response = _restClient.Execute(request);
             if (!response.IsSuccessful)
@@ -83,7 +86,7 @@ namespace Geheb.DevMon.Agent.Core
 
         public async Task Send(List<ResultInfo> resultInfos)
         {
-            var request = CreateRequest("/result", resultInfos, Method.PUT);
+            var request = CreateRequest("/monitorValues", resultInfos, Method.PUT);
             await AddHeaders(request);
             var response = _restClient.Execute(request);
             if (!response.IsSuccessful)
@@ -100,7 +103,7 @@ namespace Geheb.DevMon.Agent.Core
 
         public async Task<IRestResponse> SendPing()
         {
-            var request = new RestRequest("/pinger", Method.GET);
+            var request = new RestRequest("/monitorCommands", Method.GET);
             await AddHeaders(request);
             return await _restClient.ExecuteAsync(request);
         }

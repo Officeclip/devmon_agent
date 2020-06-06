@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -9,6 +10,7 @@ namespace dev_web_api
 {
     public partial class _default : System.Web.UI.Page
     {
+        static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         protected void Page_Load(object sender, EventArgs e)
         {
             var monitorDb = new MonitorDb();

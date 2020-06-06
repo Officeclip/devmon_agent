@@ -46,10 +46,14 @@ namespace Geheb.DevMon.Agent.Core
                         _settings["value1"] as string);
             request.AddHeader(
                         _settings["key2"] as string,
-                        _settings["value2"] as string);
+                        _settings["value2"] as string); 
             request.AddHeader(
                         "agent-guid",
                         _settings["agent_guid"] as string);
+            request.AddHeader(
+                        "machine-name",
+                        Environment.MachineName
+                        );
         }
 
         public async Task Send(StableDeviceInfo deviceInfo)

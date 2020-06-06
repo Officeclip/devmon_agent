@@ -1,4 +1,5 @@
 ﻿using dev_web_api.BusinessLayer;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -11,6 +12,8 @@ namespace dev_web_api
     {
         private static SQLiteConnection SqlLiteConn = new SQLiteConnection(
             @"Data Source=C:\OfficeClipNew\OpenSource\devmon_agent\monitor.db");
+
+        static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
         public List<Agent> GetAgents()
         {
@@ -27,8 +30,23 @@ namespace dev_web_api
                 {
                     AgentId = Convert.ToInt32(sqlite_datareader["agent_id"]),
                     Guid = sqlite_datareader["guid"].ToString(),
-                    MachineName = sqlite_datareader["machine_name"].ToString()
+                    MachineName = sqlite_datareader["machine_name"].ToString(),
                 };
+                DateTime result;
+                var isValid = DateTime.TryParse(
+                            sqlite_datareader["registration_date"].ToString(),
+                            out result);
+                if (isValid)
+                {
+                    agent.RegistrationDate = result;
+                }
+                isValid = DateTime.TryParse(
+                            sqlite_datareader["last_queried"].ToString(),
+                            out result);
+                if (isValid)
+                {
+                    agent.LastQueried = result;
+                }
                 agents.Add(agent);
             }
             sqlite_datareader.Close();
@@ -200,30 +218,34 @@ namespace dev_web_api
         public void InsertAgent(Agent agent)
         {
             SqlLiteConn.Open();
-            var cmd = new SQLiteCommand(SqlLiteConn)
-            {
-                CommandText = $@"
+            string sqlQuery = $@"
                     -- use upsert https://stackoverflow.com/a/50718957/89256
-                    INSERT agent
+                    INSERT INTO agents
                     (
-                        agent_id,
                         guid,
                         machine_name,
                         org_id,
                         registration_date,
+                        last_queried
                     )
                     VALUES
                     (
-                        {agent.AgentId},
-                        '{agent.Guid}'
-                        '{agent.MachineName}'
-                        {agent.OrgId}
-                        '{agent.RegistrationDate:o}'
+                        '{agent.Guid}',
+                        '{agent.MachineName}',
+                         {agent.OrgId},
+                        '{agent.RegistrationDate:o}',
+                        '{agent.LastQueried:o}'
                     )
                     ON CONFLICT (guid)
-                    DO update SET (machine_name = '{agent.MachineName}'"
+                    DO update SET 
+                            machine_name = '{agent.MachineName}',
+                            last_queried = '{agent.LastQueried:o}'";
+            _logger.Info($"sqlQuery = {sqlQuery}");
+            var cmd = new SQLiteCommand(SqlLiteConn)
+            {
+                CommandText = sqlQuery
             };
-            cmd.ExecuteNonQuery();
+            cmd.ExecuteNonQuery();   
             SqlLiteConn.Close();
         }
     }

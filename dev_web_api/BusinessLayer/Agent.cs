@@ -12,5 +12,7 @@ namespace dev_web_api.BusinessLayer
         public string MachineName { get; set; }
         public int OrgId { get; set; }
         public DateTime RegistrationDate { get; set; }
+        public DateTime LastQueried { get; set; }
+        
     }
 }

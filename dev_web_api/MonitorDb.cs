@@ -119,7 +119,8 @@ namespace dev_web_api
                         return_code = {MonitorValue.ReturnCode},
                         monitor_command_id = '{MonitorValue.MonitorCommandId}',
                         unit = '{MonitorValue.Unit}',
-                        value = {MonitorValue.Value}
+                        value = {MonitorValue.Value},
+                        last_updated_date = '{DateTime.UtcNow:o}'
                     WHERE
                         monitor_command_id = {MonitorValue.MonitorCommandId}";
             cmd.ExecuteNonQuery();
@@ -151,7 +152,10 @@ namespace dev_web_api
             SqlLiteConn.Close();
         }
 
-        public void UpdateAgentResourceHardware(int agentId, string hardwareJson)
+        public void UpdateAgentResourceHardware(
+                                        int agentId, 
+                                        string hardwareJson,
+                                        string softwareJson)
         {
             SqlLiteConn.Open();
             var cmd = new SQLiteCommand(SqlLiteConn)
@@ -159,7 +163,9 @@ namespace dev_web_api
                 CommandText = $@"
                     UPDATE agentResources
                     SET 
-                        hardware_json = '{hardwareJson}'                     
+                        hardware_json = '{hardwareJson}',
+                        software_json = '{softwareJson}',
+                        last_updated_date = '{DateTime.UtcNow:o}'                     
                     WHERE
                         agent_id = {agentId}"
             };
@@ -189,6 +195,36 @@ namespace dev_web_api
             sqlite_datareader.Close();
             SqlLiteConn.Close();
             return agentResource;
+        }
+
+        public void InsertAgent(Agent agent)
+        {
+            SqlLiteConn.Open();
+            var cmd = new SQLiteCommand(SqlLiteConn)
+            {
+                CommandText = $@"
+                    -- use upsert https://stackoverflow.com/a/50718957/89256
+                    INSERT agent
+                    (
+                        agent_id,
+                        guid,
+                        machine_name,
+                        org_id,
+                        registration_date,
+                    )
+                    VALUES
+                    (
+                        {agent.AgentId},
+                        '{agent.Guid}'
+                        '{agent.MachineName}'
+                        {agent.OrgId}
+                        '{agent.RegistrationDate:o}'
+                    )
+                    ON CONFLICT (guid)
+                    DO update SET (machine_name = '{agent.MachineName}'"
+            };
+            cmd.ExecuteNonQuery();
+            SqlLiteConn.Close();
         }
     }
 }

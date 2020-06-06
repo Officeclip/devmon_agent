@@ -15,7 +15,7 @@ namespace dev_web_api.Controllers
         {
             var data = req.Content.ReadAsStringAsync().Result;
             data = Regex.Replace(data, @"\s+", " ", RegexOptions.Compiled);
-            (new MonitorDb()).UpdateAgentResourceHardware(1, data);
+            (new MonitorDb()).UpdateAgentResourceHardware(1, data, string.Empty);
             return Ok();
         }
     }

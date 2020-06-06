@@ -10,5 +10,7 @@ namespace dev_web_api.BusinessLayer
         public int AgentId { get; set; }
         public string Guid { get; set; }
         public string MachineName { get; set; }
+        public int OrgId { get; set; }
+        public DateTime RegistrationDate { get; set; }
     }
 }

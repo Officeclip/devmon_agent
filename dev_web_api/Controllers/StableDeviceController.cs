@@ -10,7 +10,7 @@ using System.Web.Http;
 
 namespace dev_web_api.Controllers
 {
-    public class HardwareController : ApiController
+    public class StableDeviceController : ApiController
     {
         static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         MonitorDb monitorDb = new MonitorDb();
@@ -18,10 +18,10 @@ namespace dev_web_api.Controllers
         public IHttpActionResult Post(HttpRequestMessage req)
         {
             _logger.Info("-----------------------------------------");
-            _logger.Info("HardwareController...");
+            _logger.Info("StableDeviceController...");
             var data = req.Content.ReadAsStringAsync().Result;
             data = Regex.Replace(data, @"\s+", " ", RegexOptions.Compiled);
-            _logger.Info("Hardware Results...");
+            _logger.Info("StableDevice Results...");
             _logger.Info(data);
             var headers = Request.Headers;
             var guid = headers.GetValues("agent-guid").First();
@@ -29,8 +29,7 @@ namespace dev_web_api.Controllers
             var agentResource = new AgentResource()
             {
                 AgentId = agent.AgentId,
-                HardwareJson = data,
-                SoftwareJson = string.Empty,
+                StableDeviceJson = data,
                 LastUpdatedDate = DateTime.UtcNow
             };
             monitorDb.UpsertAgentResource(agentResource);

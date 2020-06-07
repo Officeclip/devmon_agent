@@ -50,6 +50,7 @@ namespace Geheb.DevMon.Agent.Quartz
             {
                 await serverConnector.Send(pingResults);
             }
+            await Console.Out.WriteLineAsync("PingerJob is finished.");
         }
 
         private async Task<ResultInfo> RunTask(CommandInfo commandInfo)

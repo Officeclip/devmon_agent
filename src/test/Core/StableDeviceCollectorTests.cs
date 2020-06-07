@@ -19,7 +19,8 @@ namespace Geheb.DevMon.Agent.Test.Core
                 new Mock<IMemoryCollector>().Object,
                 new Mock<INetworkCollector>().Object,
                 new Mock<IDriveCollector>().Object,
-                new Mock<IOsCollector>().Object);
+                new Mock<IOsCollector>().Object,
+                new Mock<ISoftwareCollector>().Object);
 
             var info = await collector.Read();
             Assert.Equal(5, info.GetPublicPropertyCount());

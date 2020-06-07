@@ -10,19 +10,23 @@ namespace Geheb.DevMon.Agent.Core
         private readonly IDriveCollector _driveCollector;
         private readonly INetworkCollector _networkCollector;
         private readonly IOsCollector _osCollector;
+        private readonly ISoftwareCollector _softwareCollector;
 
         public StableDeviceCollector(
             ICpuCollector cpuCollector,
             IMemoryCollector memoryCollector,
             INetworkCollector networkCollector,
             IDriveCollector driveCollector,
-            IOsCollector osCollector)
+            IOsCollector osCollector,
+            ISoftwareCollector softwareCollector)
         {
             _cpuCollector = cpuCollector;
             _memoryCollector = memoryCollector;
             _driveCollector = driveCollector;
             _networkCollector = networkCollector;
             _osCollector = osCollector;
+            _softwareCollector = softwareCollector;
+
         }
 
         public async Task<StableDeviceInfo> Read()
@@ -33,7 +37,8 @@ namespace Geheb.DevMon.Agent.Core
                 Mem = await _memoryCollector.ReadMemoryInfo(),
                 Net = await _networkCollector.ReadNetworkInfo(),
                 Drives = await _driveCollector.ReadDriveInfo(),
-                Os = await _osCollector.ReadOsInfo()
+                Os = await _osCollector.ReadOsInfo(),
+                Softwares = await _softwareCollector.ReadSoftware()
             };
         }
     }

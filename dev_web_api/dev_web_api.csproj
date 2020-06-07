@@ -120,7 +120,7 @@
     <Compile Include="BusinessLayer\MonitorValue.cs" />
     <Compile Include="BusinessLayer\Agent.cs" />
     <Compile Include="BusinessLayer\MonitorCommand.cs" />
-    <Compile Include="Controllers\HardwareController.cs" />
+    <Compile Include="Controllers\StableDeviceController.cs" />
     <Compile Include="Controllers\MonitorValuesController.cs" />
     <Compile Include="default.aspx.cs">
       <DependentUpon>default.aspx</DependentUpon>

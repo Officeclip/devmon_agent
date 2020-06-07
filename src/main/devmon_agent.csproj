@@ -82,10 +82,12 @@
     <Compile Include="Core\Base64Url.cs" />
     <Compile Include="Core\Bootstrap.cs" />
     <Compile Include="Core\Cancellation.cs" />
+    <Compile Include="Core\SoftwareCollector.cs" />
     <Compile Include="Core\CpuCollector.cs" />
     <Compile Include="Core\DriveCollector.cs" />
     <Compile Include="Core\IAppSettings.cs" />
     <Compile Include="Core\ICancellation.cs" />
+    <Compile Include="Core\ISoftwareCollector.cs" />
     <Compile Include="Core\ICpuCollector.cs" />
     <Compile Include="Core\IDriveCollector.cs" />
     <Compile Include="Core\IJsonSerializer.cs" />
@@ -109,6 +111,7 @@
     <Compile Include="Models\MemoryUtilization.cs" />
     <Compile Include="Models\NetworkUtilization.cs" />
     <Compile Include="Models\OsUtilization.cs" />
+    <Compile Include="Models\SoftwareInfo.cs" />
     <Compile Include="Models\StableDeviceInfo.cs" />
     <Compile Include="Models\DriveInfo.cs" />
     <Compile Include="Models\MemoryInfo.cs" />

@@ -7,5 +7,6 @@
         public NetworkInfo[] Net { get; set; }
         public DriveInfo[] Drives { get; set; }
         public OsInfo Os { get; set; }
+        public SoftwareInfo[] Softwares { get; set; }
     }
 }

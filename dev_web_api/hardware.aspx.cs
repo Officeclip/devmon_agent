@@ -25,7 +25,7 @@ namespace dev_web_api
         private void LoadData()
         {
             var agentResource = monitorDb.GetAgentResource(1);
-            LoadJsonToTreeView(treeView1, agentResource.HardwareJson);
+            LoadJsonToTreeView(treeView1, agentResource.StableDeviceJson);
         }
 
         /// <summary>

@@ -58,7 +58,7 @@ namespace Geheb.DevMon.Agent.Core
 
         public async Task Send(StableDeviceInfo deviceInfo)
         {
-            var request = CreateRequest("/hardware", deviceInfo, Method.POST);
+            var request = CreateRequest("/stableDevice", deviceInfo, Method.POST);
             await AddHeaders(request);
             var response = _restClient.Execute(request);
             if (!response.IsSuccessful)

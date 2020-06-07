@@ -240,9 +240,9 @@ namespace dev_web_api
                     INSERT INTO monitorValues
                     ( 
                         agent_id,
+                        monitor_command_id,
                         error_message,
                         return_code,
-                        monitor_command_id,
                         unit,
                         value
                     )
@@ -434,21 +434,18 @@ namespace dev_web_api
                     INSERT INTO agentResources
                     (
                         agent_id,
-                        hardware_json,
-                        software_json,
+                        stable_device_json,
                         last_updated_date
                     )
                     VALUES
                     (
                         {agentResource.AgentId},
-                        '{agentResource.HardwareJson}',
-                        '{agentResource.SoftwareJson}',
+                        '{agentResource.StableDeviceJson}',
                         '{agentResource.LastUpdatedDate}'
                     )
                     ON CONFLICT (agent_id)
                     DO update SET 
-                            hardware_json = '{agentResource.HardwareJson}',
-                            software_json = '{agentResource.SoftwareJson}',
+                            stable_device_json = '{agentResource.StableDeviceJson}',
                             last_updated_date = '{agentResource.LastUpdatedDate}'";
 
             var cmd = new SQLiteCommand(sqlLiteConn)
@@ -475,8 +472,7 @@ namespace dev_web_api
                 agentResource = new AgentResource()
                 {
                     AgentId = Convert.ToInt32(sqlite_datareader["agent_id"]),
-                    HardwareJson = sqlite_datareader["hardware_json"].ToString(),
-                    SoftwareJson = sqlite_datareader["software_json"].ToString()
+                    StableDeviceJson = sqlite_datareader["stable_device_json"].ToString(),
                 };
                 DateTime result;
                 var isValid = DateTime.TryParse(

@@ -29,12 +29,13 @@ namespace Geheb.DevMon.Agent.Quartz
                                     new MemoryCollector(null),
                                     new NetworkCollector(null),
                                     new DriveCollector(null),
-                                    new OsCollector(null));
+                                    new OsCollector(null),
+                                    new SoftwareCollector(null));
 
             var stableDeviceInfo = stableCollector.Read();
 
             await serverConnector.Send(await stableDeviceInfo);
         }
-        
+
     }
 }

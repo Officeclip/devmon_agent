@@ -17,6 +17,7 @@ namespace dev_web_api.Controllers
         /// <returns></returns>
         public IEnumerable<MonitorCommand> GetAllMonitorCommands()
         {
+            _logger.Info("-----------------------------------------");
             _logger.Info("Method GetAllMonitorCommands()...");
 
             // Check to make sure if the org-id and the user-id matches

@@ -17,6 +17,8 @@ namespace dev_web_api.Controllers
         [HttpPost]
         public IHttpActionResult Post(HttpRequestMessage req)
         {
+            _logger.Info("-----------------------------------------");
+            _logger.Info("HardwareController...");
             var data = req.Content.ReadAsStringAsync().Result;
             data = Regex.Replace(data, @"\s+", " ", RegexOptions.Compiled);
             _logger.Info("Hardware Results...");

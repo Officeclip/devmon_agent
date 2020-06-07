@@ -13,6 +13,7 @@ namespace dev_web_api.Controllers
         [HttpPost]
         public IHttpActionResult Post([FromBody]List<MonitorValue> commandValues)
         {
+            _logger.Info("-----------------------------------------");
             _logger.Info("MonitorValuesController...");
             _logger.Info(ObjectDumper.Dump(commandValues));
             var headers = Request.Headers;

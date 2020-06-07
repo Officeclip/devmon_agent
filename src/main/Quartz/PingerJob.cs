@@ -27,7 +27,8 @@ namespace Geheb.DevMon.Agent.Quartz
     {
         static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private static HttpClient sHttpClient = new HttpClient(); //https://aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/
-
+        private const int OneKb = 1024;
+        private const int OneGb = 1073741824;
         public async Task Execute(IJobExecutionContext context)
 
         {
@@ -80,8 +81,8 @@ namespace Geheb.DevMon.Agent.Quartz
             var memoryUtilization = await memoryCollector.ReadMemoryUtilization();
             var pingResultInfo = new ResultInfo(
                                        commandInfo.MonitorCommandId,
-                                       memoryUtilization.FreeBytes.ToString(),
-                                       "bytes");
+                                       (memoryUtilization.FreeBytes/OneGb).ToString("N1"),
+                                       "gb");
             _logger.Debug("Ending MemTask");
             return pingResultInfo;
         }
@@ -123,18 +124,22 @@ namespace Geheb.DevMon.Agent.Quartz
             var pingResultInfo = new ResultInfo()
             {
                 Id = commandInfo.MonitorCommandId,
-                Unit = "bytes"
+                Unit = "gb"
             };
 
             foreach (var driveUtilization in driveUtilizations)
             {
                 if (commandInfo.Arg1 == driveUtilization.Name)
                 {
-                    pingResultInfo.Value = driveUtilization.FreeBytes.ToString();
+                    pingResultInfo.Value =
+                        driveUtilization.FreeBytes == null
+                        ? "-1"
+                        :((ulong)(driveUtilization.FreeBytes/OneGb)).ToString("N1");
                     _logger.Debug("Ending DriveTask");
                     return pingResultInfo;
                 }
             }
+            pingResultInfo.Value = "-1";
             pingResultInfo.IsSuccess = false;
             pingResultInfo.ReturnCode = -1;
             pingResultInfo.ErrorMessage = "Name does not match";
@@ -151,7 +156,7 @@ namespace Geheb.DevMon.Agent.Quartz
             var pingResultInfo = new ResultInfo()
             {
                 Id = commandInfo.MonitorCommandId,
-                Unit = "bytes/sec"
+                Unit = "kbytes/sec"
             };
 
             foreach (var networkUtilization in networkUtilizations)
@@ -161,16 +166,17 @@ namespace Geheb.DevMon.Agent.Quartz
                     switch (commandInfo.Arg2)
                     {
                         case "ReceivedBytesPerSeconds":
-                            pingResultInfo.Value = networkUtilization.ReceivedBytesPerSecond.ToString();
+                            pingResultInfo.Value = (networkUtilization.ReceivedBytesPerSecond/OneKb).ToString("N1");
                             break;
                         case "SentBytesPerSecond":
-                            pingResultInfo.Value = networkUtilization.SentBytesPerSecond.ToString();
+                            pingResultInfo.Value = (networkUtilization.SentBytesPerSecond/OneKb).ToString("N1");
                             break;
                     }
                     _logger.Debug("Ending NetworkTask");
                     return pingResultInfo;
                 }
             }
+            pingResultInfo.Value = "-1";
             pingResultInfo.IsSuccess = false;
             pingResultInfo.ReturnCode = -1;
             pingResultInfo.ErrorMessage = "Name does not match";

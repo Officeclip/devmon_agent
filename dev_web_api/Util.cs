@@ -25,7 +25,7 @@ namespace dev_web_api
             return null;
         }
 
-        private static string GetBackgroundCellClass(
+        private static string GetBackgroundCellColor(
                                 MonitorValue monitorValue,
                                 List<MonitorCommand> monitorCommands,
                                 List<MonitorCommandLimit> monitorCommandLimits)
@@ -39,22 +39,22 @@ namespace dev_web_api
                     {
                         if (monitorValue.Value > monitorCommandLimit.ErrorLimit)
                         {
-                            return "warningLimit";
+                            return "lightcoral";
                         }
                         if (monitorValue.Value > monitorCommandLimit.WarningLimit)
                         {
-                            return "ErrorLimit";
+                            return "lightgoldenrodyellow";
                         }
                     }
                     else
                     {
                         if (monitorValue.Value < monitorCommandLimit.ErrorLimit)
                         {
-                            return "warningLimit";
+                            return "lightcoral";
                         }
                         if (monitorValue.Value < monitorCommandLimit.WarningLimit)
                         {
-                            return "ErrorLimit";
+                            return "lightgoldenrodyellow";
                         }
                     }
                 }
@@ -81,17 +81,15 @@ namespace dev_web_api
                 row.Cells.Add(cell);
             }
 
-            //DataRow dataRow;
-            //int columnIndex = 0;
             int lastAgentId = 0;
             bool firstTime = true;
             row = new HtmlTableRow();
             monitorTable.Rows.Add(row);
             cell = new HtmlTableCell();
             row.Cells.Add(cell);
-            foreach (var MonitorValue in monitorValues)
+            foreach (var monitorValue in monitorValues)
             {
-                if (MonitorValue.AgentId != lastAgentId)
+                if (monitorValue.AgentId != lastAgentId)
                 {
                     if (!firstTime)
                     {
@@ -105,10 +103,14 @@ namespace dev_web_api
                     {
                         firstTime = false;
                     }
-                    lastAgentId = MonitorValue.AgentId;
+                    lastAgentId = monitorValue.AgentId;
                 }
                 cell = new HtmlTableCell();
-                cell.InnerHtml = $"{MonitorValue.Value} {MonitorValue.Unit}";
+                cell.BgColor = GetBackgroundCellColor(
+                                                monitorValue,
+                                                monitorCommands,
+                                                monitorCommandLimits);
+                cell.InnerHtml = $"{monitorValue.Value} {monitorValue.Unit}";
                 row.Cells.Add(cell);
             }
             for (int i = 0; i < agents.Count; i++)

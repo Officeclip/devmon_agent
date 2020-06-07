@@ -4,11 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-<%--    <meta http-equiv="refresh" content="30">--%>
+    <meta http-equiv="refresh" content="30">
     <title></title>
     <style>
         table, th, td { 
                 text-align:center; 
+                border: 1px solid #CCC;
             } 
             th, td { 
                 padding: 5px; 
@@ -38,7 +39,7 @@
             <div>
                 Last Updated: <%= DateTime.Now %>
             </div>
-            <table id="tblMonitor" runat="server" />
+            <table id="tblMonitor" runat="server"  />
             <div style="margin: 20px">
                 <asp:Button ID="btnPopup" runat="server"
                     Text="Edit Monitor"

@@ -117,6 +117,7 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="BusinessLayer\AgentResource.cs" />
+    <Compile Include="BusinessLayer\MonitorCommandLimit.cs" />
     <Compile Include="BusinessLayer\MonitorValue.cs" />
     <Compile Include="BusinessLayer\Agent.cs" />
     <Compile Include="BusinessLayer\MonitorCommand.cs" />

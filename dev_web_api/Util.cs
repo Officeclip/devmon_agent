@@ -4,37 +4,102 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
 
 namespace dev_web_api
 {
     public static class Util
     {
-        public static DataTable GetMonitorTable(
-                            List<Agent> agents,
-                            List<MonitorCommand> monitorCommands,
-                            List<MonitorValue> MonitorValues)
+        private static string GetType(
+                            MonitorValue monitorValue,
+                            List<MonitorCommand> monitorCommands)
         {
-            var table = new DataTable();
-            //table.Columns.Add(new DataColumn()); // First column will contain agent name
             foreach (var monitorCommand in monitorCommands)
             {
-                var column = new DataColumn(monitorCommand.Name);
-                table.Columns.Add(column);
+                if (monitorCommand.MonitorCommandId == monitorValue.MonitorCommandId)
+                {
+                    return monitorCommand.Type;
+                }
             }
-            DataRow dataRow;
-            int columnIndex = 0;
+            return null;
+        }
+
+        private static string GetBackgroundCellClass(
+                                MonitorValue monitorValue,
+                                List<MonitorCommand> monitorCommands,
+                                List<MonitorCommandLimit> monitorCommandLimits)
+        {
+            var value = monitorValue.Value;
+            foreach (var monitorCommandLimit in monitorCommandLimits)
+            {
+                if (GetType(monitorValue, monitorCommands) == monitorCommandLimit.Type)
+                {
+                    if (!monitorCommandLimit.IsLowLimit)
+                    {
+                        if (monitorValue.Value > monitorCommandLimit.ErrorLimit)
+                        {
+                            return "warningLimit";
+                        }
+                        if (monitorValue.Value > monitorCommandLimit.WarningLimit)
+                        {
+                            return "ErrorLimit";
+                        }
+                    }
+                    else
+                    {
+                        if (monitorValue.Value < monitorCommandLimit.ErrorLimit)
+                        {
+                            return "warningLimit";
+                        }
+                        if (monitorValue.Value < monitorCommandLimit.WarningLimit)
+                        {
+                            return "ErrorLimit";
+                        }
+                    }
+                }
+            }
+            return string.Empty;
+        }
+
+        public static void SetupMonitorTable(
+                                    ref HtmlTable monitorTable,
+                                    List<Agent> agents,
+                                    List<MonitorCommand> monitorCommands,
+                                    List<MonitorValue> monitorValues,
+                                    List<MonitorCommandLimit> monitorCommandLimits)
+        {
+            // Setup the Header
+            var row = new HtmlTableRow();
+            monitorTable.Rows.Add(row);
+            var cell = new HtmlTableCell("th");
+            row.Cells.Add(cell);
+            foreach (var monitorCommand in monitorCommands)
+            {
+                cell = new HtmlTableCell("th");
+                cell.InnerHtml = monitorCommand.Name;
+                row.Cells.Add(cell);
+            }
+
+            //DataRow dataRow;
+            //int columnIndex = 0;
             int lastAgentId = 0;
             bool firstTime = true;
-            dataRow = table.NewRow();
-            foreach (var MonitorValue in MonitorValues)
+            row = new HtmlTableRow();
+            monitorTable.Rows.Add(row);
+            cell = new HtmlTableCell();
+            row.Cells.Add(cell);
+            foreach (var MonitorValue in monitorValues)
             {
                 if (MonitorValue.AgentId != lastAgentId)
                 {
                     if (!firstTime)
                     {
-                        table.Rows.Add(dataRow);
-                        dataRow = table.NewRow();
-                        columnIndex = 0;
+                        monitorTable.Rows.Add(row);
+                        row = new HtmlTableRow();
+                        monitorTable.Rows.Add(row);
+                        cell = new HtmlTableCell();
+                        row.Cells.Add(cell);
                     }
                     else
                     {
@@ -42,19 +107,15 @@ namespace dev_web_api
                     }
                     lastAgentId = MonitorValue.AgentId;
                 }
-                dataRow[columnIndex++] =
-                    $"{MonitorValue.Value} {MonitorValue.Unit}";
+                cell = new HtmlTableCell();
+                cell.InnerHtml = $"{MonitorValue.Value} {MonitorValue.Unit}";
+                row.Cells.Add(cell);
             }
-            table.Rows.Add(dataRow);
-            // Now add one more column with the agent name in the beginning
-            var agentColumn = new DataColumn();
-            table.Columns.Add(agentColumn);
-            agentColumn.SetOrdinal(0);
-            for (int i=0; i<agents.Count; i++)
+            for (int i = 0; i < agents.Count; i++)
             {
-                table.Rows[i][0] = agents[i].MachineName;
+                monitorTable.Rows[i+1].Cells[0].InnerHtml = agents[i].MachineName;
             }
-            return table;
         }
+
     }
 }

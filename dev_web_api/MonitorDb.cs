@@ -78,6 +78,45 @@ namespace dev_web_api
             return agents;
         }
 
+        public List<MonitorCommandLimit> GetMonitorCommandLimits()
+        {
+            SQLiteDataReader sqlite_datareader;
+            SQLiteCommand sqlite_cmd;
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            sqlite_cmd = sqlLiteConn.CreateCommand();
+            sqlite_cmd.CommandText = "SELECT * FROM monitorCommandLimits";
+            var monitorCommandLimits = new List<MonitorCommandLimit>();
+            sqlite_datareader = sqlite_cmd.ExecuteReader();
+            try
+            {
+                while (sqlite_datareader.Read())
+                {
+                    var monitorCommandLimit = new MonitorCommandLimit()
+                    {
+                        Type = sqlite_datareader["type"].ToString(),
+                        WarningLimit = Convert.ToInt32(sqlite_datareader["warning_limit"]),
+                        ErrorLimit = Convert.ToInt32(sqlite_datareader["error_limit"]),
+                        IsLowLimit = Convert.ToBoolean(sqlite_datareader["is_low_limit"])
+                    };
+                    monitorCommandLimits.Add(monitorCommandLimit);
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                _logger.Error($"Database Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"General Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlite_datareader.Close();
+                sqlLiteConn.Close();
+            }
+            return monitorCommandLimits;
+        }
         public Agent GetAgentByGuid(string guid)
         {
             _logger.Info("GetAgentByGuid(...)");

@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Web;
 
-namespace dev_web_api
+namespace Geheb.DevMon.Agent
 {
     /// <summary>
     /// Gotten from: https://stackoverflow.com/a/10478008/89256

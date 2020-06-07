@@ -20,6 +20,9 @@ namespace dev_web_api.Models
         [JsonProperty("id")]
         public int Id { get; set; }
 
+        [JsonProperty("is_success")]
+        public bool IsSuccess { get; set; }
+
         [JsonProperty("return_code")]
         public int ReturnCode { get; set; }
 

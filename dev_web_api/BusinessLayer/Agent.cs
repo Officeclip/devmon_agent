@@ -13,6 +13,7 @@ namespace dev_web_api.BusinessLayer
         public int OrgId { get; set; }
         public DateTime RegistrationDate { get; set; }
         public DateTime LastQueried { get; set; }
+        public DateTime LastReplyReceived { get; set; }
         
     }
 }

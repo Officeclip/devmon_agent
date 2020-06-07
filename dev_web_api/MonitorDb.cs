@@ -2,6 +2,7 @@
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
 using System.Linq;
 using System.Web;
@@ -10,8 +11,9 @@ namespace dev_web_api
 {
     public class MonitorDb
     {
-        private static SQLiteConnection SqlLiteConn = new SQLiteConnection(
-            @"Data Source=C:\OfficeClipNew\OpenSource\devmon_agent\monitor.db");
+        private const string ConnectionString =
+            @"Data Source=C:\OfficeClipNew\OpenSource\devmon_agent\monitor.db";
+        //private static SQLiteConnection sqlLiteConn = new SQLiteConnection(ConnectionString);
 
         static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
@@ -19,47 +21,133 @@ namespace dev_web_api
         {
             SQLiteDataReader sqlite_datareader;
             SQLiteCommand sqlite_cmd;
-            SqlLiteConn.Open();
-            sqlite_cmd = SqlLiteConn.CreateCommand();
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            sqlite_cmd = sqlLiteConn.CreateCommand();
             sqlite_cmd.CommandText = "SELECT * FROM agents ORDER By agent_id";
             var agents = new List<Agent>();
             sqlite_datareader = sqlite_cmd.ExecuteReader();
-            while (sqlite_datareader.Read())
+            try
             {
-                var agent = new Agent()
+                while (sqlite_datareader.Read())
                 {
-                    AgentId = Convert.ToInt32(sqlite_datareader["agent_id"]),
-                    Guid = sqlite_datareader["guid"].ToString(),
-                    MachineName = sqlite_datareader["machine_name"].ToString(),
-                };
-                DateTime result;
-                var isValid = DateTime.TryParse(
-                            sqlite_datareader["registration_date"].ToString(),
-                            out result);
-                if (isValid)
-                {
-                    agent.RegistrationDate = result;
+                    var agent = new Agent()
+                    {
+                        AgentId = Convert.ToInt32(sqlite_datareader["agent_id"]),
+                        Guid = sqlite_datareader["guid"].ToString(),
+                        MachineName = sqlite_datareader["machine_name"].ToString(),
+                    };
+                    DateTime result;
+                    var isValid = DateTime.TryParse(
+                                sqlite_datareader["registration_date"].ToString(),
+                                out result);
+                    if (isValid)
+                    {
+                        agent.RegistrationDate = result;
+                    }
+                    isValid = DateTime.TryParse(
+                                sqlite_datareader["last_queried"].ToString(),
+                                out result);
+                    if (isValid)
+                    {
+                        agent.LastQueried = result;
+                    }
+                    isValid = DateTime.TryParse(
+                                sqlite_datareader["last_reply_received"].ToString(),
+                                out result);
+                    if (isValid)
+                    {
+                        agent.LastReplyReceived = result;
+                    }
+                    agents.Add(agent);
                 }
-                isValid = DateTime.TryParse(
-                            sqlite_datareader["last_queried"].ToString(),
-                            out result);
-                if (isValid)
-                {
-                    agent.LastQueried = result;
-                }
-                agents.Add(agent);
             }
-            sqlite_datareader.Close();
-            SqlLiteConn.Close();
+            catch (SQLiteException ex)
+            {
+                _logger.Error($"Database Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"General Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlite_datareader.Close();
+                sqlLiteConn.Close();
+            }
             return agents;
+        }
+
+        public Agent GetAgentByGuid(string guid)
+        {
+            _logger.Info("GetAgentByGuid(...)");
+
+            SQLiteDataReader sqlite_datareader;
+            SQLiteCommand sqlite_cmd;
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+
+            sqlLiteConn.Open();
+            sqlite_cmd = sqlLiteConn.CreateCommand();
+            sqlite_cmd.CommandText = $"SELECT * FROM agents WHERE guid = '{guid}'";
+            sqlite_datareader = sqlite_cmd.ExecuteReader();
+            Agent agent = null;
+            try
+            {
+                while (sqlite_datareader.Read())
+                {
+                    agent = new Agent()
+                    {
+                        AgentId = Convert.ToInt32(sqlite_datareader["agent_id"]),
+                        Guid = sqlite_datareader["guid"].ToString(),
+                        MachineName = sqlite_datareader["machine_name"].ToString(),
+                    };
+                    DateTime result;
+                    var isValid = DateTime.TryParse(
+                                sqlite_datareader["registration_date"].ToString(),
+                                out result);
+                    if (isValid)
+                    {
+                        agent.RegistrationDate = result;
+                    }
+                    isValid = DateTime.TryParse(
+                                sqlite_datareader["last_queried"].ToString(),
+                                out result);
+                    if (isValid)
+                    {
+                        agent.LastQueried = result;
+                    }
+                    isValid = DateTime.TryParse(
+                                sqlite_datareader["last_reply_received"].ToString(),
+                                out result);
+                    if (isValid)
+                    {
+                        agent.LastReplyReceived = result;
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                _logger.Error($"Database Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"General Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlite_datareader.Close();
+                sqlLiteConn.Close();
+            }
+            return agent;
         }
 
         public List<MonitorCommand> GetMonitorCommands()
         {
             SQLiteDataReader sqlite_datareader;
             SQLiteCommand sqlite_cmd;
-            SqlLiteConn.Open();
-            sqlite_cmd = SqlLiteConn.CreateCommand();
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            sqlite_cmd = sqlLiteConn.CreateCommand();
             sqlite_cmd.CommandText = "SELECT * FROM monitorCommands order by monitor_command_id";
             var monitorCommands = new List<MonitorCommand>();
             sqlite_datareader = sqlite_cmd.ExecuteReader();
@@ -76,7 +164,7 @@ namespace dev_web_api
                 monitorCommands.Add(monitorCommand);
             }
             sqlite_datareader.Close();
-            SqlLiteConn.Close();
+            sqlLiteConn.Close();
 
             return monitorCommands;
         }
@@ -85,8 +173,9 @@ namespace dev_web_api
         {
             SQLiteDataReader sqlite_datareader;
             SQLiteCommand sqlite_cmd;
-            SqlLiteConn.Open();
-            sqlite_cmd = SqlLiteConn.CreateCommand();
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            sqlite_cmd = sqlLiteConn.CreateCommand();
             sqlite_cmd.CommandText = "SELECT * FROM MonitorValues ORDER BY agent_id, monitor_command_id";
             var monitorValues = new List<MonitorValue>();
             sqlite_datareader = sqlite_cmd.ExecuteReader();
@@ -104,99 +193,279 @@ namespace dev_web_api
                 monitorValues.Add(MonitorValue);
             }
             sqlite_datareader.Close();
-            SqlLiteConn.Close();
+            sqlLiteConn.Close();
             return monitorValues;
         }
 
-        public void UpdateMonitorCommand(MonitorCommand monitorCommand)
+        public void UpsertCommand(MonitorCommand monitorCommand)
         {
-            SqlLiteConn.Open();
-            var cmd = new SQLiteCommand(SqlLiteConn);
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn);
             cmd.CommandText = $@"
-                    UPDATE monitorCommands
-                    SET 
-                        name = '{monitorCommand.Name}',
-                        type = '{monitorCommand.Type}',
-                        arg1 = '{monitorCommand.Arg1}',
-                        arg2 = '{monitorCommand.Arg2}'
-                    WHERE
-                        monitor_command_id = {monitorCommand.MonitorCommandId}";
+                    INSERT INTO monitorCommands
+                    (
+                        monitor_command_id,
+                        name,
+                        type,
+                        arg1,
+                        arg2
+                    )
+                    VALUES
+                    (
+                        {monitorCommand.MonitorCommandId},
+                        '{monitorCommand.Name}',
+                        '{monitorCommand.Type}',
+                        '{monitorCommand.Arg1}'
+                        '{monitorCommand.Arg2}'
+                    )
+                    ON CONFLICT (monitor_command_id)
+                    DO update SET 
+                            name = ''{monitorCommand.Name}',
+                            type = '{monitorCommand.Type}',
+                            arg1 = '{monitorCommand.Arg1}',
+                            arg2 = '{monitorCommand.Arg2}'"; 
             cmd.ExecuteNonQuery();
-            SqlLiteConn.Close();
+            sqlLiteConn.Close();
         }
 
-        public void UpdateMonitorValue(MonitorValue MonitorValue)
+        public void InsertMonitorValue(MonitorValue monitorValue)
         {
-            SqlLiteConn.Open();
-            var cmd = new SQLiteCommand(SqlLiteConn);
+            _logger.Info("Method InsertMonitorValue(...)");
+            _logger.Info(ObjectDumper.Dump(monitorValue));
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn);
             cmd.CommandText = $@"
-                    UPDATE monitorCommands
-                    SET 
-                        agent_id = {MonitorValue.AgentId},
-                        error_message = '{MonitorValue.ErrorMessage}',
-                        return_code = {MonitorValue.ReturnCode},
-                        monitor_command_id = '{MonitorValue.MonitorCommandId}',
-                        unit = '{MonitorValue.Unit}',
-                        value = {MonitorValue.Value},
-                        last_updated_date = '{DateTime.UtcNow:o}'
+                    INSERT INTO monitorValues
+                    ( 
+                        agent_id,
+                        error_message,
+                        return_code,
+                        monitor_command_id,
+                        unit,
+                        value
+                    )
+                    VALUES
+                    (
+                        {monitorValue.AgentId},
+                        '{monitorValue.MonitorCommandId}',
+                        '{monitorValue.ErrorMessage}',
+                        {monitorValue.ReturnCode},
+                        '{monitorValue.Unit}',
+                        {monitorValue.Value}
+                    )";
+            _logger.Info(cmd.CommandText);
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (SQLiteException ex)
+            {
+                _logger.Error($"Database Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"General Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlLiteConn.Close();
+            }
+        }
+
+        public void UpdateLastReceivedReply(int agentId)
+        {
+            _logger.Info("Method UpdateLastReceivedReply(...)");
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn);
+            cmd.CommandText = $@"
+                    update agents SET 
+                        last_reply_received = '{DateTime.UtcNow:o}'
                     WHERE
-                        monitor_command_id = {MonitorValue.MonitorCommandId}";
-            cmd.ExecuteNonQuery();
-            SqlLiteConn.Close();
+                        agent_id = {agentId}";
+            _logger.Info(cmd.CommandText);
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (SQLiteException ex)
+            {
+                _logger.Error($"Database Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"General Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlLiteConn.Close();
+            }
+        }
+
+        public void UpDateMonitorValue(MonitorValue monitorValue)
+        {
+            _logger.Info("Method UpDateMonitorValue(...)");
+            _logger.Info(ObjectDumper.Dump(monitorValue));
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn);
+            cmd.CommandText = $@"
+                    update monitorValues SET 
+                        error_message = '{monitorValue.ErrorMessage}',
+                        return_code = {monitorValue.ReturnCode},
+                        unit = '{monitorValue.Unit}',
+                        value = {monitorValue.Value}
+                    WHERE
+                        agent_id = {monitorValue.AgentId} AND
+                        monitor_command_id = {monitorValue.MonitorCommandId}";
+            _logger.Info(cmd.CommandText);
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (SQLiteException ex)
+            {
+                _logger.Error($"Database Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"General Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlLiteConn.Close();
+            }
+        }
+
+        public MonitorValue GetMonitorValue(int agentId, int monitorCommandId)
+        {
+            _logger.Info("GetMonitorValue(...)");
+
+            SQLiteDataReader sqlite_datareader;
+            SQLiteCommand sqlite_cmd;
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+
+            sqlLiteConn.Open();
+            sqlite_cmd = sqlLiteConn.CreateCommand();
+            sqlite_cmd.CommandText = $"SELECT * FROM monitorValues WHERE agent_id = {agentId} AND monitor_command_id = {monitorCommandId}";
+            sqlite_datareader = sqlite_cmd.ExecuteReader();
+            MonitorValue monitorValue = null;
+            try
+            {
+                while (sqlite_datareader.Read())
+                {
+                    monitorValue = new MonitorValue()
+                    {
+                        Value = Convert.ToDouble(sqlite_datareader["value"]),
+                        Unit = sqlite_datareader["unit"].ToString(),
+                        ReturnCode = Convert.ToInt32(sqlite_datareader["return_code"]),
+                        ErrorMessage = sqlite_datareader["error_message"].ToString()
+                    };
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                _logger.Error($"Database Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"General Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlite_datareader.Close();
+                sqlLiteConn.Close();
+            }
+            return monitorValue;
+        }
+
+
+        public void UpsertMonitorValue(MonitorValue monitorValue)
+        {
+            _logger.Info("Method UpsertMonitorValue(...)");
+            _logger.Info(ObjectDumper.Dump(monitorValue));
+            var monitorValuePresent = 
+                GetMonitorValue(monitorValue.AgentId, monitorValue.MonitorCommandId);
+            if (monitorValuePresent == null)
+            {
+                InsertMonitorValue(monitorValue);
+            }
+            else
+            {
+                UpDateMonitorValue(monitorValue);
+            }
         }
 
         public void InsertMonitorCommand(MonitorCommand monitorCommand)
         {
-            SqlLiteConn.Open();
-            var cmd = new SQLiteCommand(SqlLiteConn);
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn);
             cmd.CommandText = $@"
                     INSERT INTO monitorCommands
                         (name, type, arg1, arg2) 
                     VALUES
                         ('{monitorCommand.Name}', '{monitorCommand.Type}', '{monitorCommand.Arg1}', '{monitorCommand.Arg2}')";
             cmd.ExecuteNonQuery();
-            SqlLiteConn.Close();
+            sqlLiteConn.Close();
         }
 
         public void DeleteMonitorCommand(int id)
         {
-            SqlLiteConn.Open();
-            var cmd = new SQLiteCommand(SqlLiteConn);
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn);
             cmd.CommandText = $@"
                     DELETE monitorCommands
                     WHERE
                         monitor_command_id = {id}";
             cmd.ExecuteNonQuery();
-            SqlLiteConn.Close();
+            sqlLiteConn.Close();
         }
 
-        public void UpdateAgentResourceHardware(
-                                        int agentId, 
-                                        string hardwareJson,
-                                        string softwareJson)
+        public void UpsertAgentResource(
+                                        AgentResource agentResource)
         {
-            SqlLiteConn.Open();
-            var cmd = new SQLiteCommand(SqlLiteConn)
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var sqlQuery = $@"
+                    INSERT INTO agentResources
+                    (
+                        agent_id,
+                        hardware_json,
+                        software_json,
+                        last_updated_date
+                    )
+                    VALUES
+                    (
+                        {agentResource.AgentId},
+                        '{agentResource.HardwareJson}',
+                        '{agentResource.SoftwareJson}',
+                        '{agentResource.LastUpdatedDate}'
+                    )
+                    ON CONFLICT (agent_id)
+                    DO update SET 
+                            hardware_json = '{agentResource.HardwareJson}',
+                            software_json = '{agentResource.SoftwareJson}',
+                            last_updated_date = '{agentResource.LastUpdatedDate}'";
+
+            var cmd = new SQLiteCommand(sqlLiteConn)
             {
-                CommandText = $@"
-                    UPDATE agentResources
-                    SET 
-                        hardware_json = '{hardwareJson}',
-                        software_json = '{softwareJson}',
-                        last_updated_date = '{DateTime.UtcNow:o}'                     
-                    WHERE
-                        agent_id = {agentId}"
+                CommandText =    sqlQuery         
             };
             cmd.ExecuteNonQuery();
-            SqlLiteConn.Close();
+            sqlLiteConn.Close();
         }
 
         public AgentResource GetAgentResource(int agentId)
         {
             SQLiteDataReader sqlite_datareader;
             SQLiteCommand sqlite_cmd;
-            SqlLiteConn.Open();
-            sqlite_cmd = SqlLiteConn.CreateCommand();
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            sqlite_cmd = sqlLiteConn.CreateCommand();
             sqlite_cmd.CommandText = 
                 $"SELECT * FROM agentResources where agent_id = {agentId}";
             sqlite_datareader = sqlite_cmd.ExecuteReader();
@@ -209,15 +478,24 @@ namespace dev_web_api
                     HardwareJson = sqlite_datareader["hardware_json"].ToString(),
                     SoftwareJson = sqlite_datareader["software_json"].ToString()
                 };
+                DateTime result;
+                var isValid = DateTime.TryParse(
+                            sqlite_datareader["last_updated_date"].ToString(),
+                            out result);
+                if (isValid)
+                {
+                    agentResource.LastUpdatedDate = result;
+                }
             }
             sqlite_datareader.Close();
-            SqlLiteConn.Close();
+            sqlLiteConn.Close();
             return agentResource;
         }
 
-        public void InsertAgent(Agent agent)
+        public void UpsertAgent(Agent agent)
         {
-            SqlLiteConn.Open();
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
             string sqlQuery = $@"
                     -- use upsert https://stackoverflow.com/a/50718957/89256
                     INSERT INTO agents
@@ -241,12 +519,12 @@ namespace dev_web_api
                             machine_name = '{agent.MachineName}',
                             last_queried = '{agent.LastQueried:o}'";
             _logger.Info($"sqlQuery = {sqlQuery}");
-            var cmd = new SQLiteCommand(SqlLiteConn)
+            var cmd = new SQLiteCommand(sqlLiteConn)
             {
                 CommandText = sqlQuery
             };
             cmd.ExecuteNonQuery();   
-            SqlLiteConn.Close();
+            sqlLiteConn.Close();
         }
     }
 }

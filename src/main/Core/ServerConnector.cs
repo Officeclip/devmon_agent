@@ -58,7 +58,7 @@ namespace Geheb.DevMon.Agent.Core
 
         public async Task Send(StableDeviceInfo deviceInfo)
         {
-            var request = CreateRequest("/hardware", deviceInfo, Method.PUT);
+            var request = CreateRequest("/hardware", deviceInfo, Method.POST);
             await AddHeaders(request);
             var response = _restClient.Execute(request);
             if (!response.IsSuccessful)
@@ -90,7 +90,9 @@ namespace Geheb.DevMon.Agent.Core
 
         public async Task Send(List<ResultInfo> resultInfos)
         {
-            var request = CreateRequest("/monitorValues", resultInfos, Method.PUT);
+            _logger.Info("Send Monitor Values...");
+            _logger.Info(ObjectDumper.Dump(resultInfos));
+            var request = CreateRequest("/monitorValues", resultInfos, Method.POST);
             await AddHeaders(request);
             var response = _restClient.Execute(request);
             if (!response.IsSuccessful)

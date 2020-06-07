@@ -10,5 +10,6 @@ namespace dev_web_api.BusinessLayer
         public int AgentId { get; set; }
         public string HardwareJson { get; set; }
         public string SoftwareJson { get; set; }
+        public DateTime LastUpdatedDate { get; set; }
     }
 }

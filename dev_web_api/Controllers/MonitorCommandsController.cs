@@ -33,7 +33,7 @@ namespace dev_web_api.Controllers
                 RegistrationDate = DateTime.UtcNow,
                 LastQueried = DateTime.UtcNow
             };
-            monitorDb.InsertAgent(agent);
+            monitorDb.UpsertAgent(agent);
             var monitorCommands = monitorDb.GetMonitorCommands();
             _logger.Info("Monitor Commands...");
             

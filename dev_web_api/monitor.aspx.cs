@@ -77,7 +77,7 @@ namespace dev_web_api
                 Arg1 = GetGridViewText(e, 5),
                 Arg2 = GetGridViewText(e, 6)
             };
-            monitorDb.UpdateMonitorCommand(monitorCommand);
+            monitorDb.UpsertCommand(monitorCommand);
             GridView1.EditIndex = -1;
             LoadData();
         }

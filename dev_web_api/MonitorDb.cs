@@ -440,12 +440,12 @@ namespace dev_web_api
                     VALUES
                     (
                         {agentResource.AgentId},
-                        '{agentResource.StableDeviceJson}',
+                        '{agentResource.StableDeviceJson.Replace("'", "''")}',
                         '{agentResource.LastUpdatedDate}'
                     )
                     ON CONFLICT (agent_id)
                     DO update SET 
-                            stable_device_json = '{agentResource.StableDeviceJson}',
+                            stable_device_json = '{agentResource.StableDeviceJson.Replace("'", "''")}',
                             last_updated_date = '{agentResource.LastUpdatedDate}'";
 
             var cmd = new SQLiteCommand(sqlLiteConn)

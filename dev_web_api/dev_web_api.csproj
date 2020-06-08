@@ -110,6 +110,7 @@
   <ItemGroup>
     <Content Include="default.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="software.aspx" />
     <Content Include="hardware.aspx" />
     <Content Include="monitor.aspx" />
     <Content Include="Web.config" />
@@ -121,6 +122,7 @@
     <Compile Include="BusinessLayer\MonitorValue.cs" />
     <Compile Include="BusinessLayer\Agent.cs" />
     <Compile Include="BusinessLayer\MonitorCommand.cs" />
+    <Compile Include="Models\SoftwareInfo.cs" />
     <Compile Include="Controllers\StableDeviceController.cs" />
     <Compile Include="Controllers\MonitorValuesController.cs" />
     <Compile Include="default.aspx.cs">
@@ -129,6 +131,13 @@
     </Compile>
     <Compile Include="default.aspx.designer.cs">
       <DependentUpon>default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="software.aspx.cs">
+      <DependentUpon>software.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="software.aspx.designer.cs">
+      <DependentUpon>software.aspx</DependentUpon>
     </Compile>
     <Compile Include="Models\MonitorCommandValue.cs" />
     <Compile Include="Controllers\MonitorCommandsController.cs" />

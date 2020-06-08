@@ -48,6 +48,8 @@
             <div style="margin: 20px">
                 <asp:Button ID="btnHardware" runat="server"
                     Text="Hardware" OnClick="btnHardware_Click" />
+                <asp:Button ID="btnSoftware" runat="server"
+                    Text="Software" OnClick="btnSoftware_Click" />
             </div>
         </div>
     </form>

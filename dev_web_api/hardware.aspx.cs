@@ -41,6 +41,7 @@ namespace dev_web_api
             }
 
             var @object = JObject.Parse(json);
+            @object.Remove("softwares");
             AddObjectNodes(@object, "Hardware", treeView.Nodes);
         }
 

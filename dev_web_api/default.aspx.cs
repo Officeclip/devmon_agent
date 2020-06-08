@@ -44,5 +44,11 @@ namespace dev_web_api
             ClientScript.RegisterStartupScript(this.GetType(), "hardware", newWin, true);
         }
 
+        protected void btnSoftware_Click(object sender, EventArgs e)
+        {
+            string queryString = "software.aspx";
+            string newWin = "window.open('" + queryString + "');";
+            ClientScript.RegisterStartupScript(this.GetType(), "software", newWin, true);
+        }
     }
 }

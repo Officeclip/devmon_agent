@@ -60,15 +60,18 @@ namespace Geheb.DevMon.Agent.Quartz
             {
                 case "url":
                     return await UrlTask(commandInfo);
-                case "cpu":
+                case "cpu.percent":
                     return await CpuTask(commandInfo);
-                case "memory":
+                case "memory.free":
                     return await MemTask(commandInfo);
-                case "network":
+                case "network.specific":
                     return await NetworkTask(commandInfo);
-                case "drive":
+                case "drive.free":
                     return await DriveTask(commandInfo);
-                case "os":
+                case "os.processes":
+                case "os.uptime":
+                case "os.pendingupdates":
+                case "os.lastupdated":
                     return await OsTask(commandInfo);
                 default:
                     return null;
@@ -102,15 +105,57 @@ namespace Geheb.DevMon.Agent.Quartz
             return pingResultInfo;
         }
 
+        public static string ToHumanReadableString(TimeSpan t)
+        {
+            if (t.TotalSeconds <= 1)
+            {
+                return $@"{t:s\.ff} seconds";
+            }
+            if (t.TotalMinutes <= 1)
+            {
+                return $@"{t:%s} seconds";
+            }
+            if (t.TotalHours <= 1)
+            {
+                return $@"{t:%m} minutes";
+            }
+            if (t.TotalDays <= 1)
+            {
+                return $@"{t:%h} hours";
+            }
+
+            return $@"{t:%d} days";
+        }
+
         private static async Task<ResultInfo> OsTask(CommandInfo commandInfo)
         {
             _logger.Debug("Starting OsTask");
             var osCollector = new OsCollector(null);
             var osUtilization = await osCollector.ReadOsUtilization();
+            var output = string.Empty;
+            switch (commandInfo.Type)
+            {
+                case "os.processes":
+                    output = osUtilization.Processes.ToString();
+                    break;
+                case "os.uptime":
+                    output = ToHumanReadableString(osUtilization.UpTime);
+                    break;
+                case "os.pendingupdates":
+                    output = osUtilization.Update.PendingUpdates.ToString();
+                    break;
+                case "os.lastupdated":
+                    var lastUpdated = osUtilization.Update.LastUpdateInstalledAt;
+                    output =
+                        (lastUpdated == null)
+                        ? "unknown"
+                        : ((DateTime)lastUpdated).ToString("yyyy-MM-dd");
+                    break;
+            }
 
             var pingResultInfo = new ResultInfo(
                                         commandInfo.MonitorCommandId,
-                                        osUtilization.Processes.ToString(),
+                                        output,
                                         "");
             _logger.Debug("Ending OsTask");
             return pingResultInfo;

@@ -8,13 +8,27 @@
 <body>
     <form id="form1" runat="server">
         <div>
-            Name 
-                <asp:TextBox ID="txtName" runat="server"></asp:TextBox><br />
-            Type<asp:TextBox ID="txtType" runat="server"></asp:TextBox><br />
-            Arg1
-                <asp:TextBox ID="txtArg1" runat="server"></asp:TextBox><br />
-            Arg2
-                <asp:TextBox ID="txtArg2" runat="server"></asp:TextBox><br />
+            <table>
+                <tr>
+                    <td>Name:</td>
+                    <td><asp:TextBox ID="txtName" runat="server"></asp:TextBox></td>
+                </tr>
+                <tr>
+                    <td>Type:</td>
+                    <td>
+                        <asp:TextBox ID="txtType" runat="server"></asp:TextBox>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Arg1:</td>
+                    <td><asp:TextBox ID="txtArg1" runat="server"></asp:TextBox></td>
+                </tr>
+                <tr>
+                    <td>Arg2:</td>
+                    <td><asp:TextBox ID="txtArg2" runat="server"></asp:TextBox></td>
+                </tr>
+            </table>
+
             <asp:Button ID="Button1" runat="server" Text="save" OnClick="Button1_Click" />
             <br /><br />
         </div>
@@ -43,6 +57,21 @@
             <SortedDescendingCellStyle BackColor="#FCF6C0" />
             <SortedDescendingHeaderStyle BackColor="#820000" />
         </asp:GridView>
+        <div style="margin: 20px 0">
+            <pre>
+                Following are possible values of Types:
+                -----------------------------------------
+                url (arg1 -add the url in argument) - returns time to access the site
+                cpu.percent - percentage cpu load 
+                memory.free - amount of free memory in the system
+                network.specific (arg1 - specific network name) (arg2 - ReceivedBytesPerSecond or SentBytesPerSecond) - Network load
+                drive.free (arg1 - C:\, D:\ etc.) - Free space in the drive
+                os.processes - number of processes
+                os.uptime - amount of time the system is running without reboot
+                os.pendingupdates - how many updates are pending
+                os.lastupdated - time when the updates was last run
+            </pre>
+        </div>
     </form>
 </body>
 </html>

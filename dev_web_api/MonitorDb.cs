@@ -457,7 +457,10 @@ namespace dev_web_api
             sqlLiteConn.Open();
             var cmd = new SQLiteCommand(sqlLiteConn);
             cmd.CommandText = $@"
-                    DELETE monitorCommands
+                    DELETE FROM monitorValues
+                    WHERE
+                        monitor_command_id = {id};
+                    DELETE FROM monitorCommands
                     WHERE
                         monitor_command_id = {id}";
             cmd.ExecuteNonQuery();

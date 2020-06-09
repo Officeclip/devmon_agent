@@ -132,21 +132,28 @@ namespace Geheb.DevMon.Agent.Quartz
             _logger.Debug("Starting OsTask");
             var osCollector = new OsCollector(null);
             var osUtilization = await osCollector.ReadOsUtilization();
-            var output = string.Empty;
+            var value = string.Empty;
+            var unit = string.Empty;
             switch (commandInfo.Type)
             {
                 case "os.processes":
-                    output = osUtilization.Processes.ToString();
+                    value = osUtilization.Processes.ToString();
                     break;
                 case "os.uptime":
-                    output = ToHumanReadableString(osUtilization.UpTime);
+                    var output = ToHumanReadableString(osUtilization.UpTime);
+                    var parts = output.Split(' ');
+                    value = parts[0];
+                    unit =
+                        (parts.Length >= 2)
+                        ? parts[1]
+                        : string.Empty;
                     break;
                 case "os.pendingupdates":
-                    output = osUtilization.Update.PendingUpdates.ToString();
+                    value = osUtilization.Update.PendingUpdates.ToString();
                     break;
                 case "os.lastupdated":
                     var lastUpdated = osUtilization.Update.LastUpdateInstalledAt;
-                    output =
+                    value =
                         (lastUpdated == null)
                         ? "unknown"
                         : ((DateTime)lastUpdated).ToString("yyyy-MM-dd");
@@ -155,8 +162,8 @@ namespace Geheb.DevMon.Agent.Quartz
 
             var pingResultInfo = new ResultInfo(
                                         commandInfo.MonitorCommandId,
-                                        output,
-                                        "");
+                                        value,
+                                        unit);
             _logger.Debug("Ending OsTask");
             return pingResultInfo;
         }

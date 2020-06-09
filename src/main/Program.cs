@@ -1,10 +1,13 @@
 ﻿using Geheb.DevMon.Agent.Core;
 using Geheb.DevMon.Agent.Models;
 using Geheb.DevMon.Agent.Quartz;
+using ImTools;
+using Newtonsoft.Json.Linq;
 using NLog;
 using RestSharp;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -22,20 +25,14 @@ namespace Geheb.DevMon.Agent
             try
             {
                 _logger.Info("Starting the main program");
+                AddAgentGuid();
                 while (true)
                 {
                     JobScheduler.Start().ConfigureAwait(false);
-                    //using (var boot = new Bootstrap())
-                    //{
-                    //    boot.Run();
-                    //}
-
                     var cpuInfo = GetCpuInfo().Result;
                     Console.WriteLine(cpuInfo.Name);
                     Thread.Sleep(10000 * 100000);
                 }
-                
-                //return (int)ExitCode.Success;
             }
             catch (OperationCanceledException)
             {
@@ -49,6 +46,19 @@ namespace Geheb.DevMon.Agent
                 _logger.Fatal(ex);
                 return (int)ExitCode.InternalError;
             }
+        }
+
+        /// <summary>
+        /// If the agentGuid is not in the appSettings.json file then add it there...
+        /// </summary>
+        static void AddAgentGuid()
+        {
+            JObject settings = JObject.Parse(File.ReadAllText("appSettings.json"));
+            if ((string)settings["agent_guid"] == "")
+            {
+                settings["agent_guid"] = Guid.NewGuid().ToString();
+            }
+            File.WriteAllText("appSettings.json", settings.ToString());
         }
 
         static Task<CpuInfo> GetCpuInfo()

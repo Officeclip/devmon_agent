@@ -24,7 +24,12 @@ namespace dev_web_api.Controllers
             _logger.Info("StableDevice Results...");
             _logger.Info(data);
             var headers = Request.Headers;
-            var guid = headers.GetValues("agent-guid").First();
+            var serverGuid = headers.GetValues("server_guid").First();
+            if (Util.IsServerGuidValid(serverGuid))
+            {
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+            }
+            var guid = headers.GetValues("agent_guid").First();
             var agent = monitorDb.GetAgentByGuid(guid);
             var agentResource = new AgentResource()
             {

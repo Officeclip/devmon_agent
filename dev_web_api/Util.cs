@@ -119,5 +119,10 @@ namespace dev_web_api
             }
         }
 
+        public static bool IsServerGuidValid(string guid)
+        {
+            return (new MonitorDb()).GetServerGuid() == guid;
+        }
+
     }
 }

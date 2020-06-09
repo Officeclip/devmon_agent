@@ -42,16 +42,16 @@ namespace Geheb.DevMon.Agent.Core
         public async Task AddHeaders(RestRequest request)
         {
             request.AddHeader(
-                        _settings["key1"] as string,
-                        _settings["value1"] as string);
+                        "server_url",
+                        _settings["server_url"] as string);
             request.AddHeader(
-                        _settings["key2"] as string,
-                        _settings["value2"] as string); 
+                        "server_guid",
+                        _settings["server_guid"] as string); 
             request.AddHeader(
-                        "agent-guid",
+                        "agent_guid",
                         _settings["agent_guid"] as string);
             request.AddHeader(
-                        "machine-name",
+                        "machine_name",
                         Environment.MachineName
                         );
         }

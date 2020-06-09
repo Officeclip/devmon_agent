@@ -15,6 +15,7 @@ namespace dev_web_api
         List<MonitorCommandLimit> monitorCommandLimits;
         List<Agent> agents;
         List<MonitorCommand> monitorCommands;
+        protected string serverGuid = (new MonitorDb()).GetServerGuid(true);
         protected void Page_Load(object sender, EventArgs e)
         {
             MonitorDb monitorDb = new MonitorDb();

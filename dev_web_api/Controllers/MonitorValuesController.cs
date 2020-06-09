@@ -2,6 +2,7 @@
 using NLog;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web.Http;
 
 namespace dev_web_api.Controllers
@@ -17,7 +18,12 @@ namespace dev_web_api.Controllers
             _logger.Info("MonitorValuesController...");
             _logger.Info(ObjectDumper.Dump(commandValues));
             var headers = Request.Headers;
-            var guid = headers.GetValues("agent-guid").First();
+            var serverGuid = headers.GetValues("server_guid").First();
+            if (Util.IsServerGuidValid(serverGuid))
+            {
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+            }
+            var guid = headers.GetValues("agent_guid").First();
             var agent = monitorDb.GetAgentByGuid(guid);
 
             foreach (var commandValue in commandValues)

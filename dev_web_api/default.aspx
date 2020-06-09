@@ -51,6 +51,31 @@
                 <asp:Button ID="btnSoftware" runat="server"
                     Text="Software" OnClick="btnSoftware_Click" />
             </div>
+            <div style="margin: 20px">
+                To run the agent, do the following:
+                <ul>
+                    <li>
+                        Go to <a href="https://github.com/Officeclip/devmon_agent/releases">Github Release Page</a>
+                        and download to a folder and unzip it.
+                    </li>
+                    <li>
+                        Add <b><%= serverGuid %></b> to the server_guid tag of the appSettings.json file
+                    </li>
+                    <li>
+                        In appSettings.json file add <b>http://localhost<%= Page.Request.RawUrl %>api</b> to server_url key 
+                    </li>
+                    <li>
+                        Now copy the above folder to the machine where you want to install the
+                        Agent
+                    </li>
+                    <li>
+                        Run the file devmon_agent.exe from a command prompt
+                    </li>
+                    <li>
+                        This screen should show the agents running...
+                    </li>
+                </ul>
+            </div>
         </div>
     </form>
 </body>

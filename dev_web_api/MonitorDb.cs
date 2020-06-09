@@ -564,5 +564,38 @@ namespace dev_web_api
             cmd.ExecuteNonQuery();   
             sqlLiteConn.Close();
         }
+
+        public string GetServerGuid(bool isInsert = false)
+        {
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn);
+            cmd.CommandText = $@"
+                    SELECT server_guid FROM groups";
+            var dbOutput = cmd.ExecuteScalar();
+            string serverGuid;
+            if (isInsert && (dbOutput == null))
+            {
+                serverGuid = Guid.NewGuid().ToString();
+                InsertserverGuid(serverGuid);
+            }
+            else
+            {
+                serverGuid = (dbOutput??string.Empty).ToString();
+            }
+            sqlLiteConn.Close();
+            return serverGuid;
+        }
+
+        private void InsertserverGuid(string serverGuid)
+        {
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn);
+            cmd.CommandText = $@"
+                    INSERT INTO groups (server_guid) VALUES ('{serverGuid}')";
+            cmd.ExecuteNonQuery();
+            sqlLiteConn.Close();
+        }
     }
 }

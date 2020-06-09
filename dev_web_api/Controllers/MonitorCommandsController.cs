@@ -3,6 +3,8 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Web.Http;
 
 namespace dev_web_api.Controllers
@@ -26,11 +28,15 @@ namespace dev_web_api.Controllers
             var headers = Request.Headers;
             _logger.Info("Request Headers...");
             _logger.Info(headers);
+            var serverGuid = headers.GetValues("server_guid").First();
+            if (Util.IsServerGuidValid(serverGuid)){
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+            }
             var agent = new Agent()
             {
-                Guid = headers.GetValues("agent-guid").First(),
+                Guid = headers.GetValues("agent_guid").First(),
                 OrgId = 1, // currently hardcoding but will be read from the header
-                MachineName = headers.GetValues("machine-name").First(),
+                MachineName = headers.GetValues("machine_name").First(),
                 RegistrationDate = DateTime.UtcNow,
                 LastQueried = DateTime.UtcNow
             };

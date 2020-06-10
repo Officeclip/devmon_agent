@@ -29,7 +29,7 @@ namespace dev_web_api.Controllers
             _logger.Info("Request Headers...");
             _logger.Info(headers);
             var serverGuid = headers.GetValues("server_guid").First();
-            if (Util.IsServerGuidValid(serverGuid)){
+            if (!Util.IsServerGuidValid(serverGuid)){
                 throw new HttpResponseException(HttpStatusCode.Unauthorized);
             }
             var agent = new Agent()

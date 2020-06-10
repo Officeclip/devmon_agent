@@ -58,17 +58,24 @@ namespace Geheb.DevMon.Agent.Core
 
         public async Task Send(StableDeviceInfo deviceInfo)
         {
-            var request = CreateRequest("/stableDevice", deviceInfo, Method.POST);
-            await AddHeaders(request);
-            var response = _restClient.Execute(request);
-            if (!response.IsSuccessful)
+            try
             {
-                throw new HttpException(
-                                (int)response.StatusCode, 
-                                "send stable device info failed: " + 
-                                        (string.IsNullOrEmpty(response.Content) 
-                                        ? "no response" 
-                                        : response.Content));
+                var request = CreateRequest("/stableDevice", deviceInfo, Method.POST);
+                await AddHeaders(request);
+                var response = _restClient.Execute(request);
+                if (!response.IsSuccessful)
+                {
+                    throw new HttpException(
+                                    (int)response.StatusCode,
+                                    "send stable device info failed: " +
+                                            (string.IsNullOrEmpty(response.Content)
+                                            ? "no response"
+                                            : response.Content));
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Error: {ex.Message}");
             }
         }
 
@@ -92,26 +99,43 @@ namespace Geheb.DevMon.Agent.Core
         {
             _logger.Info("Send Monitor Values...");
             _logger.Info(ObjectDumper.Dump(resultInfos));
-            var request = CreateRequest("/monitorValues", resultInfos, Method.POST);
-            await AddHeaders(request);
-            var response = _restClient.Execute(request);
-            if (!response.IsSuccessful)
+            try
             {
-                throw new HttpException(
-                                (int)response.StatusCode,
-                                "send volatile device info failed: " +
-                                        (string.IsNullOrEmpty(response.Content)
-                                        ? "no response"
-                                        : response.Content));
+                var request = CreateRequest("/monitorValues", resultInfos, Method.POST);
+                await AddHeaders(request);
+                var response = _restClient.Execute(request);
+                if (!response.IsSuccessful)
+                {
+                    throw new HttpException(
+                                    (int)response.StatusCode,
+                                    "send volatile device info failed: " +
+                                            (string.IsNullOrEmpty(response.Content)
+                                            ? "no response"
+                                            : response.Content));
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Error: {ex.Message}");
             }
         }
 
 
         public async Task<IRestResponse> SendPing()
         {
-            var request = new RestRequest("/monitorCommands", Method.GET);
-            await AddHeaders(request);
-            return await _restClient.ExecuteAsync(request);
+            _logger.Info("Get Monitor Commands...");
+            IRestResponse restResponse = null;
+            try
+            {
+                var request = new RestRequest("/monitorCommands", Method.GET);
+                await AddHeaders(request);
+                restResponse = await _restClient.ExecuteAsync(request);
+            }
+            catch(Exception ex)
+            {
+                _logger.Error($"Error: {ex.Message}");
+            }
+            return restResponse;
         }
 
         RestRequest CreateRequest(

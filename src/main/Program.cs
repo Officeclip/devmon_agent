@@ -28,7 +28,9 @@ namespace Geheb.DevMon.Agent
                 AddAgentGuid();
                 while (true)
                 {
-                    JobScheduler.Start().ConfigureAwait(false);
+                    var scheduler = JobScheduler.Start().ConfigureAwait(false);
+                    //JobScheduler.Stop(scheduler.GetAwaiter().GetResult());
+                    //var isShutdown = JobScheduler.IsShutdown(scheduler.GetAwaiter().GetResult());
                     var cpuInfo = GetCpuInfo().Result;
                     Console.WriteLine(cpuInfo.Name);
                     Thread.Sleep(10000 * 100000);

@@ -11,7 +11,7 @@ namespace Geheb.DevMon.Agent.Quartz
 {
     public static class JobScheduler
     {
-        public static async Task Start()
+        public static async Task<IScheduler> Start()
         {
             // construct a scheduler factory
             NameValueCollection props = new NameValueCollection
@@ -29,6 +29,24 @@ namespace Geheb.DevMon.Agent.Quartz
 
             AddPingerJob(scheduler);
             AddStaticJob(scheduler);
+            return scheduler;
+        }
+
+        public static async void Stop(IScheduler scheduler)
+        {
+            if (scheduler != null)
+            {
+                await scheduler.Shutdown();
+            }
+        }
+
+        public static bool IsShutdown(IScheduler scheduler)
+        {
+            if (scheduler != null)
+            {
+                return scheduler.IsShutdown;
+            }
+            return false;
         }
 
         public static async void AddPingerJob(IScheduler scheduler)

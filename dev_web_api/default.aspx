@@ -56,7 +56,7 @@
                 <ul>
                     <li>
                         Go to <a href="https://github.com/Officeclip/devmon_agent/releases">Github Release Page</a>
-                        and download to a folder and unzip it.
+                        and download agent.zip to a folder and unzip it.
                     </li>
                     <li>
                         Add <b><%= serverGuid %></b> to the server_guid tag of the appSettings.json file
@@ -69,11 +69,20 @@
                         Agent
                     </li>
                     <li>
-                        Run the file devmon_agent.exe from a command prompt
+                        Bring up the command prompt in administrator mode and cd to the above folder.
+                        Then run <i>installutil devmon_service.exe</i>
                     </li>
                     <li>
-                        This screen should show the agents running...
+                        Go to the Services application and start the Monitor Service
                     </li>
+                    <li>
+                        You can now see the agent sending information to the website above
+                    </li>
+                    <li>
+                        To uninstall the agent, go to the Services application and stop
+                        the Monitor Service
+                    </li>
+                    <li>Run <i>installutil /u devmon_service.exe</i></li>
                 </ul>
             </div>
         </div>

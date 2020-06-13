@@ -1,12 +1,12 @@
-﻿using Geheb.DevMon.Agent.Core;
-using Geheb.DevMon.Agent.Models;
-using Geheb.DevMon.Agent.Test.Extensions;
+﻿using devmon_library.Core;
+using devmon_library.Models;
+using devmon_test.Extensions;
 using Moq;
 using System;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Geheb.DevMon.Agent.Test.Core
+namespace devmon_test.Core
 {
     public class VolatileDeviceCollectorTests
     {

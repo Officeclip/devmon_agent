@@ -1,5 +1,5 @@
-﻿using Geheb.DevMon.Agent.Core;
-using Geheb.DevMon.Agent.Models;
+﻿using devmon_library.Core;
+using devmon_library.Models;
 using Moq;
 using RestSharp;
 using System;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Xunit;
 
-namespace Geheb.DevMon.Agent.Test.Core
+namespace devmon_test.Core
 {
     public class ServerConnectorTests
     {

@@ -14,12 +14,18 @@ namespace devmon_service
         /// </summary>
         static void Main()
         {
+#if DEBUG
+            var service1 = new MonitorService();
+            service1.OnDebug();
+            System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
+#else
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]
             {
-                new Service1()
+                new MonitorService()
             };
             ServiceBase.Run(ServicesToRun);
+#endif
         }
     }
 }

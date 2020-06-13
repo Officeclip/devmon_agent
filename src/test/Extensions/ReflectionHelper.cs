@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace Geheb.DevMon.Agent.Test.Extensions
+namespace devmon_test.Extensions
 {
     internal static class ReflectionHelper
     {

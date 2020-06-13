@@ -14,23 +14,28 @@ using System.Threading.Tasks;
 
 namespace devmon_service
 {
-    public partial class Service1 : ServiceBase
+    public partial class MonitorService : ServiceBase
     {
         IScheduler scheduler;
-        public Service1()
+        public MonitorService()
         {
             InitializeComponent();
-            AddAgentGuid();
         }
 
         protected override void OnStart(string[] args)
         {
-            System.Diagnostics.Trace.WriteLine(Directory.GetCurrentDirectory());
+            System.Diagnostics.Trace.WriteLine($"Directory: {Directory.GetCurrentDirectory()}");
+            AddAgentGuid();
             scheduler = JobScheduler
                                 .Start()
                                 .ConfigureAwait(false)
                                 .GetAwaiter()
                                 .GetResult();
+        }
+
+        public void OnDebug()
+        {
+            OnStart(null);
         }
 
         protected override void OnStop()
@@ -41,16 +46,24 @@ namespace devmon_service
         private void AddAgentGuid()
         {
             var appFolder = AppDomain.CurrentDomain.BaseDirectory;
-            JObject settings = JObject.Parse(
-                                        File.ReadAllText(
-                                                $"{appFolder}appSettings.json"));
-            if ((string)settings["agent_guid"] == "")
+            try
             {
-                settings["agent_guid"] = Guid.NewGuid().ToString();
+                JObject settings = JObject.Parse(
+                                            File.ReadAllText(
+                                                    $"{appFolder}appSettings.json"));
+                if ((string)settings["agent_guid"] == "")
+                {
+                    settings["agent_guid"] = Guid.NewGuid().ToString();
+                    File.WriteAllText(
+                        $"{appFolder}appSettings.json",
+                        settings.ToString());
+                }
+
             }
-            File.WriteAllText(
-                $"{appFolder}appSettings.json", 
-                settings.ToString());
+            catch (Exception e)
+            {
+                System.Diagnostics.Trace.WriteLine($"Error: {e.Message}");
+            }
         }
     }
 }

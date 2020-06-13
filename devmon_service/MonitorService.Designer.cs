@@ -1,6 +1,6 @@
 ﻿namespace devmon_service
 {
-    partial class Service1
+    partial class MonitorService
     {
         /// <summary> 
         /// Required designer variable.

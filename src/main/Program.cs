@@ -48,8 +48,8 @@ namespace Geheb.DevMon.Agent
             if ((string)settings["agent_guid"] == "")
             {
                 settings["agent_guid"] = Guid.NewGuid().ToString();
+                File.WriteAllText("appSettings.json", settings.ToString());
             }
-            File.WriteAllText("appSettings.json", settings.ToString());
         }
 
         //static Task<CpuInfo> GetCpuInfo()

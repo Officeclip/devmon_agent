@@ -1,13 +1,13 @@
-﻿using Geheb.DevMon.Agent.Core;
-using Geheb.DevMon.Agent.Models;
-using Geheb.DevMon.Agent.Test.Extensions;
+﻿using devmon_library.Core;
+using devmon_test.Extensions;
 using Moq;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using Xunit;
+using devmon_library.Models;
 
-namespace Geheb.DevMon.Agent.Test.Core
+namespace devmon_test.Core
 {
     public class StableDeviceCollectorTests
     {

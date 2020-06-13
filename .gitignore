@@ -331,3 +331,4 @@ ASALocalRun/
 
 tools/
 /src/main/appSettings.json
+/devmon_service/appSettings.json

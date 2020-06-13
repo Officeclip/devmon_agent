@@ -1,11 +1,11 @@
-﻿using Geheb.DevMon.Agent.Core;
+﻿using devmon_library.Core;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace Geheb.DevMon.Agent.Test.Extensions
+namespace devmon_test.Extensions
 {
     internal static class MockCollector<T> where T : class
     {

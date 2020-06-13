@@ -1,8 +1,8 @@
-﻿using Geheb.DevMon.Agent.Core;
+﻿using devmon_library.Core;
 using System;
 using Xunit;
 
-namespace Geheb.DevMon.Agent.Test.Core
+namespace devmon_test.Core
 {
     public class Base64UrlTests
     {

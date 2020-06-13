@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{16DCE9D4-7DF2-41CA-ABB5-2800EF1356DD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>devmon_library</RootNamespace>
+    <AssemblyName>devmon_library</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DryIoc, Version=4.2.1.0, Culture=neutral, PublicKeyToken=dfbf2bd50fcf7768, processorArchitecture=MSIL">
+      <HintPath>..\packages\DryIoc.dll.4.2.1\lib\net45\DryIoc.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.7.2\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Quartz, Version=3.0.7.0, Culture=neutral, PublicKeyToken=f6b8c98a402cc8a4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Quartz.3.0.7\lib\net452\Quartz.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp, Version=106.11.4.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.11.4\lib\net452\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\App.cs" />
+    <Compile Include="Core\AppSettings.cs" />
+    <Compile Include="Core\Base64Url.cs" />
+    <Compile Include="Core\Bootstrap.cs" />
+    <Compile Include="Core\Cancellation.cs" />
+    <Compile Include="Core\CpuCollector.cs" />
+    <Compile Include="Core\DriveCollector.cs" />
+    <Compile Include="Core\IAppSettings.cs" />
+    <Compile Include="Core\ICancellation.cs" />
+    <Compile Include="Core\ICpuCollector.cs" />
+    <Compile Include="Core\IDriveCollector.cs" />
+    <Compile Include="Core\IJsonSerializer.cs" />
+    <Compile Include="Core\IMemoryCollector.cs" />
+    <Compile Include="Core\INetworkCollector.cs" />
+    <Compile Include="Core\IOsCollector.cs" />
+    <Compile Include="Core\IRestClientFactory.cs" />
+    <Compile Include="Core\ISoftwareCollector.cs" />
+    <Compile Include="Core\JsonSerializer.cs" />
+    <Compile Include="Core\MemoryCollector.cs" />
+    <Compile Include="Core\NetworkCollector.cs" />
+    <Compile Include="Core\OsCollector.cs" />
+    <Compile Include="Core\RestClientFactory.cs" />
+    <Compile Include="Core\ServerConnector.cs" />
+    <Compile Include="Core\SoftwareCollector.cs" />
+    <Compile Include="Core\StableDeviceCollector.cs" />
+    <Compile Include="Core\UpdateSearcherCallback.cs" />
+    <Compile Include="Core\VolatileDeviceCollector.cs" />
+    <Compile Include="Models\Command.cs" />
+    <Compile Include="Models\CpuInfo.cs" />
+    <Compile Include="Models\CpuUtilization.cs" />
+    <Compile Include="Models\DriveInfo.cs" />
+    <Compile Include="Models\DriveUtilization.cs" />
+    <Compile Include="Models\ExitCode.cs" />
+    <Compile Include="Models\MemoryInfo.cs" />
+    <Compile Include="Models\MemoryUtilization.cs" />
+    <Compile Include="Models\NetworkInfo.cs" />
+    <Compile Include="Models\NetworkUtilization.cs" />
+    <Compile Include="Models\OsInfo.cs" />
+    <Compile Include="Models\OsUtilization.cs" />
+    <Compile Include="Models\SoftwareInfo.cs" />
+    <Compile Include="Models\StableDeviceInfo.cs" />
+    <Compile Include="Models\TokenRequest.cs" />
+    <Compile Include="Models\VolatileDeviceInfo.cs" />
+    <Compile Include="Models\WindowsUpdateInfo.cs" />
+    <Compile Include="ObjectDumper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Quartz\CommandInfo.cs" />
+    <Compile Include="Quartz\JobScheduler.cs" />
+    <Compile Include="Quartz\PingerJob.cs" />
+    <Compile Include="Quartz\ResultInfo.cs" />
+    <Compile Include="Quartz\StaticJob.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="docs\format.txt" />
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="App.config" />
+    <None Include="app.manifest" />
+    <None Include="appSettings.example.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="appSettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="WUApiLib">
+      <Guid>{B596CC9F-56E5-419E-A622-E01BB457431E}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

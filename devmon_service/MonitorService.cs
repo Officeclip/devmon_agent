@@ -24,7 +24,8 @@ namespace devmon_service
 
         protected override void OnStart(string[] args)
         {
-            System.Diagnostics.Trace.WriteLine($"Directory: {Directory.GetCurrentDirectory()}");
+            Trace.WriteLine("Monitor OnStart");
+            Trace.WriteLine($"Monitor Directory: {Directory.GetCurrentDirectory()}");
             AddAgentGuid();
             scheduler = JobScheduler
                                 .Start()
@@ -40,6 +41,7 @@ namespace devmon_service
 
         protected override void OnStop()
         {
+            Trace.WriteLine("Monitor OnStop");
             JobScheduler.Stop(scheduler);
         }
 

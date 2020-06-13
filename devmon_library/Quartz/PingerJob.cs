@@ -258,20 +258,28 @@ namespace devmon_library.Quartz
 
         private async Task<List<ResultInfo>> ProcessTasksAsync(List<CommandInfo> commandInfos)
         {
-            var appListTasks = commandInfos.Select(
-                                            commandInfo => RunTask(commandInfo)).ToList();
-
-            // Wait asynchronously for all of them to finish
-            await Task.WhenAll(appListTasks);
-
             var pingResults = new List<ResultInfo>();
-
-            foreach (var appList in appListTasks)
+            try
             {
-                var appListResult = appList.Result;
-                pingResults.Add(appListResult);
-            }
+                var appListTasks = commandInfos.Select(
+                                                commandInfo => RunTask(commandInfo)).ToList();
 
+                // Wait asynchronously for all of them to finish
+                await Task.WhenAll(appListTasks);
+
+
+                foreach (var appList in appListTasks)
+                {
+                    var appListResult = appList.Result;
+                    pingResults.Add(appListResult);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"PingerJob.ProcessTaskAsync: {ex.Message}");
+                _logger.Error($"PingerJob.ProcessTaskAsync: {ex.StackTrace}");
+                return null;
+            }
             return pingResults;
         }
     }

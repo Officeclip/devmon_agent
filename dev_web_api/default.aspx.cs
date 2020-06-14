@@ -29,6 +29,10 @@ namespace dev_web_api
                             monitorCommands,
                             monitorValues,
                             monitorCommandLimits);
+            Util.SendMonitorLimitEmail(
+                            monitorValues,
+                            monitorCommandLimits,
+                            monitorCommands);
         }
 
         protected void btnPopup_Click(object sender, EventArgs e)

@@ -584,5 +584,96 @@ namespace dev_web_api
             cmd.ExecuteNonQuery();
             sqlLiteConn.Close();
         }
+
+        public MonitorLimitEmail GetMonitorLimitEmail(
+                                int userId, 
+                                int monitorCommandId, 
+                                int agentId)
+        {
+            SQLiteDataReader sqlite_datareader;
+            SQLiteCommand sqlite_cmd;
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            sqlite_cmd = sqlLiteConn.CreateCommand();
+            sqlite_cmd.CommandText =
+                $"SELECT * FROM monitorLimitEmails where user_id = {userId} AND monitor_command_id = {monitorCommandId} AND agent_id = {agentId}";
+            sqlite_datareader = sqlite_cmd.ExecuteReader();
+            MonitorLimitEmail monitorLimitEmail = null;
+            while (sqlite_datareader.Read())
+            {
+                monitorLimitEmail = new MonitorLimitEmail()
+                {
+                    UserId = userId,
+                    AgentId = agentId,
+                    MonitorCommandId = monitorCommandId,
+                    ToEmailAddress = sqlite_datareader["email_address"].ToString(),
+                };
+                DateTime result;
+                var isValid = DateTime.TryParse(
+                            sqlite_datareader["last_error_email_sent"].ToString(),
+                            out result);
+                if (isValid)
+                {
+                    monitorLimitEmail.LastSent = result;
+                }
+            }
+            sqlite_datareader.Close();
+            sqlLiteConn.Close();
+            return monitorLimitEmail;
+        }
+
+        public void InsertMonitorLimitEmail(MonitorLimitEmail monitorLimitEmail)
+        {
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn)
+            {
+                CommandText = $@"
+                    INSERT INTO 
+                        monitorLimitEmails 
+                        (user_id, agent_id, monitor_command_id, email_address, last_error_email_sent) 
+                    VALUES 
+                        ({monitorLimitEmail.UserId}, {monitorLimitEmail.AgentId}, {monitorLimitEmail.MonitorCommandId}, '{monitorLimitEmail.ToEmailAddress}', '{monitorLimitEmail.LastSent}')"
+            };
+            cmd.ExecuteNonQuery();
+            sqlLiteConn.Close();
+        }
+
+        public void UpdateMonitorLimitEmail(MonitorLimitEmail monitorLimitEmail)
+        {
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn)
+            {
+                CommandText = $@"
+                    UPDATE
+                        monitorLimitEmails 
+                    SET
+                        email_address = '{monitorLimitEmail.ToEmailAddress}',
+                        last_error_email_sent = '{DateTime.UtcNow:o}'
+                    WHERE
+                        user_id = {monitorLimitEmail.UserId}' AND
+                        agent_id = {monitorLimitEmail.UserId}' AND
+                        monitor_command_id = {monitorLimitEmail.MonitorCommandId}'"
+            };
+            cmd.ExecuteNonQuery();
+            sqlLiteConn.Close();
+        }
+
+        public void UpsertMonitorLimitEmail(MonitorLimitEmail monitorLimitEmail)
+        {
+            var matchedMonitorLimitEmail = GetMonitorLimitEmail(
+                                                    monitorLimitEmail.UserId,
+                                                    monitorLimitEmail.MonitorCommandId,
+                                                    monitorLimitEmail.AgentId);
+            if (matchedMonitorLimitEmail == null)
+            {
+                InsertMonitorLimitEmail(monitorLimitEmail);
+            }
+            else
+            {
+                UpdateMonitorLimitEmail(monitorLimitEmail);
+            }
+        }
     }
 }

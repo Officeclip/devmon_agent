@@ -1,4 +1,5 @@
 ﻿using dev_web_api.BusinessLayer;
+using dev_web_api.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -28,6 +29,47 @@ namespace dev_web_api
             return null;
         }
 
+        private static bool IsMonitorValueLimitError(
+                                            MonitorValue monitorValue,
+                                            MonitorCommandLimit monitorCommandLimit)
+        {
+            if (!monitorCommandLimit.IsLowLimit)
+            {
+                if (monitorValue.Value > monitorCommandLimit.ErrorLimit)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if (monitorValue.Value < monitorCommandLimit.ErrorLimit)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private static bool IsMonitorValueLimitWarning(
+                                           MonitorValue monitorValue,
+                                           MonitorCommandLimit monitorCommandLimit)
+        {
+            if (!monitorCommandLimit.IsLowLimit)
+            {
+                if (monitorValue.Value > monitorCommandLimit.WarningLimit)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if (monitorValue.Value < monitorCommandLimit.WarningLimit)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         private static string GetBackgroundCellColor(
                                 MonitorValue monitorValue,
                                 List<MonitorCommand> monitorCommands,
@@ -38,28 +80,36 @@ namespace dev_web_api
             {
                 if (GetType(monitorValue, monitorCommands) == monitorCommandLimit.Type)
                 {
-                    if (!monitorCommandLimit.IsLowLimit)
+                    if (IsMonitorValueLimitError(monitorValue, monitorCommandLimit))
                     {
-                        if (monitorValue.Value > monitorCommandLimit.ErrorLimit)
-                        {
-                            return "lightcoral";
-                        }
-                        if (monitorValue.Value > monitorCommandLimit.WarningLimit)
-                        {
-                            return "lightgoldenrodyellow";
-                        }
+                        return "lightcoral";
                     }
-                    else
+                    if (IsMonitorValueLimitWarning(monitorValue, monitorCommandLimit))
                     {
-                        if (monitorValue.Value < monitorCommandLimit.ErrorLimit)
-                        {
-                            return "lightcoral";
-                        }
-                        if (monitorValue.Value < monitorCommandLimit.WarningLimit)
-                        {
-                            return "lightgoldenrodyellow";
-                        }
+                        return "lightgoldenrodyellow";
                     }
+                    //if (!monitorCommandLimit.IsLowLimit)
+                    //{
+                    //    if (monitorValue.Value > monitorCommandLimit.ErrorLimit)
+                    //    {
+                    //        return "lightcoral";
+                    //    }
+                    //    if (monitorValue.Value > monitorCommandLimit.WarningLimit)
+                    //    {
+                    //        return "lightgoldenrodyellow";
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    if (monitorValue.Value < monitorCommandLimit.ErrorLimit)
+                    //    {
+                    //        return "lightcoral";
+                    //    }
+                    //    if (monitorValue.Value < monitorCommandLimit.WarningLimit)
+                    //    {
+                    //        return "lightgoldenrodyellow";
+                    //    }
+                    //}
                 }
             }
             return string.Empty;
@@ -143,6 +193,41 @@ namespace dev_web_api
 
             var monitorSettings = MonitorSettings.FromJson(json);
             return monitorSettings;
+        }
+
+        public static void SendMonitorLimitEmail(
+                                            List<MonitorValue> monitorValues,
+                                            List<MonitorCommandLimit> monitorCommandLimits,
+                                            List<MonitorCommand> monitorCommands)
+        {
+            foreach (var monitorValue in monitorValues)
+            {
+                foreach (var monitorCommandLimit in monitorCommandLimits)
+                {
+                    if (IsMonitorValueLimitError(monitorValue, monitorCommandLimit))
+                    {
+                        var monitorLimitEmail = (new MonitorDb()).GetMonitorLimitEmail(
+                                                                                1,
+                                                                                monitorValue.MonitorCommandId,
+                                                                                monitorValue.AgentId);
+                        if (monitorLimitEmail != null)
+                        {
+                            if (DateTime.UtcNow.Subtract(
+                                                monitorLimitEmail.LastSent).Hours > 1)
+                            {
+                                var monitorCommand =
+                                        monitorCommands.Find(x => x.MonitorCommandId == monitorValue.MonitorCommandId);
+                                SendEmail(
+                                        monitorLimitEmail.ToEmailAddress,
+                                        "Your monitor limit is exceeded",
+                                        $"Monitor limit exceeded for {monitorCommand.Name}: {monitorCommand.Arg1}");
+                                monitorLimitEmail.LastSent = DateTime.UtcNow;
+                                (new MonitorDb()).UpdateMonitorLimitEmail(monitorLimitEmail);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         public static void SendEmail(

@@ -652,9 +652,9 @@ namespace dev_web_api
                         email_address = '{monitorLimitEmail.ToEmailAddress}',
                         last_error_email_sent = '{DateTime.UtcNow:o}'
                     WHERE
-                        user_id = {monitorLimitEmail.UserId}' AND
-                        agent_id = {monitorLimitEmail.UserId}' AND
-                        monitor_command_id = {monitorLimitEmail.MonitorCommandId}'"
+                        user_id = {monitorLimitEmail.UserId} AND
+                        agent_id = {monitorLimitEmail.UserId} AND
+                        monitor_command_id = {monitorLimitEmail.MonitorCommandId}"
             };
             cmd.ExecuteNonQuery();
             sqlLiteConn.Close();

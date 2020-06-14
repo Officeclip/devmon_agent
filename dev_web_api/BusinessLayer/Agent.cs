@@ -10,10 +10,22 @@ namespace dev_web_api.BusinessLayer
         public int AgentId { get; set; }
         public string Guid { get; set; }
         public string MachineName { get; set; }
+        public string Alias { get; set; }
         public int OrgId { get; set; }
         public DateTime RegistrationDate { get; set; }
         public DateTime LastQueried { get; set; }
         public DateTime LastReplyReceived { get; set; }
+
+        public string ScreenName
+        {
+            get
+            {
+                return
+                    !string.IsNullOrEmpty(Alias) && (MachineName != Alias)
+                    ? Alias
+                    : MachineName;
+            }
+        }
         
     }
 }

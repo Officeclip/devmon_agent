@@ -11,7 +11,7 @@ namespace dev_web_api
 {
 
 
-    public partial class _default
+    public partial class alias
     {
 
         /// <summary>
@@ -24,48 +24,30 @@ namespace dev_web_api
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// tblMonitor control.
+        /// rptAlias control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTable tblMonitor;
+        protected global::System.Web.UI.WebControls.Repeater rptAlias;
 
         /// <summary>
-        /// btnPopup control.
+        /// btnSave control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnPopup;
+        protected global::System.Web.UI.WebControls.Button btnSave;
 
         /// <summary>
-        /// btnAlias control.
+        /// hypCancel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAlias;
-
-        /// <summary>
-        /// btnHardware control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnHardware;
-
-        /// <summary>
-        /// btnSoftware control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSoftware;
+        protected global::System.Web.UI.WebControls.HyperLink hypCancel;
     }
 }

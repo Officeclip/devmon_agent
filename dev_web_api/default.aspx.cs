@@ -51,5 +51,12 @@ namespace dev_web_api
             string newWin = "window.open('" + queryString + "');";
             ClientScript.RegisterStartupScript(this.GetType(), "software", newWin, true);
         }
+
+        protected void btnAlias_Click(object sender, EventArgs e)
+        {
+            string queryString = "alias.aspx";
+            string newWin = "window.open('" + queryString + "');";
+            ClientScript.RegisterStartupScript(this.GetType(), "alias", newWin, true);
+        }
     }
 }

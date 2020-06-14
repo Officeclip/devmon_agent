@@ -36,6 +36,10 @@ namespace dev_web_api
                         AgentId = Convert.ToInt32(sqlite_datareader["agent_id"]),
                         Guid = sqlite_datareader["guid"].ToString(),
                         MachineName = sqlite_datareader["machine_name"].ToString(),
+                        Alias = 
+                                sqlite_datareader["alias"] == DBNull.Value
+                                ? string.Empty
+                                : sqlite_datareader["alias"].ToString()
                     };
                     DateTime result;
                     var isValid = DateTime.TryParse(
@@ -117,66 +121,12 @@ namespace dev_web_api
             }
             return monitorCommandLimits;
         }
+
         public Agent GetAgentByGuid(string guid)
         {
             _logger.Info("GetAgentByGuid(...)");
-
-            SQLiteDataReader sqlite_datareader;
-            SQLiteCommand sqlite_cmd;
-            var sqlLiteConn = new SQLiteConnection(ConnectionString);
-
-            sqlLiteConn.Open();
-            sqlite_cmd = sqlLiteConn.CreateCommand();
-            sqlite_cmd.CommandText = $"SELECT * FROM agents WHERE guid = '{guid}'";
-            sqlite_datareader = sqlite_cmd.ExecuteReader();
-            Agent agent = null;
-            try
-            {
-                while (sqlite_datareader.Read())
-                {
-                    agent = new Agent()
-                    {
-                        AgentId = Convert.ToInt32(sqlite_datareader["agent_id"]),
-                        Guid = sqlite_datareader["guid"].ToString(),
-                        MachineName = sqlite_datareader["machine_name"].ToString(),
-                    };
-                    DateTime result;
-                    var isValid = DateTime.TryParse(
-                                sqlite_datareader["registration_date"].ToString(),
-                                out result);
-                    if (isValid)
-                    {
-                        agent.RegistrationDate = result;
-                    }
-                    isValid = DateTime.TryParse(
-                                sqlite_datareader["last_queried"].ToString(),
-                                out result);
-                    if (isValid)
-                    {
-                        agent.LastQueried = result;
-                    }
-                    isValid = DateTime.TryParse(
-                                sqlite_datareader["last_reply_received"].ToString(),
-                                out result);
-                    if (isValid)
-                    {
-                        agent.LastReplyReceived = result;
-                    }
-                }
-            }
-            catch (SQLiteException ex)
-            {
-                _logger.Error($"Database Error: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"General Error: {ex.Message}");
-            }
-            finally
-            {
-                sqlite_datareader.Close();
-                sqlLiteConn.Close();
-            }
+            var agents = GetAgents();
+            var agent = agents.Find(x => x.Guid == guid);
             return agent;
         }
 
@@ -310,6 +260,43 @@ namespace dev_web_api
             finally
             {
                 sqlLiteConn.Close();
+            }
+        }
+
+        public void UpdateAlias(int agentId, string alias)
+        {
+            // First get the agentId
+            var agents = GetAgents();
+            var agent = agents.Find(x => x.AgentId == agentId);
+            if (
+                (agent != null) &&
+                (agent.MachineName != alias))
+            {
+                var sqlLiteConn = new SQLiteConnection(ConnectionString);
+                sqlLiteConn.Open();
+                var cmd = new SQLiteCommand(sqlLiteConn);
+                cmd.CommandText = $@"
+                    update agents SET 
+                        alias = '{alias.Replace("'", "''")}'
+                    WHERE
+                        agent_id = {agentId}";
+                _logger.Info(cmd.CommandText);
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SQLiteException ex)
+                {
+                    _logger.Error($"Database Error: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error($"General Error: {ex.Message}");
+                }
+                finally
+                {
+                    sqlLiteConn.Close();
+                }
             }
         }
 

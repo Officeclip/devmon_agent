@@ -115,7 +115,7 @@ namespace dev_web_api
             }
             for (int i = 0; i < agents.Count; i++)
             {
-                monitorTable.Rows[i+1].Cells[0].InnerHtml = agents[i].MachineName;
+                monitorTable.Rows[i+1].Cells[0].InnerHtml = agents[i].ScreenName;
             }
         }
 

@@ -110,6 +110,7 @@
   <ItemGroup>
     <Content Include="default.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="alias.aspx" />
     <Content Include="software.aspx" />
     <Content Include="hardware.aspx" />
     <Content Include="monitor.aspx" />
@@ -131,6 +132,13 @@
     </Compile>
     <Compile Include="default.aspx.designer.cs">
       <DependentUpon>default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="alias.aspx.cs">
+      <DependentUpon>alias.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="alias.aspx.designer.cs">
+      <DependentUpon>alias.aspx</DependentUpon>
     </Compile>
     <Compile Include="software.aspx.cs">
       <DependentUpon>software.aspx</DependentUpon>

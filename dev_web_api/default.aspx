@@ -44,6 +44,9 @@
                 <asp:Button ID="btnPopup" runat="server"
                     Text="Edit Monitor"
                     OnClick="btnPopup_Click" />
+                <asp:Button ID="btnAlias" runat="server"
+                    Text="Aliases"
+                    OnClick="btnAlias_Click" />
             </div>
             <div style="margin: 20px">
                 <asp:Button ID="btnHardware" runat="server"

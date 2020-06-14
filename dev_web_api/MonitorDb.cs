@@ -585,10 +585,10 @@ namespace dev_web_api
             sqlLiteConn.Close();
         }
 
-        public MonitorLimitEmail GetMonitorLimitEmail(
-                                int userId, 
-                                int monitorCommandId, 
-                                int agentId)
+        public UserNotification GetUserNotification(
+                                    int userId,
+                                    int agentId,
+                                    int monitorCommandId)
         {
             SQLiteDataReader sqlite_datareader;
             SQLiteCommand sqlite_cmd;
@@ -596,33 +596,40 @@ namespace dev_web_api
             sqlLiteConn.Open();
             sqlite_cmd = sqlLiteConn.CreateCommand();
             sqlite_cmd.CommandText =
-                $"SELECT * FROM monitorLimitEmails where user_id = {userId} AND monitor_command_id = {monitorCommandId} AND agent_id = {agentId}";
+                $@"
+                    SELECT * FROM 
+                        userNotifications un, users u
+                    WHERE
+                        u.user_id = un.user_id AND
+                        un.user_id = {userId} AND 
+                        agent_id = {agentId} AND 
+                        monitor_command_id = {monitorCommandId}";
             sqlite_datareader = sqlite_cmd.ExecuteReader();
-            MonitorLimitEmail monitorLimitEmail = null;
+            UserNotification userNotification = null;
             while (sqlite_datareader.Read())
             {
-                monitorLimitEmail = new MonitorLimitEmail()
+                userNotification = new UserNotification()
                 {
                     UserId = userId,
+                    EmailAddress = sqlite_datareader["email_address"].ToString(),
                     AgentId = agentId,
                     MonitorCommandId = monitorCommandId,
-                    ToEmailAddress = sqlite_datareader["email_address"].ToString(),
                 };
                 DateTime result;
                 var isValid = DateTime.TryParse(
-                            sqlite_datareader["last_error_email_sent"].ToString(),
+                            sqlite_datareader["last_notified"].ToString(),
                             out result);
                 if (isValid)
                 {
-                    monitorLimitEmail.LastSent = result;
+                    userNotification.LastNotified = result;
                 }
             }
             sqlite_datareader.Close();
             sqlLiteConn.Close();
-            return monitorLimitEmail;
+            return userNotification;
         }
 
-        public void InsertMonitorLimitEmail(MonitorLimitEmail monitorLimitEmail)
+        public void InsertUserNotification(UserNotification userNotification)
         {
             var sqlLiteConn = new SQLiteConnection(ConnectionString);
             sqlLiteConn.Open();
@@ -630,16 +637,26 @@ namespace dev_web_api
             {
                 CommandText = $@"
                     INSERT INTO 
-                        monitorLimitEmails 
-                        (user_id, agent_id, monitor_command_id, email_address, last_error_email_sent) 
+                        usernotifications 
+                        (
+                            user_id, 
+                            agent_id, 
+                            monitor_command_id, 
+                            last_notified
+                        )
                     VALUES 
-                        ({monitorLimitEmail.UserId}, {monitorLimitEmail.AgentId}, {monitorLimitEmail.MonitorCommandId}, '{monitorLimitEmail.ToEmailAddress}', '{monitorLimitEmail.LastSent}')"
+                        (
+                            {userNotification.UserId}, 
+                            {userNotification.AgentId}, 
+                            {userNotification.MonitorCommandId}, 
+                            {userNotification.LastNotified:o},
+                        )"
             };
             cmd.ExecuteNonQuery();
             sqlLiteConn.Close();
         }
 
-        public void UpdateMonitorLimitEmail(MonitorLimitEmail monitorLimitEmail)
+        public void UpdateUserNotification(UserNotification userNotification)
         {
             var sqlLiteConn = new SQLiteConnection(ConnectionString);
             sqlLiteConn.Open();
@@ -647,33 +664,53 @@ namespace dev_web_api
             {
                 CommandText = $@"
                     UPDATE
-                        monitorLimitEmails 
+                        userNotifications 
                     SET
-                        email_address = '{monitorLimitEmail.ToEmailAddress}',
-                        last_error_email_sent = '{DateTime.UtcNow:o}'
+                        last_notified = '{userNotification.LastNotified:o}'
                     WHERE
-                        user_id = {monitorLimitEmail.UserId} AND
-                        agent_id = {monitorLimitEmail.UserId} AND
-                        monitor_command_id = {monitorLimitEmail.MonitorCommandId}"
+                        user_id = {userNotification.UserId} AND
+                        user_id = {userNotification.AgentId} AND
+                        user_id = {userNotification.MonitorCommandId}"
             };
             cmd.ExecuteNonQuery();
             sqlLiteConn.Close();
         }
 
-        public void UpsertMonitorLimitEmail(MonitorLimitEmail monitorLimitEmail)
+        public void UpsertUserNotification(UserNotification userNotification)
         {
-            var matchedMonitorLimitEmail = GetMonitorLimitEmail(
-                                                    monitorLimitEmail.UserId,
-                                                    monitorLimitEmail.MonitorCommandId,
-                                                    monitorLimitEmail.AgentId);
-            if (matchedMonitorLimitEmail == null)
+            var matchedUserNotification = GetUserNotification(
+                                                        userNotification.UserId,
+                                                        userNotification.AgentId,
+                                                        userNotification.MonitorCommandId);
+            if (matchedUserNotification == null)
             {
-                InsertMonitorLimitEmail(monitorLimitEmail);
+                InsertUserNotification(userNotification);
             }
             else
             {
-                UpdateMonitorLimitEmail(monitorLimitEmail);
+                UpdateUserNotification(userNotification);
             }
+        }
+
+        public void DeleteUserNotification(
+                                    int userId,
+                                    int agentId,
+                                    int monitorCommandId)
+        {
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn)
+            {
+                CommandText = $@"
+                    DELETE
+                        userNotifications 
+                    WHERE
+                        user_id = {userId} AND
+                        user_id = {agentId} AND
+                        user_id = {monitorCommandId}"
+            };
+            cmd.ExecuteNonQuery();
+            sqlLiteConn.Close();
         }
     }
 }

@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Text;
 using System.Web;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
@@ -195,6 +196,24 @@ namespace dev_web_api
             return monitorSettings;
         }
 
+        private static string EmailDescription(
+                                    MonitorCommand monitorCommand,
+                                    MonitorValue monitorValue)
+        {
+            var stringBuilder = new StringBuilder();
+            stringBuilder.Append("Monitor limit exceeded for ");
+            stringBuilder.Append(monitorCommand.Name);
+            if (!string.IsNullOrEmpty(monitorCommand.Arg1)){
+                stringBuilder.Append($": {monitorCommand.Arg1}");
+            }
+            if (!string.IsNullOrEmpty(monitorCommand.Arg2))
+            {
+                stringBuilder.Append($": {monitorCommand.Arg2}");
+            }
+            stringBuilder.Append($" - {monitorValue.Value}{monitorValue.Unit}");
+            return stringBuilder.ToString();
+        }
+
         public static void SendMonitorLimitEmail(
                                             List<MonitorValue> monitorValues,
                                             List<MonitorCommandLimit> monitorCommandLimits,
@@ -206,25 +225,33 @@ namespace dev_web_api
                 {
                     if (IsMonitorValueLimitError(monitorValue, monitorCommandLimit))
                     {
-                        var monitorLimitEmail = (new MonitorDb()).GetMonitorLimitEmail(
-                                                                                1,
-                                                                                monitorValue.MonitorCommandId,
-                                                                                monitorValue.AgentId);
-                        if (monitorLimitEmail != null)
+                        var userNotification = (new MonitorDb())
+                                                        .GetUserNotification(
+                                                                1,
+                                                                monitorValue.AgentId,
+                                                                monitorValue.MonitorCommandId);
+                        if (userNotification != null)
                         {
                             if (DateTime.UtcNow.Subtract(
-                                                monitorLimitEmail.LastSent).Hours > 1)
+                                                userNotification.LastNotified).Hours > 1)
                             {
                                 var monitorCommand =
                                         monitorCommands.Find(x => x.MonitorCommandId == monitorValue.MonitorCommandId);
                                 SendEmail(
-                                        monitorLimitEmail.ToEmailAddress,
+                                        userNotification.EmailAddress,
                                         "Your monitor limit is exceeded",
-                                        $"Monitor limit exceeded for {monitorCommand.Name}: {monitorCommand.Arg1}");
-                                monitorLimitEmail.LastSent = DateTime.UtcNow;
-                                (new MonitorDb()).UpdateMonitorLimitEmail(monitorLimitEmail);
+                                        EmailDescription(monitorCommand, monitorValue));
+                                userNotification.LastNotified = DateTime.UtcNow;
+                                (new MonitorDb()).UpdateUserNotification(userNotification);
                             }
                         }
+                    }
+                    else
+                    {
+                        (new MonitorDb()).DeleteUserNotification(
+                                                            1,
+                                                            monitorValue.AgentId,
+                                                            monitorValue.MonitorCommandId);
                     }
                 }
             }

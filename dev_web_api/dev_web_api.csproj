@@ -120,11 +120,12 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="BusinessLayer\AgentResource.cs" />
     <Compile Include="BusinessLayer\MonitorCommandLimit.cs" />
-    <Compile Include="BusinessLayer\MonitorLimitEmail.cs" />
+    <Compile Include="BusinessLayer\User.cs" />
     <Compile Include="BusinessLayer\MonitorSettings.cs" />
     <Compile Include="BusinessLayer\MonitorValue.cs" />
     <Compile Include="BusinessLayer\Agent.cs" />
     <Compile Include="BusinessLayer\MonitorCommand.cs" />
+    <Compile Include="BusinessLayer\UserNotification.cs" />
     <Compile Include="Models\SoftwareInfo.cs" />
     <Compile Include="Controllers\StableDeviceController.cs" />
     <Compile Include="Controllers\MonitorValuesController.cs" />

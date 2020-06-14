@@ -1,0 +1,12 @@
+{
+  "db_location": "",
+  "email": {
+    "server": "",
+    "login": "",
+    "password": "",
+    "port": "",
+    "is-ssl": "",
+    "is_start_tls": "",
+    "from_email": ""
+  }
+}

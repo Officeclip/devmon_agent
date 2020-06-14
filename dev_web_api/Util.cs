@@ -2,7 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Web;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
@@ -122,6 +125,46 @@ namespace dev_web_api
         public static bool IsServerGuidValid(string guid)
         {
             return (new MonitorDb()).GetServerGuid() == guid;
+        }
+
+        public static MonitorSettings GetMonitorSettings()
+        {
+            var fileName = "monitorSettings.json";
+            var fi = new FileInfo(
+                                Path.Combine(
+                                        AppDomain.CurrentDomain.BaseDirectory,
+                                        fileName));
+            if (!fi.Exists)
+            {
+                throw new FileNotFoundException($"app settings file not found {fileName}");
+            }
+
+            var json = File.ReadAllText(fi.FullName);
+
+            var monitorSettings = MonitorSettings.FromJson(json);
+            return monitorSettings;
+        }
+
+        public static void SendEmail(
+                                string toEmailAddress,
+                                string subject,
+                                string body)
+        {
+            var monitorSettings = GetMonitorSettings();
+            var smtpClient = new SmtpClient(monitorSettings.Email.Server)
+            {
+                Port = monitorSettings.Email.Port,
+                Credentials = new NetworkCredential(
+                                            monitorSettings.Email.Login,
+                                            monitorSettings.Email.Password),
+                EnableSsl = monitorSettings.Email.IsSsl,
+            };
+
+            smtpClient.Send(
+                        monitorSettings.Email.FromEmail, 
+                        toEmailAddress,
+                        subject, 
+                        body);
         }
 
     }

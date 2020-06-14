@@ -120,6 +120,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="BusinessLayer\AgentResource.cs" />
     <Compile Include="BusinessLayer\MonitorCommandLimit.cs" />
+    <Compile Include="BusinessLayer\MonitorSettings.cs" />
     <Compile Include="BusinessLayer\MonitorValue.cs" />
     <Compile Include="BusinessLayer\Agent.cs" />
     <Compile Include="BusinessLayer\MonitorCommand.cs" />
@@ -175,6 +176,8 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="monitorSettings.example.json" />
+    <Content Include="monitorSettings.json" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

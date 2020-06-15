@@ -15,6 +15,13 @@ namespace dev_web_api
     public partial class software : System.Web.UI.Page
     {
         MonitorDb monitorDb = new MonitorDb();
+        protected void Page_Init(object sender, EventArgs e)
+        {
+            ddlAgents.DataSource = monitorDb.GetAgents();
+            ddlAgents.DataValueField = "AgentId";
+            ddlAgents.DataTextField = "ScreenName";
+            ddlAgents.DataBind();
+        }
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!Page.IsPostBack)
@@ -25,9 +32,15 @@ namespace dev_web_api
 
         private void LoadData()
         {
-            var agentResource = monitorDb.GetAgentResource(1);
-            grdSoftware.DataSource = Softwares(agentResource.StableDeviceJson);
-            grdSoftware.DataBind();
+            var agentResource = monitorDb.GetAgentResource(
+                                                Convert.ToInt32(ddlAgents.SelectedValue));
+            grdSoftware.Visible = (agentResource != null);
+            lblEmptyData.Visible = (agentResource == null);
+            if (agentResource != null)
+            {
+                grdSoftware.DataSource = Softwares(agentResource.StableDeviceJson);
+                grdSoftware.DataBind();
+            }
         }
 
         /// <summary>
@@ -41,6 +54,11 @@ namespace dev_web_api
             JToken softwaresToken = sJToken["softwares"];
             var softwares = softwaresToken.ToObject<SoftwareInfo[]>().ToList();
             return softwares;
+        }
+
+        protected void ddlAgents_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadData();
         }
 
     }

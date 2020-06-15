@@ -14,6 +14,13 @@ namespace dev_web_api
     public partial class hardware : System.Web.UI.Page
     {
         MonitorDb monitorDb = new MonitorDb();
+        protected void Page_Init(object sender, EventArgs e)
+        {
+            ddlAgents.DataSource = monitorDb.GetAgents();
+            ddlAgents.DataValueField = "AgentId";
+            ddlAgents.DataTextField = "ScreenName";
+            ddlAgents.DataBind();
+        }
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!Page.IsPostBack)
@@ -24,8 +31,14 @@ namespace dev_web_api
 
         private void LoadData()
         {
-            var agentResource = monitorDb.GetAgentResource(1);
-            LoadJsonToTreeView(treeView1, agentResource.StableDeviceJson);
+            var agentResource = monitorDb.GetAgentResource(
+                                                Convert.ToInt32(ddlAgents.SelectedValue));
+            treeView1.Visible = (agentResource != null);
+            lblEmptyData.Visible = (agentResource == null);
+            if (agentResource != null)
+            {
+                LoadJsonToTreeView(treeView1, agentResource.StableDeviceJson);
+            }
         }
 
         /// <summary>
@@ -83,5 +96,9 @@ namespace dev_web_api
             }
         }
 
+        protected void ddlAgents_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadData();
+        }
     }
 }

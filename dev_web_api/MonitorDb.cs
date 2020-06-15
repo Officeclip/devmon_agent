@@ -41,28 +41,16 @@ namespace dev_web_api
                                 ? string.Empty
                                 : sqlite_datareader["alias"].ToString()
                     };
-                    DateTime result;
-                    var isValid = DateTime.TryParse(
-                                sqlite_datareader["registration_date"].ToString(),
-                                out result);
-                    if (isValid)
-                    {
-                        agent.RegistrationDate = result;
-                    }
-                    isValid = DateTime.TryParse(
-                                sqlite_datareader["last_queried"].ToString(),
-                                out result);
-                    if (isValid)
-                    {
-                        agent.LastQueried = result;
-                    }
-                    isValid = DateTime.TryParse(
-                                sqlite_datareader["last_reply_received"].ToString(),
-                                out result);
-                    if (isValid)
-                    {
-                        agent.LastReplyReceived = result;
-                    }
+                    agent.RegistrationDate =
+                                      ConvertToUtcDateTime(
+                                                    sqlite_datareader["registration_date"]);
+                    agent.LastQueried =
+                                      ConvertToUtcDateTime(
+                                                    sqlite_datareader["last_queried"]);
+                    agent.LastReplyReceived =
+                                      ConvertToUtcDateTime(
+                                                    sqlite_datareader["last_reply_received"]);
+
                     agents.Add(agent);
                 }
             }
@@ -503,14 +491,9 @@ namespace dev_web_api
                     AgentId = Convert.ToInt32(sqlite_datareader["agent_id"]),
                     StableDeviceJson = sqlite_datareader["stable_device_json"].ToString(),
                 };
-                DateTime result;
-                var isValid = DateTime.TryParse(
-                            sqlite_datareader["last_updated_date"].ToString(),
-                            out result);
-                if (isValid)
-                {
-                    agentResource.LastUpdatedDate = result;
-                }
+                agentResource.LastUpdatedDate = 
+                                        ConvertToUtcDateTime(
+                                                    sqlite_datareader["last_updated_date"]);
             }
             sqlite_datareader.Close();
             sqlLiteConn.Close();
@@ -615,18 +598,23 @@ namespace dev_web_api
                     AgentId = agentId,
                     MonitorCommandId = monitorCommandId,
                 };
-                DateTime result;
-                var isValid = DateTime.TryParse(
-                            sqlite_datareader["last_notified"].ToString(),
-                            out result);
-                if (isValid)
-                {
-                    userNotification.LastNotified = result;
-                }
+                userNotification.LastNotified = ConvertToUtcDateTime(
+                                                            sqlite_datareader["last_notified"]);
             }
             sqlite_datareader.Close();
             sqlLiteConn.Close();
             return userNotification;
+        }
+
+        private DateTime ConvertToUtcDateTime(object dataReaderObject)
+        {
+            DateTimeOffset result;
+            var isValid = DateTimeOffset.TryParse(
+                        dataReaderObject.ToString(),
+                        out result);
+            return (isValid)
+                        ? result.UtcDateTime
+                        : DateTime.MinValue;
         }
 
         public void InsertUserNotification(UserNotification userNotification)
@@ -669,8 +657,8 @@ namespace dev_web_api
                         last_notified = '{userNotification.LastNotified:o}'
                     WHERE
                         user_id = {userNotification.UserId} AND
-                        user_id = {userNotification.AgentId} AND
-                        user_id = {userNotification.MonitorCommandId}"
+                        agent_id = {userNotification.AgentId} AND
+                        monitor_command_id = {userNotification.MonitorCommandId}"
             };
             cmd.ExecuteNonQuery();
             sqlLiteConn.Close();

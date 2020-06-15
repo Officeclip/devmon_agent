@@ -224,13 +224,13 @@ namespace dev_web_api
                                                                 MonitorCommandId = monitorValue.MonitorCommandId,
                                                                 LastNotified = DateTime.UtcNow
                                                             });
+                            // Again getting the just entered notification as we do not have the email address
+                            userNotification = (new MonitorDb())
+                                                            .GetUserNotification(
+                                                                    1,
+                                                                    monitorValue.AgentId,
+                                                                    monitorValue.MonitorCommandId);
                         }
-                        // Again getting the just entered notification as we do not have the email address
-                       userNotification = (new MonitorDb())
-                                                       .GetUserNotification(
-                                                               1,
-                                                               monitorValue.AgentId,
-                                                               monitorValue.MonitorCommandId);
                         if (DateTime.UtcNow.Subtract(
                                             userNotification.LastNotified).Hours > 1)
                         {

@@ -649,7 +649,7 @@ namespace dev_web_api
                             {userNotification.UserId}, 
                             {userNotification.AgentId}, 
                             {userNotification.MonitorCommandId}, 
-                            {userNotification.LastNotified:o},
+                            '{userNotification.LastNotified:o}'
                         )"
             };
             cmd.ExecuteNonQuery();
@@ -697,18 +697,20 @@ namespace dev_web_api
                                     int agentId,
                                     int monitorCommandId)
         {
+            _logger.Info($"DeleteNotification ({userId}, {agentId}, {monitorCommandId})");
             var sqlLiteConn = new SQLiteConnection(ConnectionString);
             sqlLiteConn.Open();
             var cmd = new SQLiteCommand(sqlLiteConn)
             {
                 CommandText = $@"
-                    DELETE
+                    DELETE FROM
                         userNotifications 
                     WHERE
                         user_id = {userId} AND
-                        user_id = {agentId} AND
-                        user_id = {monitorCommandId}"
+                        agent_id = {agentId} AND
+                        monitor_command_id = {monitorCommandId}"
             };
+            _logger.Info(cmd.CommandText);
             cmd.ExecuteNonQuery();
             sqlLiteConn.Close();
         }

@@ -89,28 +89,6 @@ namespace dev_web_api
                     {
                         return "lightgoldenrodyellow";
                     }
-                    //if (!monitorCommandLimit.IsLowLimit)
-                    //{
-                    //    if (monitorValue.Value > monitorCommandLimit.ErrorLimit)
-                    //    {
-                    //        return "lightcoral";
-                    //    }
-                    //    if (monitorValue.Value > monitorCommandLimit.WarningLimit)
-                    //    {
-                    //        return "lightgoldenrodyellow";
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    if (monitorValue.Value < monitorCommandLimit.ErrorLimit)
-                    //    {
-                    //        return "lightcoral";
-                    //    }
-                    //    if (monitorValue.Value < monitorCommandLimit.WarningLimit)
-                    //    {
-                    //        return "lightgoldenrodyellow";
-                    //    }
-                    //}
                 }
             }
             return string.Empty;
@@ -221,8 +199,14 @@ namespace dev_web_api
         {
             foreach (var monitorValue in monitorValues)
             {
+                var monitorCommand =
+                        monitorCommands.Find(x => x.MonitorCommandId == monitorValue.MonitorCommandId);
                 foreach (var monitorCommandLimit in monitorCommandLimits)
                 {
+                    if (monitorCommandLimit.Type != monitorCommand.Type)
+                    {
+                        break;
+                    }
                     if (IsMonitorValueLimitError(monitorValue, monitorCommandLimit))
                     {
                         var userNotification = (new MonitorDb())
@@ -230,20 +214,32 @@ namespace dev_web_api
                                                                 1,
                                                                 monitorValue.AgentId,
                                                                 monitorValue.MonitorCommandId);
-                        if (userNotification != null)
+                        if (userNotification == null)
                         {
-                            if (DateTime.UtcNow.Subtract(
-                                                userNotification.LastNotified).Hours > 1)
-                            {
-                                var monitorCommand =
-                                        monitorCommands.Find(x => x.MonitorCommandId == monitorValue.MonitorCommandId);
-                                SendEmail(
-                                        userNotification.EmailAddress,
-                                        "Your monitor limit is exceeded",
-                                        EmailDescription(monitorCommand, monitorValue));
-                                userNotification.LastNotified = DateTime.UtcNow;
-                                (new MonitorDb()).UpdateUserNotification(userNotification);
-                            }
+                            (new MonitorDb()).InsertUserNotification(
+                                                            new UserNotification()
+                                                            {
+                                                                UserId = 1,
+                                                                AgentId = monitorValue.AgentId,
+                                                                MonitorCommandId = monitorValue.MonitorCommandId,
+                                                                LastNotified = DateTime.UtcNow
+                                                            });
+                        }
+                        // Again getting the just entered notification as we do not have the email address
+                       userNotification = (new MonitorDb())
+                                                       .GetUserNotification(
+                                                               1,
+                                                               monitorValue.AgentId,
+                                                               monitorValue.MonitorCommandId);
+                        if (DateTime.UtcNow.Subtract(
+                                            userNotification.LastNotified).Hours > 1)
+                        {
+                            SendEmail(
+                                    userNotification.EmailAddress,
+                                    "Your monitor limit is exceeded",
+                                    EmailDescription(monitorCommand, monitorValue));
+                            userNotification.LastNotified = DateTime.UtcNow;
+                            (new MonitorDb()).UpdateUserNotification(userNotification);
                         }
                     }
                     else

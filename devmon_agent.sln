@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "devmon_service", "devmon_se
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "devmon_library", "devmon_library\devmon_library.csproj", "{16DCE9D4-7DF2-41CA-ABB5-2800EF1356DD}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "devapi_setup", "devapi_setup\devapi_setup.vdproj", "{B6322263-A9D7-48EC-8922-E5425362C293}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,8 @@ Global
 		{16DCE9D4-7DF2-41CA-ABB5-2800EF1356DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16DCE9D4-7DF2-41CA-ABB5-2800EF1356DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16DCE9D4-7DF2-41CA-ABB5-2800EF1356DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6322263-A9D7-48EC-8922-E5425362C293}.Debug|Any CPU.ActiveCfg = Debug
+		{B6322263-A9D7-48EC-8922-E5425362C293}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

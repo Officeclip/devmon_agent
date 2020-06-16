@@ -111,6 +111,8 @@
     <Content Include="default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="alias.aspx" />
+    <Content Include="sql\testData.sql" />
+    <Content Include="sql\schema.sql" />
     <Content Include="software.aspx" />
     <Content Include="hardware.aspx" />
     <Content Include="monitor.aspx" />

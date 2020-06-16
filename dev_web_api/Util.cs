@@ -275,5 +275,10 @@ namespace dev_web_api
                         body);
         }
 
+        public static string ReadFile(string path)
+        {
+            return File.ReadAllText(path, Encoding.UTF8);
+        }
+
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -11,11 +12,50 @@ namespace dev_web_api
 {
     public class MonitorDb
     {
-        private const string ConnectionString =
-            @"Data Source=C:\OfficeClipNew\OpenSource\devmon_agent\monitor.db";
-        //private static SQLiteConnection sqlLiteConn = new SQLiteConnection(ConnectionString);
+        private readonly string ConnectionString;
 
         static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+
+        public MonitorDb()
+        {
+            _logger.Info("*** Monitordb() ***");
+            var dbPath = Path.Combine(HttpRuntime.AppDomainAppPath, "monitor.sqlite");
+            ConnectionString = $"Data Source={dbPath}";
+            if (!File.Exists(dbPath))
+            {
+                CreateNewDatabase(dbPath);
+            }
+        }
+
+        private void CreateNewDatabase(string dbPath)
+        {
+            _logger.Info("*** CreateNewDatabase(...) ***");
+            SQLiteConnection.CreateFile(dbPath);
+            var sqlPath = Path.Combine(Path.GetDirectoryName(dbPath), @"sql\schema.sql");
+            _logger.Info($"sqlPath = {sqlPath}");
+
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn);
+            cmd.CommandText = Util.ReadFile(sqlPath);
+            _logger.Info(cmd.CommandText);
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (SQLiteException ex)
+            {
+                _logger.Error($"Database Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"General Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlLiteConn.Close();
+            }
+        }
 
         public List<Agent> GetAgents()
         {

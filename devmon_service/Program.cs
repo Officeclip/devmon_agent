@@ -12,7 +12,7 @@ namespace devmon_service
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        static void Main()
+        static void Main(string[] args)
         {
 //#if DEBUG
 //            var service1 = new MonitorService();
@@ -22,7 +22,7 @@ namespace devmon_service
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]
             {
-                new MonitorService()
+                new MonitorService(args)
             };
             ServiceBase.Run(ServicesToRun);
 //#endif

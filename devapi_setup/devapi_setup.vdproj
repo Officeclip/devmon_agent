@@ -39,19 +39,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_3CDDA693C1A843F2AD6CF170D264EE5D"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_402530C07D154FB8BF65F7400E0766E2"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_480E3069943F43519FFA13EF1D03471F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -83,12 +71,6 @@
         {
         "MsmKey" = "8:_719A43E28943824609793120151AD073"
         "OwnerKey" = "8:_B92565154B5443EE8DDA6FD4FBC20994"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_880BD6EAD9AD4F69A27421BD3DA39D28"
-        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -444,50 +426,10 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3CDDA693C1A843F2AD6CF170D264EE5D"
-            {
-            "SourcePath" = "8:..\\devmon_service\\bin\\Debug\\NLog.xml"
-            "TargetName" = "8:NLog.xml"
-            "Tag" = "8:"
-            "Folder" = "8:_CF2161D7C2DE45A993AED61967A87289"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_402530C07D154FB8BF65F7400E0766E2"
             {
             "SourcePath" = "8:..\\devmon_service\\bin\\Debug\\RestSharp.xml"
             "TargetName" = "8:RestSharp.xml"
-            "Tag" = "8:"
-            "Folder" = "8:_CF2161D7C2DE45A993AED61967A87289"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_480E3069943F43519FFA13EF1D03471F"
-            {
-            "SourcePath" = "8:..\\devmon_service\\bin\\Debug\\NLog.config"
-            "TargetName" = "8:NLog.config"
             "Tag" = "8:"
             "Folder" = "8:_CF2161D7C2DE45A993AED61967A87289"
             "Condition" = "8:"
@@ -593,26 +535,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_880BD6EAD9AD4F69A27421BD3DA39D28"
-            {
-            "SourcePath" = "8:..\\devmon_service\\bin\\Debug\\appSettings.example.json"
-            "TargetName" = "8:appSettings.example.json"
-            "Tag" = "8:"
-            "Folder" = "8:_CF2161D7C2DE45A993AED61967A87289"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_88F0162D54D974F3A377B36562501753"
@@ -958,7 +880,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Agent Monitor"
         "ProductCode" = "8:{D9C4D8BB-979C-4DBF-823E-853FF8F12BDE}"
-        "PackageCode" = "8:{0947A790-C0D8-484E-8A7B-10CE3A707681}"
+        "PackageCode" = "8:{5F29417E-8CE0-4B20-817C-0B306759AB51}"
         "UpgradeCode" = "8:{DF69E497-9693-417C-9985-A82C58AAA019}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

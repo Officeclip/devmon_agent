@@ -21,25 +21,18 @@ namespace devmon_service
         public MonitorService()
         {
             InitializeComponent();
-             //AddSettings("xxx", "yyy");
        }
 
         protected override void OnStart(string[] args)
         {
             Trace.WriteLine("Monitor OnStart");
             Trace.WriteLine($"Monitor Directory: {Directory.GetCurrentDirectory()}");
-            //Thread.Sleep(15000);
             scheduler = JobScheduler
                                 .Start()
                                 .ConfigureAwait(false)
                                 .GetAwaiter()
                                 .GetResult();
         }
-
-        //public void OnDebug()
-        //{
-        //    OnStart(null);
-        //}
 
         protected override void OnStop()
         {

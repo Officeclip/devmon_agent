@@ -49,7 +49,7 @@
                     Text="Edit Monitor"
                     OnClick="btnPopup_Click" />
                 <asp:Button ID="btnAlias" runat="server"
-                    Text="Aliases"
+                    Text="Edit Agent"
                     OnClick="btnAlias_Click" />
             </div>
             <div style="margin: 20px">

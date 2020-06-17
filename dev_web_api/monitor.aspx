@@ -4,6 +4,10 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
+    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+    <script type="text/javascript">
+
+    </script>
 </head>
 <body>
     <form id="form1" runat="server">
@@ -58,19 +62,8 @@
             <SortedDescendingHeaderStyle BackColor="#820000" />
         </asp:GridView>
         <div style="margin: 20px 0">
-            <pre>
-                Following are possible values of Types:
-                -----------------------------------------
-                url (arg1 -add the url in argument) - returns time to access the site
-                cpu.percent - percentage cpu load 
-                memory.free - amount of free memory in the system
-                network.specific (arg1 - specific network name) (arg2 - ReceivedBytesPerSecond or SentBytesPerSecond) - Network load
-                drive.free (arg1 - C:\, D:\ etc.) - Free space in the drive
-                os.processes - number of processes
-                os.uptime - amount of time the system is running without reboot
-                os.pendingupdates - how many updates are pending
-                os.lastupdated - time when the updates was last run
-            </pre>
+            <h3>Monitor Command Help</h3>
+            <asp:GridView ID="grdMonitorHelp" runat="server" />
         </div>
     </form>
 </body>

@@ -123,6 +123,7 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="BusinessLayer\AgentResource.cs" />
+    <Compile Include="BusinessLayer\MonitorCommandHelp.cs" />
     <Compile Include="BusinessLayer\MonitorCommandLimit.cs" />
     <Compile Include="BusinessLayer\User.cs" />
     <Compile Include="BusinessLayer\MonitorSettings.cs" />
@@ -198,6 +199,7 @@
     </Content>
     <Content Include="monitorSettings.example.json" />
     <Content Include="monitorSettings.json" />
+    <Content Include="App_Data\monitorCommands.json" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -209,9 +211,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

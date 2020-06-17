@@ -1,4 +1,5 @@
 ﻿using dev_web_api.BusinessLayer;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,11 +20,22 @@ namespace dev_web_api
             }
         }
 
+        private List<MonitorCommandHelp> GetCommandHelp()
+        {
+            var json = Util.ReadFile(
+                                    Server.MapPath(
+                                        @"~/App_Data/monitorCommands.json"));
+            var commandHelp = JsonConvert.DeserializeObject<List<MonitorCommandHelp>>(json);
+            return commandHelp;
+        }
+
         private void LoadData()
         {
             HiddenField1.Value = "View";
             GridView1.DataSource = monitorDb.GetMonitorCommands();
             GridView1.DataBind();
+            grdMonitorHelp.DataSource = GetCommandHelp();
+            grdMonitorHelp.DataBind();
         }
 
         protected void Button1_Click(object sender, EventArgs e)

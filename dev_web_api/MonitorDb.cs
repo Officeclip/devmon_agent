@@ -75,7 +75,7 @@ namespace dev_web_api
                     var user = new User()
                     {
                         UserId = Convert.ToInt32(sqlite_datareader["user_id"]),
-                        EmailAddress = sqlite_datareader["email-address"].ToString()
+                        EmailAddress = sqlite_datareader["email_address"].ToString()
                     };
                     user.Password = (sqlite_datareader["password"] == DBNull.Value)
                                 ? string.Empty

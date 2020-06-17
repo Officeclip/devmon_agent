@@ -72,7 +72,7 @@
                         AgentSetup.zip to a folder and unzip it and run setup.exe on the target machine.
                         During setup put these values:
                         <ul>
-                            <li>Server Url: <b>http://localhost<%= Page.Request.RawUrl %>api</b></li>
+                            <li>Server Url: <b><%= GetWebUri() %></b></li>
                             <li>Server Key: <b><%= serverGuid %></b></li>
                         </ul>
                     </li>

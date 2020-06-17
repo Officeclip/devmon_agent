@@ -40,6 +40,17 @@ namespace dev_web_api
                             monitorCommands);
         }
 
+        protected string GetWebUri()
+        {
+            var absoluteUri = HttpContext.Current.Request.Url.AbsoluteUri;
+            //var rawUrl = Request.RawUrl;
+            if (absoluteUri.EndsWith("default.aspx"))
+            {
+                absoluteUri = absoluteUri.Substring(0, absoluteUri.Length - 13);
+            }
+            return $"{absoluteUri}/api";
+        }
+
         protected void btnPopup_Click(object sender, EventArgs e)
         {
             string queryString = "monitor.aspx";

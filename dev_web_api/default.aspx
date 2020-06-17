@@ -54,9 +54,16 @@
             </div>
             <div style="margin: 20px">
                 <asp:Button ID="btnHardware" runat="server"
-                    Text="Hardware" OnClick="btnHardware_Click" />
+                    Text="Hardware" 
+                    OnClick="btnHardware_Click" />
                 <asp:Button ID="btnSoftware" runat="server"
-                    Text="Software" OnClick="btnSoftware_Click" />
+                    Text="Software" 
+                    OnClick="btnSoftware_Click" />
+            </div>
+            <div style="margin:20px">
+                <asp:Button ID="btnSignOff" runat="server"
+                    Text="Sign Off"
+                     OnClick="btnSignOff_Click" />
             </div>
             <div style="margin: 20px">
                 To run the agent, do the following:

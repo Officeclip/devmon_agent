@@ -21,6 +21,9 @@
                     Password:
                     <asp:TextBox ID="txtPassword" runat="server"
                          TextMode="Password" />
+                    <asp:RequiredFieldValidator ID="rfvPassword" runat="server" 
+                        ErrorMessage="Please enter Password" 
+                        ControlToValidate="txtPassword" />
                 </div>
             </div>
             <div>

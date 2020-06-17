@@ -111,6 +111,7 @@
     <Content Include="default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="alias.aspx" />
+    <Content Include="logon.aspx" />
     <Content Include="setup.aspx" />
     <Content Include="sql\testData.sql" />
     <Content Include="sql\schema.sql" />
@@ -129,6 +130,13 @@
     <Compile Include="BusinessLayer\Agent.cs" />
     <Compile Include="BusinessLayer\MonitorCommand.cs" />
     <Compile Include="BusinessLayer\UserNotification.cs" />
+    <Compile Include="logon.aspx.cs">
+      <DependentUpon>logon.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="logon.aspx.designer.cs">
+      <DependentUpon>logon.aspx</DependentUpon>
+    </Compile>
     <Compile Include="setup.aspx.cs">
       <DependentUpon>setup.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

@@ -3,6 +3,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Management;
 using System.Threading;
@@ -25,12 +26,11 @@ namespace devmon_library.Core
         /// <param name="registryKey"></param>
         /// <returns></returns>
         private void ReadRegistry(
+                            RegistryKey registryRoot,
                             ref List<SoftwareInfo> installedprograms,
-                            string registryKey, 
-                            int bitSize)
+                            string registryKey)
         {
-            //string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
-            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
+            using (RegistryKey key = registryRoot.OpenSubKey(registryKey))
             {
                 foreach (string subkey_name in key.GetSubKeyNames())
                 {
@@ -40,40 +40,122 @@ namespace devmon_library.Core
                         {
                             var softwareInfo = new SoftwareInfo
                             {
-                                DisplayName = (string)subkey.GetValue("DisplayName"),
-                                Version = (string)subkey.GetValue("DisplayVersion"),
-                                InstalledDate = (string)subkey.GetValue("InstallDate"),
-                                Publisher = (string)subkey.GetValue("Publisher"),
-                                //UnninstallCommand = (string)subkey.GetValue("UninstallString"),
-                                //ModifyPath = (string)subkey.GetValue("ModifyPath"),
-                                BitSize = bitSize
+                                Name = GetValue(subkey.GetValue("DisplayName")),
+                                Version = GetValue(subkey.GetValue("DisplayVersion")),
+                                Installed = GetDate(subkey.GetValue("InstallDate")),
+                                Publisher = GetValue(subkey.GetValue("Publisher")),
+                                Size = GetSize(subkey.GetValue("EstimatedSize"))
                             };
-                            softwareInfo.EstimatedSize =
-                                subkey.GetValue("EstimatedSize") == null
-                                ? ""
-                                : $"{subkey.GetValue("EstimatedSize")} kb";
                             installedprograms.Add(softwareInfo);
                         }
                     }
                 }
             }
         }
-    
+
+        private string GetValue(object stringValue)
+        {
+            return (stringValue ?? string.Empty).ToString();
+        }
+
+        private string GetSize(object sizeValue)
+        {
+            if (sizeValue != null)
+            {
+                return (Convert.ToDouble(sizeValue) / 1024).ToString("N2") + " mb";
+            }
+            return string.Empty;
+        }
+
+        private string GetDate(object dateValue)
+        {
+            if (dateValue != null)
+            {
+                if (DateTime.TryParseExact(
+                                        (string)dateValue,
+                                        "yyyyMMdd",
+                                        CultureInfo.InvariantCulture,
+                                        DateTimeStyles.None,
+                                        out DateTime result))
+                {
+                    return result.ToString("MMMM dd yyyy");
+                }
+            }
+            return string.Empty;
+        }
+
         public Task<SoftwareInfo[]> ReadSoftware()
         {
+            var installedPrograms32Bit = ReadSoftware32Bit();
+            var installedPrograms64Bit = ReadSoftware64Bit();
+            var installedProgramsUser = ReadSoftwareUser();
+            // From: https://stackoverflow.com/a/1606686/89256
+            var installedPrograms = installedPrograms64Bit
+                                                    .Concat(installedPrograms32Bit)
+                                                    .Concat(installedProgramsUser)
+                                                    .ToList();
+            installedPrograms = installedPrograms
+                                            .Distinct()
+                                            .ToList();
+            // From: https://stackoverflow.com/a/2779382/89256
+            installedPrograms = installedPrograms
+                                            .OrderBy(o => o.Name)
+                                            .GroupBy(o => o.Name)
+                                            .Select(y => y.First())
+                                            .ToList();
+
+            return Task.FromResult(installedPrograms.ToArray());
+        }
+
+        /// <summary>
+        /// From: https://stackoverflow.com/a/18772256/89256
+        /// </summary>
+        /// <returns></returns>
+        public List<SoftwareInfo> ReadSoftware64Bit()
+        {
             var installedprograms = new List<SoftwareInfo>();
-            //ReadRegistry(
-            //        ref installedprograms,
-            //        @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall",
-            //        32);
+
+            var registryRoot = RegistryKey.OpenBaseKey(
+                                            RegistryHive.LocalMachine,
+                                            RegistryView.Registry64);
+
             ReadRegistry(
+                   registryRoot,
                    ref installedprograms,
-                   @"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall",
-                    64);
+                   @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall");
 
-            installedprograms = installedprograms.OrderBy(o => o.DisplayName).ToList();
+            return installedprograms;
+        }
 
-            return Task.FromResult(installedprograms.ToArray());
+        public List<SoftwareInfo> ReadSoftware32Bit()
+        {
+            var installedprograms = new List<SoftwareInfo>();
+
+            var registryRoot = RegistryKey.OpenBaseKey(
+                                            RegistryHive.LocalMachine,
+                                            RegistryView.Registry32);
+
+            ReadRegistry(
+                   registryRoot,
+                   ref installedprograms,
+                   @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall");
+
+            return installedprograms;
+        }
+
+        public List<SoftwareInfo> ReadSoftwareUser()
+        {
+            var installedprograms = new List<SoftwareInfo>();
+            var registryRoot = RegistryKey.OpenBaseKey(
+                                            RegistryHive.CurrentUser,
+                                            RegistryView.Registry64);
+            ReadRegistry(
+                   registryRoot,
+                   ref installedprograms,
+                   @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall");
+
+            return installedprograms;
+
         }
 
     }

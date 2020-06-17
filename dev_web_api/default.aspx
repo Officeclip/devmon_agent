@@ -71,7 +71,7 @@
                     </li>
 
                     <li>To uninstall the agent, go to the Control Panel > Programs and Features
-                        and uninstall he Monitor
+                        and uninstall the Monitor
                     </li>
                 </ul>
             </div>

@@ -9,17 +9,15 @@ namespace dev_web_api.Models
 {
     public class SoftwareInfo
     {
-        [JsonProperty("display_name")]
-        public string DisplayName { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
         [JsonProperty("version")]
         public string Version { get; set; }
-        [JsonProperty("installed_date")]
-        public string InstalledDate { get; set; }
+        [JsonProperty("installed")]
+        public string Installed { get; set; }
         [JsonProperty("publisher")]
         public string Publisher { get; set; }
-        [JsonProperty("estimated_size")]
-        public string EstimatedSize { get; set; }
-        [JsonProperty("bit_size")]
-        public int BitSize { get; set; }
+        [JsonProperty("size")]
+        public string Size { get; set; }
     }
 }

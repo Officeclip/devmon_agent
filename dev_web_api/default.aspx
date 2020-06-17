@@ -77,8 +77,8 @@
                         </ul>
                     </li>
 
-                    <li>To uninstall the agent, go to the Control Panel > Programs and Features
-                        and uninstall the Monitor
+                    <li>To uninstall, go to the <i>Control Panel > Programs and Features</i>
+                        and uninstall the Agent
                     </li>
                 </ul>
             </div>

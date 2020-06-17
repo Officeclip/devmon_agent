@@ -19,6 +19,10 @@ namespace dev_web_api
         protected void Page_Load(object sender, EventArgs e)
         {
             MonitorDb monitorDb = new MonitorDb();
+            if (monitorDb.GetUsers().Count == 0)
+            {
+                Response.Redirect("setup.aspx");
+            }
             agents = monitorDb.GetAgents();
             monitorCommands = monitorDb.GetMonitorCommands();
             var monitorValues = monitorDb.GetMonitorValues();

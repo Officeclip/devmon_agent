@@ -57,6 +57,48 @@ namespace dev_web_api
             }
         }
 
+        public List<User> GetUsers()
+        {
+            _logger.Info("*** GetUsers() ***");
+            SQLiteDataReader sqlite_datareader;
+            SQLiteCommand sqlite_cmd;
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            sqlite_cmd = sqlLiteConn.CreateCommand();
+            sqlite_cmd.CommandText = "SELECT * FROM users ORDER By user_id";
+            var users = new List<User>();
+            sqlite_datareader = sqlite_cmd.ExecuteReader();
+            try
+            {
+                while (sqlite_datareader.Read())
+                {
+                    var user = new User()
+                    {
+                        UserId = Convert.ToInt32(sqlite_datareader["user_id"]),
+                        EmailAddress = sqlite_datareader["email-address"].ToString()
+                    };
+                    user.Password = (sqlite_datareader["password"] == DBNull.Value)
+                                ? string.Empty
+                                : sqlite_datareader["password"].ToString();
+                    users.Add(user);
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                _logger.Error($"Database Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"General Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlite_datareader.Close();
+                sqlLiteConn.Close();
+            }
+            return users;
+        }
+
         public List<Agent> GetAgents()
         {
             SQLiteDataReader sqlite_datareader;
@@ -465,6 +507,22 @@ namespace dev_web_api
             cmd.ExecuteNonQuery();
             sqlLiteConn.Close();
         }
+
+        public void InsertUser(User user)
+        {
+            _logger.Info("*** InsertUser(...) ***");
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn);
+            cmd.CommandText = $@"
+                    INSERT INTO users
+                        (user_id, email_address, password) 
+                    VALUES
+                        ({user.UserId}, '{user.EmailAddress}', '{user.Password}')";
+            cmd.ExecuteNonQuery();
+            sqlLiteConn.Close();
+        }
+
 
         public void DeleteMonitorCommand(int id)
         {

@@ -2,7 +2,8 @@ BEGIN TRANSACTION;
 DROP TABLE IF EXISTS "users";
 CREATE TABLE IF NOT EXISTS "users" (
 	"user_id"	INTEGER NOT NULL UNIQUE,
-	"email_address"	TEXT,
+	"email_address"	TEXT NOT NULL,
+	"password" TEXT NOT NULL
 	PRIMARY KEY("user_id")
 );
 DROP TABLE IF EXISTS "userNotifications";

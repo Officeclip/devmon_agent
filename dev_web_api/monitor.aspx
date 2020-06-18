@@ -34,7 +34,10 @@
             </table>
 
             <asp:Button ID="Button1" runat="server" Text="save" OnClick="Button1_Click" />
-            <br /><br />
+            <br />
+            <asp:Label ID="lblError" runat="server"
+                 ForeColor="Red" />
+            <br />
         </div>
         <asp:HiddenField ID="HiddenField1" runat="server" />
         <asp:GridView ID="GridView1" runat="server"

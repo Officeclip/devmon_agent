@@ -48,6 +48,8 @@
                 <asp:Button ID="btnPopup" runat="server"
                     Text="Edit Monitor"
                     OnClick="btnPopup_Click" />
+                <asp:Button ID="btnCommandLimit" runat="server"
+                    Text="Command Limits" OnClick="btnCommandLimit_Click" />
                 <asp:Button ID="btnAlias" runat="server"
                     Text="Edit Agent"
                     OnClick="btnAlias_Click" />

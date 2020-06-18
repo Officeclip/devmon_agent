@@ -84,5 +84,12 @@ namespace dev_web_api
             FormsAuthentication.SignOut();
             Response.Redirect("logon.aspx");
         }
+
+        protected void btnCommandLimit_Click(object sender, EventArgs e)
+        {
+            string queryString = "commandLimits.aspx";
+            string newWin = "window.open('" + queryString + "');";
+            ClientScript.RegisterStartupScript(this.GetType(), "commandLimits", newWin, true);
+        }
     }
 }

@@ -34,18 +34,21 @@ namespace dev_web_api
                                             MonitorValue monitorValue,
                                             MonitorCommandLimit monitorCommandLimit)
         {
-            if (!monitorCommandLimit.IsLowLimit)
+            if (monitorCommandLimit.ErrorLimit != null)
             {
-                if (monitorValue.Value > monitorCommandLimit.ErrorLimit)
+                if (!monitorCommandLimit.IsLowLimit)
                 {
-                    return true;
+                    if (monitorValue.Value > monitorCommandLimit.ErrorLimit)
+                    {
+                        return true;
+                    }
                 }
-            }
-            else
-            {
-                if (monitorValue.Value < monitorCommandLimit.ErrorLimit)
+                else
                 {
-                    return true;
+                    if (monitorValue.Value < monitorCommandLimit.ErrorLimit)
+                    {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -55,18 +58,21 @@ namespace dev_web_api
                                            MonitorValue monitorValue,
                                            MonitorCommandLimit monitorCommandLimit)
         {
-            if (!monitorCommandLimit.IsLowLimit)
+            if (monitorCommandLimit.WarningLimit != null)
             {
-                if (monitorValue.Value > monitorCommandLimit.WarningLimit)
+                if (!monitorCommandLimit.IsLowLimit)
                 {
-                    return true;
+                    if (monitorValue.Value > monitorCommandLimit.WarningLimit)
+                    {
+                        return true;
+                    }
                 }
-            }
-            else
-            {
-                if (monitorValue.Value < monitorCommandLimit.WarningLimit)
+                else
                 {
-                    return true;
+                    if (monitorValue.Value < monitorCommandLimit.WarningLimit)
+                    {
+                        return true;
+                    }
                 }
             }
             return false;

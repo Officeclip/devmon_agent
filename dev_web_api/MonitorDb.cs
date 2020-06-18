@@ -118,7 +118,7 @@ namespace dev_web_api
                         AgentId = Convert.ToInt32(sqlite_datareader["agent_id"]),
                         Guid = sqlite_datareader["guid"].ToString(),
                         MachineName = sqlite_datareader["machine_name"].ToString(),
-                        Alias = 
+                        Alias =
                                 sqlite_datareader["alias"] == DBNull.Value
                                 ? string.Empty
                                 : sqlite_datareader["alias"].ToString()
@@ -169,8 +169,8 @@ namespace dev_web_api
                     var monitorCommandLimit = new MonitorCommandLimit()
                     {
                         Type = sqlite_datareader["type"].ToString(),
-                        WarningLimit = Convert.ToInt32(sqlite_datareader["warning_limit"]),
-                        ErrorLimit = Convert.ToInt32(sqlite_datareader["error_limit"]),
+                        WarningLimit = ConvertDbToNullableInt(sqlite_datareader["warning_limit"]),
+                        ErrorLimit = ConvertDbToNullableInt(sqlite_datareader["error_limit"]),
                         IsLowLimit = Convert.ToBoolean(sqlite_datareader["is_low_limit"])
                     };
                     monitorCommandLimits.Add(monitorCommandLimit);
@@ -190,6 +190,15 @@ namespace dev_web_api
                 sqlLiteConn.Close();
             }
             return monitorCommandLimits;
+        }
+
+        private int? ConvertDbToNullableInt(object dataReaderObject)
+        {
+            if (dataReaderObject == DBNull.Value)
+            {
+                return null;
+            }
+            return Convert.ToInt32(dataReaderObject);
         }
 
         public Agent GetAgentByGuid(string guid)
@@ -283,7 +292,7 @@ namespace dev_web_api
                             name = ''{monitorCommand.Name}',
                             type = '{monitorCommand.Type}',
                             arg1 = '{monitorCommand.Arg1}',
-                            arg2 = '{monitorCommand.Arg2}'"; 
+                            arg2 = '{monitorCommand.Arg2}'";
             cmd.ExecuteNonQuery();
             sqlLiteConn.Close();
         }
@@ -482,7 +491,7 @@ namespace dev_web_api
         {
             _logger.Info("Method UpsertMonitorValue(...)");
             _logger.Info(ObjectDumper.Dump(monitorValue));
-            var monitorValuePresent = 
+            var monitorValuePresent =
                 GetMonitorValue(monitorValue.AgentId, monitorValue.MonitorCommandId);
             if (monitorValuePresent == null)
             {
@@ -565,7 +574,7 @@ namespace dev_web_api
 
             var cmd = new SQLiteCommand(sqlLiteConn)
             {
-                CommandText =    sqlQuery         
+                CommandText = sqlQuery
             };
             cmd.ExecuteNonQuery();
             sqlLiteConn.Close();
@@ -578,7 +587,7 @@ namespace dev_web_api
             var sqlLiteConn = new SQLiteConnection(ConnectionString);
             sqlLiteConn.Open();
             sqlite_cmd = sqlLiteConn.CreateCommand();
-            sqlite_cmd.CommandText = 
+            sqlite_cmd.CommandText =
                 $"SELECT * FROM agentResources where agent_id = {agentId}";
             sqlite_datareader = sqlite_cmd.ExecuteReader();
             AgentResource agentResource = null;
@@ -589,7 +598,7 @@ namespace dev_web_api
                     AgentId = Convert.ToInt32(sqlite_datareader["agent_id"]),
                     StableDeviceJson = sqlite_datareader["stable_device_json"].ToString(),
                 };
-                agentResource.LastUpdatedDate = 
+                agentResource.LastUpdatedDate =
                                         ConvertToUtcDateTime(
                                                     sqlite_datareader["last_updated_date"]);
             }
@@ -629,7 +638,7 @@ namespace dev_web_api
             {
                 CommandText = sqlQuery
             };
-            cmd.ExecuteNonQuery();   
+            cmd.ExecuteNonQuery();
             sqlLiteConn.Close();
         }
 
@@ -649,7 +658,7 @@ namespace dev_web_api
             }
             else
             {
-                serverGuid = (dbOutput??string.Empty).ToString();
+                serverGuid = (dbOutput ?? string.Empty).ToString();
             }
             sqlLiteConn.Close();
             return serverGuid;
@@ -799,6 +808,97 @@ namespace dev_web_api
             _logger.Info(cmd.CommandText);
             cmd.ExecuteNonQuery();
             sqlLiteConn.Close();
+        }
+
+        public void InsertMonitorCommandLimit(MonitorCommandLimit monitorCommandLimit)
+        {
+            _logger.Info("Method InsertMonitorCommandLimit(...)");
+            _logger.Info(ObjectDumper.Dump(monitorCommandLimit));
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn);
+            cmd.CommandText = $@"
+                    INSERT INTO monitorCommandLimit
+                    ( 
+                        type,
+                        org_id,
+                        warning_limit,
+                        error_limit,
+                        is_low_limit
+                    )
+                    VALUES
+                    (
+                        '{monitorCommandLimit.Type}',
+                        1,
+                        {monitorCommandLimit.WarningLimit},
+                        {monitorCommandLimit.ErrorLimit},
+                        {monitorCommandLimit.IsLowLimit}
+                    )";
+            _logger.Info(cmd.CommandText);
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (SQLiteException ex)
+            {
+                _logger.Error($"Database Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"General Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlLiteConn.Close();
+            }
+        }
+
+        public void UpdateMonitorCommandLimit(MonitorCommandLimit monitorCommandLimit)
+        {
+            _logger.Info("Method UpdateMonitorCommandLimit(...)");
+            _logger.Info(ObjectDumper.Dump(monitorCommandLimit));
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn);
+            cmd.CommandText = $@"
+                    UPDATE 
+                        monitorCommandLimit
+                    SET
+                        warning_limit = {monitorCommandLimit.WarningLimit},
+                        error_limit = {monitorCommandLimit.ErrorLimit}
+                    WHERE
+                        type = '{monitorCommandLimit.Type}' AND
+                        org_id = 1";
+            _logger.Info(cmd.CommandText);
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (SQLiteException ex)
+            {
+                _logger.Error($"Database Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"General Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlLiteConn.Close();
+            }
+        }
+        public void UpsertMonitorCommandLimit(MonitorCommandLimit monitorCommandLimit)
+        {
+            var commandLimits = GetMonitorCommandLimits();
+            var commandLimit = commandLimits.Find(x => x.Type == monitorCommandLimit.Type);
+            if (commandLimit == null)
+            {
+                InsertMonitorCommandLimit(monitorCommandLimit);
+            }
+            else
+            {
+                UpdateMonitorCommandLimit(monitorCommandLimit);
+            }
         }
     }
 }

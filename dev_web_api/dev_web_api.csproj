@@ -108,6 +108,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="commandLimits.aspx" />
     <Content Include="default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="alias.aspx" />
@@ -131,6 +132,13 @@
     <Compile Include="BusinessLayer\Agent.cs" />
     <Compile Include="BusinessLayer\MonitorCommand.cs" />
     <Compile Include="BusinessLayer\UserNotification.cs" />
+    <Compile Include="commandLimits.aspx.cs">
+      <DependentUpon>commandLimits.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="commandLimits.aspx.designer.cs">
+      <DependentUpon>commandLimits.aspx</DependentUpon>
+    </Compile>
     <Compile Include="logon.aspx.cs">
       <DependentUpon>logon.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

@@ -818,7 +818,7 @@ namespace dev_web_api
             sqlLiteConn.Open();
             var cmd = new SQLiteCommand(sqlLiteConn);
             cmd.CommandText = $@"
-                    INSERT INTO monitorCommandLimit
+                    INSERT INTO monitorCommandLimits
                     ( 
                         type,
                         org_id,
@@ -862,7 +862,7 @@ namespace dev_web_api
             var cmd = new SQLiteCommand(sqlLiteConn);
             cmd.CommandText = $@"
                     UPDATE 
-                        monitorCommandLimit
+                        monitorCommandLimits
                     SET
                         warning_limit = {monitorCommandLimit.WarningLimit},
                         error_limit = {monitorCommandLimit.ErrorLimit}

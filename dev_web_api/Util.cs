@@ -100,60 +100,100 @@ namespace dev_web_api
             return string.Empty;
         }
 
+        private static bool IsAgentUnavailable(Agent agent)
+        {
+            return (DateTime.UtcNow - agent.LastReplyReceived).TotalMinutes > 10;
+        }
+
+        private static void SetHeaderRow(
+                                HtmlTable monitorTable,
+                                List<MonitorCommand> monitorCommands)
+        {
+            var row = new HtmlTableRow();
+            monitorTable.Rows.Add(row);
+            foreach (var monitorCommand in monitorCommands)
+            {
+                var cell = new HtmlTableCell("th");
+                cell.InnerHtml = monitorCommand.Name;
+                row.Cells.Add(cell);
+            }
+        }
+
+        private static void SetNotAvailableRow(
+                                        HtmlTable monitorTable,
+                                        int monitorCommandsLength)
+        {
+            var row = new HtmlTableRow();
+            monitorTable.Rows.Add(row);
+            var cell = new HtmlTableCell();
+            row.Cells.Add(cell);
+            cell.ColSpan = monitorCommandsLength;
+            cell.InnerHtml = "Agent Not Available";
+        }
+
+        private static void SetAgentRow(
+                                HtmlTable monitorTable,
+                                Agent agent,
+                                List<MonitorCommand> monitorCommands,
+                                List<MonitorValue> monitorValues,
+                                List<MonitorCommandLimit> monitorCommandLimits)
+        {
+            var row = new HtmlTableRow();
+            monitorTable.Rows.Add(row);
+            var monitorValuesForAgent = monitorValues
+                                                .FindAll(x => x.AgentId == agent.AgentId);
+            foreach (var monitorValue in monitorValuesForAgent)
+            {
+                var cell = new HtmlTableCell()
+                {
+                    BgColor = GetBackgroundCellColor(
+                                            monitorValue,
+                                            monitorCommands,
+                                            monitorCommandLimits),
+                    InnerHtml = $"{monitorValue.Value} {monitorValue.Unit}"
+                };
+                row.Cells.Add(cell);
+            }
+
+        }
+
         public static void SetupMonitorTable(
-                                    ref HtmlTable monitorTable,
+                                    HtmlTable monitorTable,
                                     List<Agent> agents,
                                     List<MonitorCommand> monitorCommands,
                                     List<MonitorValue> monitorValues,
                                     List<MonitorCommandLimit> monitorCommandLimits)
         {
-            // Setup the Header
-            var row = new HtmlTableRow();
-            monitorTable.Rows.Add(row);
-            var cell = new HtmlTableCell("th");
-            row.Cells.Add(cell);
-            foreach (var monitorCommand in monitorCommands)
+            SetHeaderRow(monitorTable, monitorCommands);
+            foreach (var agent in agents)
             {
-                cell = new HtmlTableCell("th");
-                cell.InnerHtml = monitorCommand.Name;
-                row.Cells.Add(cell);
-            }
-
-            int lastAgentId = 0;
-            bool firstTime = true;
-            row = new HtmlTableRow();
-            monitorTable.Rows.Add(row);
-            cell = new HtmlTableCell();
-            row.Cells.Add(cell);
-            foreach (var monitorValue in monitorValues)
-            {
-                if (monitorValue.AgentId != lastAgentId)
+                if (IsAgentUnavailable(agent))
                 {
-                    if (!firstTime)
-                    {
-                        monitorTable.Rows.Add(row);
-                        row = new HtmlTableRow();
-                        monitorTable.Rows.Add(row);
-                        cell = new HtmlTableCell();
-                        row.Cells.Add(cell);
-                    }
-                    else
-                    {
-                        firstTime = false;
-                    }
-                    lastAgentId = monitorValue.AgentId;
+                    SetNotAvailableRow(monitorTable, monitorCommands.Count);
                 }
-                cell = new HtmlTableCell();
-                cell.BgColor = GetBackgroundCellColor(
-                                                monitorValue,
-                                                monitorCommands,
-                                                monitorCommandLimits);
-                cell.InnerHtml = $"{monitorValue.Value} {monitorValue.Unit}";
-                row.Cells.Add(cell);
+                else
+                {
+                    SetAgentRow(
+                            monitorTable,
+                            agent,
+                            monitorCommands,
+                            monitorValues,
+                            monitorCommandLimits);
+                }
+            }
+            AddFirstColumn(monitorTable, agents);
+        }
+
+        private static void AddFirstColumn(HtmlTable monitorTable, List<Agent> agents)
+        {
+            foreach (HtmlTableRow row in monitorTable.Rows)
+            {
+                var cell = new HtmlTableCell();
+                row.Cells.Insert(0, cell);
             }
             for (int i = 0; i < agents.Count; i++)
             {
-                monitorTable.Rows[i+1].Cells[0].InnerHtml = agents[i].ScreenName;
+                monitorTable.Rows[i + 1].Cells[0].InnerHtml = agents[i].ScreenName;
             }
         }
 

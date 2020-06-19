@@ -29,7 +29,7 @@ namespace dev_web_api
             var monitorValues = monitorDb.GetMonitorValues();
             monitorCommandLimits = monitorDb.GetMonitorCommandLimits();
             Util.SetupMonitorTable(
-                            ref tblMonitor,
+                            tblMonitor,
                             agents,
                             monitorCommands,
                             monitorValues,

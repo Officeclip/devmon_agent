@@ -249,9 +249,12 @@ namespace devmon_library.Quartz
                 IsSuccess = result.IsSuccessStatusCode,
                 Value = watch.ElapsedMilliseconds.ToString(),
                 ReturnCode = (int)result.StatusCode,
-                ErrorMessage = result.ReasonPhrase,
                 Unit = "ms"
             };
+            pingResultInfo.ErrorMessage =
+                                (pingResultInfo.IsSuccess)
+                                ? string.Empty
+                                : result.ReasonPhrase;
             _logger.Debug($"Ending UrlTask: {commandInfo.Arg1}: {watch.ElapsedMilliseconds} ms");
             return pingResultInfo;
         }

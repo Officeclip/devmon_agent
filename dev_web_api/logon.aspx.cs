@@ -12,7 +12,14 @@ namespace dev_web_api
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            if (!Page.IsPostBack)
+            {
+                MonitorDb monitorDb = new MonitorDb();
+                if (monitorDb.GetUsers().Count == 0)
+                {
+                    Response.Redirect("setup.aspx");
+                }
+            }
         }
 
         protected void Submit1_Click(object sender, EventArgs e)

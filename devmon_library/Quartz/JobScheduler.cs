@@ -11,6 +11,9 @@ namespace devmon_library.Quartz
 {
     public static class JobScheduler
     {
+        public static readonly int PingerJobInterval = 300;
+        public static readonly int StaticJobInterval = 1800;
+
         public static async Task<IScheduler> Start()
         {
             // construct a scheduler factory
@@ -60,7 +63,7 @@ namespace devmon_library.Quartz
                 .WithIdentity("pinger-trigger", "group")
                 .StartNow()
                 .WithSimpleSchedule(x => x
-                    .WithIntervalInSeconds(60)
+                    .WithIntervalInSeconds(PingerJobInterval)
                     .RepeatForever())
             .Build();
 
@@ -78,7 +81,7 @@ namespace devmon_library.Quartz
                 .WithIdentity("static-trigger", "group")
                 .StartNow()
                 .WithSimpleSchedule(x => x
-                    .WithIntervalInSeconds(1800)
+                    .WithIntervalInSeconds(StaticJobInterval)
                     .RepeatForever())
             .Build();
 

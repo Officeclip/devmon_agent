@@ -15,6 +15,7 @@ namespace dev_web_api.Controllers
         static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         MonitorDb monitorDb = new MonitorDb();
         [HttpPost]
+        [AllowAnonymous]
         public IHttpActionResult Post(HttpRequestMessage req)
         {
             _logger.Info("-----------------------------------------");

@@ -11,7 +11,7 @@ namespace devmon_library.Quartz
 {
     public static class JobScheduler
     {
-        public static readonly int PingerJobInterval = 300;
+        public static readonly int PingerJobInterval = 60;
         public static readonly int StaticJobInterval = 1800;
 
         public static async Task<IScheduler> Start()

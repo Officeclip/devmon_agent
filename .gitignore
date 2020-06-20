@@ -333,3 +333,4 @@ tools/
 /src/main/appSettings.json
 /devmon_service/appSettings.json
 /dev_web_api/monitorSettings.json
+/dev_web_api/monitor.sqlite

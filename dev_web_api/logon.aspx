@@ -4,7 +4,7 @@
 
 <html>
 <head id="Head1" runat="server">
-  <title>Forms Authentication - Login</title>
+  <title>Monitor - Login</title>
 </head>
 <body>
   <form id="form1" runat="server">

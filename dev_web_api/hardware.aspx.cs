@@ -39,6 +39,7 @@ namespace dev_web_api
             {
                 LoadJsonToTreeView(treeView1, agentResource.StableDeviceJson);
             }
+            treeView1.ExpandAll();
         }
 
         /// <summary>
@@ -52,7 +53,7 @@ namespace dev_web_api
             {
                 return;
             }
-
+            treeView.Nodes.Clear();
             var @object = JObject.Parse(json);
             @object.Remove("softwares");
             AddObjectNodes(@object, "Hardware", treeView.Nodes);

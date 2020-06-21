@@ -1,6 +1,8 @@
 ﻿using devmon_library.Models;
+using System;
 using System.Diagnostics;
 using System.Management;
+using System.ServiceModel.Channels;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,19 +16,36 @@ namespace devmon_library.Core
         {
             _cancellation = cancellation;
         }
-    
+
+        public object TryGetProperty(
+                            ManagementObject wmiObj, 
+                            string propertyName)
+        {
+            object retval;
+            try
+            {
+                retval = wmiObj.GetPropertyValue(propertyName);
+            }
+            catch (System.Management.ManagementException ex)
+            {
+                retval = null;
+            }
+            return retval;
+        }
+   
         public Task<CpuInfo> ReadCpuInfo()
         {
             var cpu = new CpuInfo();
 
             using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_Processor"))
             {
-                foreach (ManagementObject o in searcher.Get())
+                foreach (ManagementObject managementObject in searcher.Get())
                 {
-                    cpu.Name = o["Name"] as string;
-                    cpu.Cores = System.Convert.ToInt32(o["NumberOfCores"]);
-                    cpu.Threads = System.Convert.ToInt32(o["ThreadCount"]);
-                    cpu.SpeedMhz = System.Convert.ToInt32(o["MaxClockSpeed"]);
+                 
+                    cpu.Name = managementObject["Name"] as string;
+                    cpu.Cores = Convert.ToInt32(TryGetProperty(managementObject, "NumberOfCores"));
+                    cpu.Threads = Convert.ToInt32(TryGetProperty(managementObject, "ThreadCount"));
+                    cpu.SpeedMhz = Convert.ToInt32(TryGetProperty(managementObject, "MaxClockSpeed"));
                     break;
                 }
             }

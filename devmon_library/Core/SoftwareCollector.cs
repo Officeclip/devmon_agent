@@ -32,21 +32,24 @@ namespace devmon_library.Core
         {
             using (RegistryKey key = registryRoot.OpenSubKey(registryKey))
             {
-                foreach (string subkey_name in key.GetSubKeyNames())
+                if (key != null)
                 {
-                    using (RegistryKey subkey = key.OpenSubKey(subkey_name))
+                    foreach (string subkey_name in key.GetSubKeyNames())
                     {
-                        if (subkey.GetValue("DisplayName") != null)
+                        using (RegistryKey subkey = key.OpenSubKey(subkey_name))
                         {
-                            var softwareInfo = new SoftwareInfo
+                            if (subkey.GetValue("DisplayName") != null)
                             {
-                                Name = GetValue(subkey.GetValue("DisplayName")),
-                                Version = GetValue(subkey.GetValue("DisplayVersion")),
-                                Installed = GetDate(subkey.GetValue("InstallDate")),
-                                Publisher = GetValue(subkey.GetValue("Publisher")),
-                                Size = GetSize(subkey.GetValue("EstimatedSize"))
-                            };
-                            installedprograms.Add(softwareInfo);
+                                var softwareInfo = new SoftwareInfo
+                                {
+                                    Name = GetValue(subkey.GetValue("DisplayName")),
+                                    Version = GetValue(subkey.GetValue("DisplayVersion")),
+                                    Installed = GetDate(subkey.GetValue("InstallDate")),
+                                    Publisher = GetValue(subkey.GetValue("Publisher")),
+                                    Size = GetSize(subkey.GetValue("EstimatedSize"))
+                                };
+                                installedprograms.Add(softwareInfo);
+                            }
                         }
                     }
                 }

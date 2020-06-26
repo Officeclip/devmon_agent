@@ -84,7 +84,7 @@ namespace Geheb.DevMon.Agent
             JObject settings = JObject.Parse(File.ReadAllText("appSettings.json"));
             if ((string)settings["agent_guid"] == "")
             {
-                settings["agent_guid"] = Guid.NewGuid().ToString();
+                settings["agent_guid"] = Util.GetAgentGuid();
                 File.WriteAllText("appSettings.json", settings.ToString());
             }
         }

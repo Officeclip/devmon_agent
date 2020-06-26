@@ -118,6 +118,7 @@
     <Compile Include="Models\ResultInfo.cs" />
     <Compile Include="Quartz\StaticJob.cs" />
     <Compile Include="StaticJob.cs" />
+    <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="docs\format.txt" />

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using devmon_library;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace devmon_service
                                             File.ReadAllText(jsonFilePath));
                 if ((string)settings["agent_guid"] == "")
                 {
-                    settings["agent_guid"] = Guid.NewGuid().ToString();
+                    settings["agent_guid"] = Util.GetAgentGuid();
                     isFirstTime = true;
                 }
                 if ((string)settings["server_url"] == "")

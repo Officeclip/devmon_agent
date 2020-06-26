@@ -1,38 +1,28 @@
 ﻿using devmon_library.Core;
 using devmon_library.Models;
-using ImTools;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using NLog;
-using Quartz;
-using RestSharp;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
-using JsonSerializer = devmon_library.Core.JsonSerializer;
 
-namespace devmon_library.Quartz
+namespace devmon_library
 {
-    /// <summary>
-    /// Sends ping to the server every minute
-    /// </summary>
-    public class PingerJob : IJob
+    public class PingerJob
     {
         static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private static HttpClient sHttpClient = new HttpClient(); //https://aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/
         private const int OneKb = 1024;
         private const int OneGb = 1073741824;
-        public async Task Execute(IJobExecutionContext context)
+        public async Task Execute()
 
         {
             await Console.Out.WriteLineAsync("PingerJob is executing.");
             IAppSettings appSettings = new AppSettings("appSettings.json");
-            IJsonSerializer jsonSerializer = new JsonSerializer();
+            IJsonSerializer jsonSerializer = new Core.JsonSerializer();
             IRestClientFactory restClientFactory = new RestClientFactory();
             var serverConnector = new ServerConnector(
                                                     null,
@@ -56,7 +46,7 @@ namespace devmon_library.Quartz
             await Console.Out.WriteLineAsync($"Command: {commandInfo.Type}");
             switch (commandInfo.Type)
             {
-                case "url":
+                case "url.ping":
                     return await UrlTask(commandInfo);
                 case "cpu.percent":
                     return await CpuTask(commandInfo);
@@ -83,7 +73,7 @@ namespace devmon_library.Quartz
             var memoryUtilization = await memoryCollector.ReadMemoryUtilization();
             var pingResultInfo = new ResultInfo(
                                        commandInfo.MonitorCommandId,
-                                       (memoryUtilization.FreeBytes/OneGb).ToString("N1"),
+                                       (memoryUtilization.FreeBytes / OneGb).ToString("N1"),
                                        "gb");
             _logger.Debug("Ending MemTask");
             return pingResultInfo;
@@ -185,7 +175,7 @@ namespace devmon_library.Quartz
                     pingResultInfo.Value =
                         driveUtilization.FreeBytes == null
                         ? "-1"
-                        :((ulong)(driveUtilization.FreeBytes/OneGb)).ToString("N1");
+                        : ((ulong)(driveUtilization.FreeBytes / OneGb)).ToString("N1");
                     _logger.Debug("Ending DriveTask");
                     return pingResultInfo;
                 }
@@ -217,10 +207,10 @@ namespace devmon_library.Quartz
                     switch (commandInfo.Arg2)
                     {
                         case "ReceivedBytesPerSeconds":
-                            pingResultInfo.Value = (networkUtilization.ReceivedBytesPerSecond/OneKb).ToString("N1");
+                            pingResultInfo.Value = (networkUtilization.ReceivedBytesPerSecond / OneKb).ToString("N1");
                             break;
                         case "SentBytesPerSecond":
-                            pingResultInfo.Value = (networkUtilization.SentBytesPerSecond/OneKb).ToString("N1");
+                            pingResultInfo.Value = (networkUtilization.SentBytesPerSecond / OneKb).ToString("N1");
                             break;
                     }
                     _logger.Debug("Ending NetworkTask");
@@ -238,8 +228,8 @@ namespace devmon_library.Quartz
         private static async Task<ResultInfo> UrlTask(CommandInfo commandInfo)
         {
             _logger.Debug($"Starting UrlTask: {commandInfo.Arg1}");
-            
-            
+
+
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var result = await sHttpClient.GetAsync(commandInfo.Arg1);
             watch.Stop();

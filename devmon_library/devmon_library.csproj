@@ -110,12 +110,14 @@
     <Compile Include="Models\VolatileDeviceInfo.cs" />
     <Compile Include="Models\WindowsUpdateInfo.cs" />
     <Compile Include="ObjectDumper.cs" />
+    <Compile Include="PingerJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Quartz\CommandInfo.cs" />
+    <Compile Include="Models\CommandInfo.cs" />
     <Compile Include="Quartz\JobScheduler.cs" />
     <Compile Include="Quartz\PingerJob.cs" />
-    <Compile Include="Quartz\ResultInfo.cs" />
+    <Compile Include="Models\ResultInfo.cs" />
     <Compile Include="Quartz\StaticJob.cs" />
+    <Compile Include="StaticJob.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="docs\format.txt" />

@@ -124,31 +124,31 @@ namespace devmon_test.Core
             Assert.Null(info.Drives[1].FreeBytes);
         }
 
-        [Fact]
-        public async Task Read_HasOsUtilization()
-        {
-            var collector = MockCollector<VolatileDeviceCollector>.Mock<IOsCollector, OsUtilization>(
-                c => c.ReadOsUtilization(),
-                new OsUtilization
-                {
-                    Processes = 1,
-                    Update = new WindowsUpdateInfo
-                    {
-                        LastUpdateInstalledAt = new DateTime(2000, 1, 1),
-                        PendingUpdates = 1
-                    },
-                    UpTime = TimeSpan.FromHours(1),
-                });
+        //[Fact]
+        //public async Task Read_HasOsUtilization()
+        //{
+        //    var collector = MockCollector<VolatileDeviceCollector>.Mock<IOsCollector, OsUtilization>(
+        //        c => c.ReadOsUtilization(),
+        //        new OsUtilization
+        //        {
+        //            Processes = 1,
+        //            Update = new WindowsUpdateInfo
+        //            {
+        //                LastUpdateInstalledAt = new DateTime(2000, 1, 1),
+        //                PendingUpdates = 1
+        //            },
+        //            UpTime = TimeSpan.FromHours(1),
+        //        });
 
-            var info = await collector.Read();
+        //    var info = await collector.Read();
 
-            Assert.Equal(3, info.Os.GetPublicPropertyCount());
-            Assert.Equal(2, info.Os.Update.GetPublicPropertyCount());
+        //    Assert.Equal(3, info.Os.GetPublicPropertyCount());
+        //    Assert.Equal(2, info.Os.Update.GetPublicPropertyCount());
 
-            Assert.Equal(1, info.Os.Processes);
-            Assert.Equal(new DateTime(2000, 1, 1), info.Os.Update.LastUpdateInstalledAt);
-            Assert.Equal(1, info.Os.Update.PendingUpdates);
-            Assert.Equal(TimeSpan.FromHours(1), info.Os.UpTime);
-        }
+        //    Assert.Equal(1, info.Os.Processes);
+        //    Assert.Equal(new DateTime(2000, 1, 1), info.Os.Update.LastUpdateInstalledAt);
+        //    Assert.Equal(1, info.Os.Update.PendingUpdates);
+        //    Assert.Equal(TimeSpan.FromHours(1), info.Os.UpTime);
+        //}
     }
 }

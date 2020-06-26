@@ -1,41 +1,78 @@
-﻿using devmon_library.Models;
-using devmon_library.Quartz;
+﻿using devmon_library;
+using devmon_library.Models;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Geheb.DevMon.Agent
 {
     class Program
     {
         [STAThread]
-        static int Main(string[] args)
+        static void Main(string[] args)
         {
+            Task _processSmsQueueTask;
+            var _tokenSource = new CancellationTokenSource();
             try
             {
                 AddAgentGuid();
-                while (true)
+                _processSmsQueueTask = 
+                    Task.Run(() => PingerLoop(_tokenSource.Token));
+                bool goAgain = true;
+                while (goAgain)
                 {
-                    var scheduler = JobScheduler.Start().ConfigureAwait(false);
-                    //var cpuInfo = GetCpuInfo().Result;
-                    //Console.WriteLine(cpuInfo.Name);
-                    Thread.Sleep(10000 * 100000);
+                    //char ch = Console.ReadKey(true).KeyChar;
+                    //switch (ch)
+                    //{
+                    //    case 'c':
+                    //        _tokenSource.Cancel();
+                    //        return;
+                    //    default:
+                    //        break;
+                    //}
+                    Thread.Sleep(1000);
+                }
+
+                //var pingerTask = PingerLoop(tokenSource.Token);
+                //pingerTask.Wait();
+                //tokenSource.Cancel();
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        public static async Task PingerLoop(CancellationToken token)
+        {
+            try
+            {
+                var pingerJobCount = 0;
+                while (!token.IsCancellationRequested)
+                {
+                    await (new PingerJob()).Execute();
+                    if (pingerJobCount++ % 30 == 0)
+                    {
+                        await (new StaticJob()).Execute();
+                    }
+                    await Task.Delay(60 * 1000, token);
                 }
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException ex)
             {
-                Console.WriteLine("Operation cancelled");
-                return -1;
+                Console.WriteLine($"Operation cancelled: {ex.Message}");
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return -1;
             }
         }
 
@@ -51,11 +88,5 @@ namespace Geheb.DevMon.Agent
                 File.WriteAllText("appSettings.json", settings.ToString());
             }
         }
-
-        //static Task<CpuInfo> GetCpuInfo()
-        //{
-        //    return (new CpuCollector(null)).ReadCpuInfo();
-
-        //}
     }
 }

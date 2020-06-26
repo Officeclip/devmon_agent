@@ -15,6 +15,7 @@ namespace dev_web_api.BusinessLayer
         public DateTime RegistrationDate { get; set; }
         public DateTime LastQueried { get; set; }
         public DateTime LastReplyReceived { get; set; }
+        public bool Enabled { get; set; }
 
         public string ScreenName
         {

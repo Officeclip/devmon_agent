@@ -13,8 +13,12 @@
                     <th>Guid</th>
                     <th>Machine Name</th>
                     <th>Alias</th>
+                    <th>Active</th>
+                    <th></th>
                 </tr>
-                <asp:Repeater ID="rptAlias" runat="server">
+                <asp:Repeater ID="rptAlias" runat="server" 
+                    OnItemCommand="rptAlias_ItemCommand" 
+                    OnItemCreated="rptAlias_ItemCreated">
                     <ItemTemplate>
                         <tr>
                             <td>
@@ -30,6 +34,16 @@
                             <td>
                                 <asp:TextBox ID="txtAlias" runat="server"
                                     Text='<%# Eval("Alias") %>' />
+                            </td>
+                            <td>
+                                <asp:CheckBox ID="chkEnabled" runat="server"
+                                    Checked='<%# Eval("Enabled") %>' />
+                            </td>
+                            <td>
+                                <asp:LinkButton ID="lnkDelete" runat="server"
+                                    CommandName="Delete"
+                                    CommandArgument='<%# Eval("AgentId") %>'
+                                    Text="Delete"/>
                             </td>
                         </tr>
                     </ItemTemplate>

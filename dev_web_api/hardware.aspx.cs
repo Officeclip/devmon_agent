@@ -16,7 +16,7 @@ namespace dev_web_api
         MonitorDb monitorDb = new MonitorDb();
         protected void Page_Init(object sender, EventArgs e)
         {
-            ddlAgents.DataSource = monitorDb.GetAgents();
+            ddlAgents.DataSource = monitorDb.GetEnabledAgents();
             ddlAgents.DataValueField = "AgentId";
             ddlAgents.DataTextField = "ScreenName";
             ddlAgents.DataBind();

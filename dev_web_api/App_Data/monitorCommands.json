@@ -1,6 +1,6 @@
 ﻿[
   {
-    "type": "url",
+    "type": "url.ping",
     "description": "Pings the url and returns the access time",
     "arg1": "The url to ping to (e.g. https://www.google.com)",
     "arg2": ""
@@ -38,18 +38,6 @@
   {
     "type": "os.uptime",
     "description": "Time elapsed since the last reboot",
-    "arg1": "",
-    "arg2": ""
-  },
-  {
-    "type": "os.pendingupdates",
-    "description": "How many updates are still pending",
-    "arg1": "",
-    "arg2": ""
-  },
-  {
-    "type": "os.lastupdated",
-    "description": "Time when the last update was run",
     "arg1": "",
     "arg2": ""
   }

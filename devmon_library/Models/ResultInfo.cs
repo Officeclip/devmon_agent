@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace devmon_library.Quartz
+namespace devmon_library.Models
 {
     public class ResultInfo
     {

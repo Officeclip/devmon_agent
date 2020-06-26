@@ -15,9 +15,14 @@ namespace dev_web_api
         {
             if (!Page.IsPostBack)
             {
-                rptCommandLimits.DataSource = MonitorCommandLimits();
-                rptCommandLimits.DataBind();
+                LoadValues();
             }
+        }
+
+        private void LoadValues()
+        {
+            rptCommandLimits.DataSource = MonitorCommandLimits();
+            rptCommandLimits.DataBind();
         }
 
         private List<MonitorCommandLimit> MonitorCommandLimits()
@@ -28,7 +33,7 @@ namespace dev_web_api
             monitorCommandLimits.Add(
                                     new MonitorCommandLimit()
                                     {
-                                        Type = "url",
+                                        Type = "url.ping",
                                     });
             monitorCommandLimits.Add(
                                     new MonitorCommandLimit()
@@ -90,6 +95,7 @@ namespace dev_web_api
                 }
                 monitorDb.UpsertMonitorCommandLimit(monitorLimit);
             }
+            LoadValues();
         }
     }
 }

@@ -5,6 +5,6 @@ namespace devmon_library.Models
     {
         public int Processes { get; set; }
         public TimeSpan UpTime { get; set; }
-        public WindowsUpdateInfo Update { get; set; }
+        //public WindowsUpdateInfo Update { get; set; }
     }
 }

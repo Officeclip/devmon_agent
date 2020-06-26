@@ -21,7 +21,8 @@ CREATE TABLE IF NOT EXISTS "agents" (
 	"registration_date"	TEXT,
 	"last_queried"	TEXT,
 	"last_reply_received"	TEXT,
-	"alias"	TEXT
+	"alias"	TEXT,
+	"enabled"	INTEGER NOT NULL DEFAULT 1
 );
 DROP TABLE IF EXISTS "groups";
 CREATE TABLE IF NOT EXISTS "groups" (

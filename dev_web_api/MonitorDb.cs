@@ -99,6 +99,14 @@ namespace dev_web_api
             return users;
         }
 
+        public List<Agent> GetEnabledAgents()
+        {
+            return GetAgents()
+                            .OfType<Agent>()
+                            .Where(s => s.Enabled == true)
+                            .ToList();
+        }
+
         public List<Agent> GetAgents()
         {
             SQLiteDataReader sqlite_datareader;
@@ -121,7 +129,8 @@ namespace dev_web_api
                         Alias =
                                 sqlite_datareader["alias"] == DBNull.Value
                                 ? string.Empty
-                                : sqlite_datareader["alias"].ToString()
+                                : sqlite_datareader["alias"].ToString(),
+                        Enabled = Convert.ToBoolean(sqlite_datareader["enabled"])
                     };
                     agent.RegistrationDate =
                                       ConvertToUtcDateTime(
@@ -342,7 +351,7 @@ namespace dev_web_api
             }
         }
 
-        public void UpdateAlias(int agentId, string alias)
+        public void UpdateAlias(int agentId, string alias, bool enabled)
         {
             // First get the agentId
             var agents = GetAgents();
@@ -354,9 +363,11 @@ namespace dev_web_api
                 var sqlLiteConn = new SQLiteConnection(ConnectionString);
                 sqlLiteConn.Open();
                 var cmd = new SQLiteCommand(sqlLiteConn);
+                var enabledInt = (enabled) ? 1 : 0;
                 cmd.CommandText = $@"
                     update agents SET 
-                        alias = '{alias.Replace("'", "''")}'
+                        alias = '{alias.Replace("'", "''")}',
+                        enabled = {enabledInt}
                     WHERE
                         agent_id = {agentId}";
                 _logger.Info(cmd.CommandText);
@@ -532,6 +543,28 @@ namespace dev_web_api
             sqlLiteConn.Close();
         }
 
+        public void DeleteAgent(int agentId)
+        {
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn);
+            cmd.CommandText = $@"
+                    DELETE FROM agentResources
+                    WHERE
+                        agent_id = {agentId};
+                    DELETE FROM monitorValues
+                    WHERE
+                        agent_id = {agentId};
+                    DELETE FROM userNotifications
+                    WHERE
+                        agent_id = {agentId};
+                    DELETE FROM agents
+                    WHERE
+                        agent_id = { agentId};";
+            ;
+            cmd.ExecuteNonQuery();
+            sqlLiteConn.Close();
+        }
 
         public void DeleteMonitorCommand(int id)
         {

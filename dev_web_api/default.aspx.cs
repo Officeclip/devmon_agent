@@ -20,7 +20,7 @@ namespace dev_web_api
         protected void Page_Load(object sender, EventArgs e)
         {
             MonitorDb monitorDb = new MonitorDb();
-            agents = monitorDb.GetAgents();
+            agents = monitorDb.GetEnabledAgents();
             monitorCommands = monitorDb.GetMonitorCommands();
             var monitorValues = monitorDb.GetMonitorValues();
             monitorCommandLimits = monitorDb.GetMonitorCommandLimits();

@@ -42,7 +42,7 @@ namespace devmon_library.Core
             var os = new OsUtilization
             {
                 Processes = Process.GetProcesses().Length,
-                Update = await GetLatestUpdateInfo(),
+                //Update = await GetLatestUpdateInfo(),
                 UpTime = upTime
             };
 
@@ -75,25 +75,25 @@ namespace devmon_library.Core
             return tcs.Task;
         }
 
-        private async Task<WindowsUpdateInfo> GetLatestUpdateInfo()
-        {
-            var updateSession = new UpdateSession();
-            var updateSearcher = updateSession.CreateUpdateSearcher();
-            updateSearcher.Online = false;
+        //private async Task<WindowsUpdateInfo> GetLatestUpdateInfo()
+        //{
+        //    var updateSession = new UpdateSession();
+        //    var updateSearcher = updateSession.CreateUpdateSearcher();
+        //    updateSearcher.Online = false;
 
-            var searchResult = await SearchUpdatesAsync();
+        //    var searchResult = await SearchUpdatesAsync();
 
-            var update = new WindowsUpdateInfo();
-            update.PendingUpdates = searchResult.Updates.Count;
-            var count = updateSearcher.GetTotalHistoryCount();
+        //    var update = new WindowsUpdateInfo();
+        //    update.PendingUpdates = searchResult.Updates.Count;
+        //    var count = updateSearcher.GetTotalHistoryCount();
 
-            if (count > 0)
-            {
-                var history = updateSearcher.QueryHistory(0, 1);
-                update.LastUpdateInstalledAt = history[0].Date;
-            }
+        //    if (count > 0)
+        //    {
+        //        var history = updateSearcher.QueryHistory(0, 1);
+        //        update.LastUpdateInstalledAt = history[0].Date;
+        //    }
 
-            return update;
-        }
+        //    return update;
+        //}
     }
 }

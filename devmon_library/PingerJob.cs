@@ -21,6 +21,7 @@ namespace devmon_library
 
         {
             await Console.Out.WriteLineAsync("PingerJob is executing.");
+            _logger.Info("PingerJob is executing.");
             IAppSettings appSettings = new AppSettings("appSettings.json");
             IJsonSerializer jsonSerializer = new Core.JsonSerializer();
             IRestClientFactory restClientFactory = new RestClientFactory();
@@ -34,10 +35,12 @@ namespace devmon_library
             var commands = JsonConvert.DeserializeObject<List<CommandInfo>>(body);
             var pingResults = await ProcessTasksAsync(commands); //.ConfigureAwait(false);
 
-            if (pingResults.Count > 0)
+            if (
+                (pingResults != null) && (pingResults.Count > 0))
             {
                 await serverConnector.Send(pingResults);
             }
+            _logger.Info("PingerJob is finished.");
             await Console.Out.WriteLineAsync("PingerJob is finished.");
         }
 

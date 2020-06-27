@@ -28,6 +28,10 @@
         .errorLimit {
             background-color: lightcoral;
         }
+
+        li{
+            line-height: 1.5em;
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
     <script type="text/javascript">
@@ -67,20 +71,34 @@
                     Text="Sign Off"
                      OnClick="btnSignOff_Click" />
             </div>
-            <div style="margin: 20px">
-                To run the agent, do the following:
+            <div style="margin-top: 30px">
+                <h3>Agent Installation:</h3>
                 <ul>
-                    <li><a href="https://github.com/Officeclip/devmon_agent/releases/download/Release-0.5.2/AgentSetup.zip">Download</a>
-                        AgentSetup.zip to a folder and unzip it and run setup.exe on the target machine.
-                        During setup put these values:
-                        <ul>
-                            <li>Server Url: <b><%= GetWebUri() %></b></li>
-                            <li>Server Key: <b><%= serverGuid %></b></li>
-                        </ul>
+                    <li>
+                        Download and Install:
+                             
+                                <ol>
+                                    <li>Download 
+                                        <a 
+                                            href="https://github.com/Officeclip/devmon_agent/releases/download/Release-0.5.2/AgentSetup.zip"
+                                            style="font-weight:bold">AgentSetup.zip</a></li>
+                                    <li>Unzip AgentSetup.zip</li>
+                                    <li>Run <b>Setup.exe</b></li>
+                                    <li>Enter Server Url: <b><%= GetWebUri() %></b></li>
+                                    <li>Enter Server Key: <b><%= serverGuid %></b></li>
+                                </ol>
+
                     </li>
 
-                    <li>To uninstall, go to the <i>Control Panel > Programs and Features</i>
-                        and uninstall the Agent
+
+                    <li>Uninstall:
+                        <ul>
+                            <li>
+                                Go to the <i>Control Panel > Programs and Features</i>
+                                and uninstall the Agent Monitor
+                            </li>
+                        </ul>
+                        
                     </li>
                 </ul>
             </div>

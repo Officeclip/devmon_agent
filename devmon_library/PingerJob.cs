@@ -183,10 +183,10 @@ namespace devmon_library
                     return pingResultInfo;
                 }
             }
-            pingResultInfo.Value = "-1";
+            pingResultInfo.Value = "-2";
             pingResultInfo.IsSuccess = false;
-            pingResultInfo.ReturnCode = -1;
-            pingResultInfo.ErrorMessage = "Name does not match";
+            pingResultInfo.ReturnCode = -2;
+            pingResultInfo.ErrorMessage = "Drive does not exist";
             _logger.Debug("Ending DriveTask");
             return pingResultInfo;
         }

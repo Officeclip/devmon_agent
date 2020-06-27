@@ -29,6 +29,14 @@
             background-color: lightcoral;
         }
 
+        .systemError {
+            background-color: lightpink;
+        }
+
+        .notAvailable{
+            background-color: lightblue;
+        }
+
         li{
             line-height: 1.5em;
         }

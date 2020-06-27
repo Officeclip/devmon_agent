@@ -77,23 +77,22 @@ namespace dev_web_api
             }
             return false;
         }
-        private static string GetBackgroundCellColor(
+        private static string GetBackgroundCellClass(
                                 MonitorValue monitorValue,
                                 List<MonitorCommand> monitorCommands,
                                 List<MonitorCommandLimit> monitorCommandLimits)
         {
-            var value = monitorValue.Value;
             foreach (var monitorCommandLimit in monitorCommandLimits)
             {
                 if (GetType(monitorValue, monitorCommands) == monitorCommandLimit.Type)
                 {
                     if (IsMonitorValueLimitError(monitorValue, monitorCommandLimit))
                     {
-                        return "lightcoral";
+                        return "errorLimit";
                     }
                     if (IsMonitorValueLimitWarning(monitorValue, monitorCommandLimit))
                     {
-                        return "lightgoldenrodyellow";
+                        return "warningLimit";
                     }
                 }
             }
@@ -144,14 +143,29 @@ namespace dev_web_api
                                                 .FindAll(x => x.AgentId == agent.AgentId);
             foreach (var monitorValue in monitorValuesForAgent)
             {
-                var cell = new HtmlTableCell()
+                var cell = new HtmlTableCell();
+                switch (monitorValue.ReturnCode)
                 {
-                    BgColor = GetBackgroundCellColor(
-                                            monitorValue,
-                                            monitorCommands,
-                                            monitorCommandLimits),
-                    InnerHtml = $"{monitorValue.Value} {monitorValue.Unit}"
-                };
+                    case -2:
+                        cell.InnerHtml = @"<span style=""border-bottom: 1px dashed black"">NA</span>";
+                        cell.Attributes.Add("title", monitorValue.ErrorMessage);
+                        cell.Attributes.Add("class", "notAvailable");
+                        break;
+                    case -1:
+                        cell.InnerHtml = @"<span style=""border-bottom: 1px dashed black"">Error</span>";
+                        cell.Attributes.Add("title", monitorValue.ErrorMessage);
+                        cell.Attributes.Add("class", "systemError");
+                        break;
+                    default:
+                        cell.InnerText = $"{monitorValue.Value} {monitorValue.Unit}";
+                        var cssClass = GetBackgroundCellClass(
+                                monitorValue,
+                                monitorCommands,
+                                monitorCommandLimits);
+                        cell.Attributes.Add("class", cssClass);
+                        break;
+
+                }
                 row.Cells.Add(cell);
             }
 

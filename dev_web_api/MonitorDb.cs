@@ -371,7 +371,7 @@ namespace dev_web_api
                 var enabledInt = (enabled) ? 1 : 0;
                 cmd.CommandText = $@"
                     update agents SET 
-                        alias = '{alias.Replace("'", "''")}',
+                        alias = '{EscapeQuote(alias)}',
                         enabled = {enabledInt}
                     WHERE
                         agent_id = {agentId}";
@@ -613,12 +613,12 @@ namespace dev_web_api
                     VALUES
                     (
                         {agentResource.AgentId},
-                        '{agentResource.StableDeviceJson.Replace("'", "''")}',
+                        '{EscapeQuote(agentResource.StableDeviceJson)}',
                         '{agentResource.LastUpdatedDate}'
                     )
                     ON CONFLICT (agent_id)
                     DO update SET 
-                            stable_device_json = '{agentResource.StableDeviceJson.Replace("'", "''")}',
+                            stable_device_json = '{EscapeQuote(agentResource.StableDeviceJson)}',
                             last_updated_date = '{agentResource.LastUpdatedDate}'";
 
             var cmd = new SQLiteCommand(sqlLiteConn)

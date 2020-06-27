@@ -274,36 +274,41 @@ namespace dev_web_api
             return monitorValues;
         }
 
-        public void UpsertCommand(MonitorCommand monitorCommand)
+        public void UpdateMonitorCommand(MonitorCommand monitorCommand)
         {
             var sqlLiteConn = new SQLiteConnection(ConnectionString);
             sqlLiteConn.Open();
             var cmd = new SQLiteCommand(sqlLiteConn);
+            var strArg1 = EscapeQuote(monitorCommand.Arg1);
+            var strArg2 = EscapeQuote(monitorCommand.Arg2);
+
             cmd.CommandText = $@"
-                    INSERT INTO monitorCommands
-                    (
-                        monitor_command_id,
-                        name,
-                        type,
-                        arg1,
-                        arg2
-                    )
-                    VALUES
-                    (
-                        {monitorCommand.MonitorCommandId},
-                        '{monitorCommand.Name}',
-                        '{monitorCommand.Type}',
-                        '{monitorCommand.Arg1}'
-                        '{monitorCommand.Arg2}'
-                    )
-                    ON CONFLICT (monitor_command_id)
-                    DO update SET 
-                            name = ''{monitorCommand.Name}',
+                    UPDATE monitorCommands
+                    SET 
+                            name = '{monitorCommand.Name}',
                             type = '{monitorCommand.Type}',
-                            arg1 = '{monitorCommand.Arg1}',
-                            arg2 = '{monitorCommand.Arg2}'";
+                            arg1 = '{strArg1}',
+                            arg2 = '{strArg2}'
+                    WHERE
+                        monitor_command_id = {monitorCommand.MonitorCommandId}";
             cmd.ExecuteNonQuery();
             sqlLiteConn.Close();
+        }
+
+        public void UpsertMonitorCommand(MonitorCommand monitorCommand)
+        {
+            _logger.Info("Method UpsertMonitorCommand(...)");
+            var monitorCommands = GetMonitorCommands();
+            var monitorCommandFound = monitorCommands
+                                            .Find(x => x.MonitorCommandId == monitorCommand.MonitorCommandId);
+            if (monitorCommandFound == null)
+            {
+                InsertMonitorCommand(monitorCommand);
+            }
+            else
+            {
+                UpdateMonitorCommand(monitorCommand);
+            }
         }
 
         public void InsertMonitorValue(MonitorValue monitorValue)
@@ -420,7 +425,7 @@ namespace dev_web_api
             }
         }
 
-        public void UpDateMonitorValue(MonitorValue monitorValue)
+        public void UpdateMonitorValue(MonitorValue monitorValue)
         {
             _logger.Info("Method UpDateMonitorValue(...)");
             _logger.Info(ObjectDumper.Dump(monitorValue));
@@ -510,8 +515,13 @@ namespace dev_web_api
             }
             else
             {
-                UpDateMonitorValue(monitorValue);
+                UpdateMonitorValue(monitorValue);
             }
+        }
+
+        private string EscapeQuote(string var)
+        {
+            return var.Replace("'", "''");
         }
 
         public void InsertMonitorCommand(MonitorCommand monitorCommand)
@@ -519,11 +529,17 @@ namespace dev_web_api
             var sqlLiteConn = new SQLiteConnection(ConnectionString);
             sqlLiteConn.Open();
             var cmd = new SQLiteCommand(sqlLiteConn);
+            var strArg1 = EscapeQuote(monitorCommand.Arg1); 
+            var strArg2 = EscapeQuote(monitorCommand.Arg2);
             cmd.CommandText = $@"
                     INSERT INTO monitorCommands
                         (name, type, arg1, arg2) 
                     VALUES
-                        ('{monitorCommand.Name}', '{monitorCommand.Type}', '{monitorCommand.Arg1}', '{monitorCommand.Arg2}')";
+                        (
+                        '{monitorCommand.Name}', 
+                        '{monitorCommand.Type}', 
+                        '{strArg1}', 
+                        '{strArg2}')";
             cmd.ExecuteNonQuery();
             sqlLiteConn.Close();
         }

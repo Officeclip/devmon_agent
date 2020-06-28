@@ -162,7 +162,10 @@ namespace dev_web_api
                                 monitorValue,
                                 monitorCommands,
                                 monitorCommandLimits);
-                        cell.Attributes.Add("class", cssClass);
+                        if (cssClass.Length > 0)
+                        {
+                            cell.Attributes.Add("class", cssClass);
+                        }
                         break;
 
                 }

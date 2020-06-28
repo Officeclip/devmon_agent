@@ -60,7 +60,7 @@ namespace dev_web_api
                 Arg2 = txtArg2.Text.Trim()
             };
             monitorDb.InsertMonitorCommand(monitorCommand);
-            LoadData();
+            Response.Redirect(Request.RawUrl);
         }
 
         protected void GridView1_RowEditing(object sender, GridViewEditEventArgs e)

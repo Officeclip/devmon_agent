@@ -199,19 +199,19 @@ namespace devmon_library
                             driveUtilization.FreeBytes == null
                             ? "-1"
                             : ((ulong)(driveUtilization.FreeBytes / OneGb)).ToString("N1");
-                        _logger.Debug("Ending DriveTask");
+                        _logger.Info("*** Ending DriveTask() ***");
                         return pingResultInfo;
                     }
                 }
                 pingResultInfo.Value = "-2";
                 pingResultInfo.IsSuccess = false;
                 pingResultInfo.ReturnCode = -2;
+                pingResultInfo.ErrorMessage = "Drive does not exist";
             }
             catch (Exception ex)
             {
                 _logger.Debug($"DriveTask(): {ex.Message}");
             }
-            pingResultInfo.ErrorMessage = "Drive does not exist";
             _logger.Info("*** Ending DriveTask() ***");
             return pingResultInfo;
         }

@@ -26,7 +26,7 @@
 }
 
 .base-timer__path-remaining {
-    stroke-width: 10px;
+    stroke-width: 12px;
     stroke-linecap: round;
     transform: rotate(90deg);
     transform-origin: center;
@@ -55,5 +55,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 9px;
+    font-size: 10px;
+    font-weight: bold;
 }

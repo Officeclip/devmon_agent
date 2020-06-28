@@ -21,7 +21,7 @@ namespace devmon_library
 
         {
             await Console.Out.WriteLineAsync("PingerJob is executing.");
-            _logger.Info("PingerJob is executing.");
+            _logger.Info("***PingerJob is executing ***");
             IAppSettings appSettings = new AppSettings("appSettings.json");
             IJsonSerializer jsonSerializer = new Core.JsonSerializer();
             IRestClientFactory restClientFactory = new RestClientFactory();
@@ -33,6 +33,8 @@ namespace devmon_library
             var response = serverConnector.SendPing().Result;
             var body = response.Content;
             var commands = JsonConvert.DeserializeObject<List<CommandInfo>>(body);
+            _logger.Debug("**** CommandInfo List ****");
+            _logger.Debug(JsonConvert.SerializeObject(commands));
             var pingResults = await ProcessTasksAsync(commands); //.ConfigureAwait(false);
 
             if (
@@ -40,13 +42,14 @@ namespace devmon_library
             {
                 await serverConnector.Send(pingResults);
             }
-            _logger.Info("PingerJob is finished.");
+            _logger.Info("*** PingerJob is finished ***");
             await Console.Out.WriteLineAsync("PingerJob is finished.");
         }
 
         private async Task<ResultInfo> RunTask(CommandInfo commandInfo)
         {
             await Console.Out.WriteLineAsync($"Command: {commandInfo.Type}");
+            _logger.Info($"*** RunTask() Started, Command: {commandInfo.Type} ***");
             switch (commandInfo.Type)
             {
                 case "url.ping":
@@ -71,28 +74,44 @@ namespace devmon_library
 
         private static async Task<ResultInfo> MemTask(CommandInfo commandInfo)
         {
-            _logger.Debug("Starting MemTask");
-            var memoryCollector = new MemoryCollector(null);
-            var memoryUtilization = await memoryCollector.ReadMemoryUtilization();
-            var pingResultInfo = new ResultInfo(
-                                       commandInfo.MonitorCommandId,
-                                       (memoryUtilization.FreeBytes / OneGb).ToString("N1"),
-                                       "gb");
-            _logger.Debug("Ending MemTask");
+            _logger.Info("*** Starting MemTask() ***");
+            ResultInfo pingResultInfo = null;
+            try
+            {
+                var memoryCollector = new MemoryCollector(null);
+                var memoryUtilization = await memoryCollector.ReadMemoryUtilization();
+                pingResultInfo = new ResultInfo(
+                                           commandInfo.MonitorCommandId,
+                                           (memoryUtilization.FreeBytes / OneGb).ToString("N1"),
+                                           "gb");
+            }
+            catch (Exception ex)
+            {
+                _logger.Debug($"MemTask(): {ex.Message}");
+            }
+            _logger.Info("*** Ending MemTask() ***");
             return pingResultInfo;
         }
 
         private static async Task<ResultInfo> CpuTask(CommandInfo commandInfo)
         {
-            _logger.Debug("Starting CpuTask");
-            var cpuCollector = new CpuCollector(null);
-            var cpuUtilization = await cpuCollector.ReadCpuUtilization();
+            _logger.Info("*** Starting CpuTask() ***");
+            ResultInfo pingResultInfo = null;
+            try
+            {
+                var cpuCollector = new CpuCollector(null);
+                var cpuUtilization = await cpuCollector.ReadCpuUtilization();
 
-            var pingResultInfo = new ResultInfo(
-                                        commandInfo.MonitorCommandId,
-                                        cpuUtilization.LoadPercentage.ToString("N2"),
-                                        "%");
-            _logger.Debug("Ending CpuTask");
+                pingResultInfo = new ResultInfo(
+                                            commandInfo.MonitorCommandId,
+                                            cpuUtilization.LoadPercentage.ToString("N2"),
+                                            "%");
+            }
+            catch (Exception ex)
+            {
+                _logger.Debug($"CpuTask(): {ex.Message}");
+            }
+            _logger.Info("*** Ending CpuTask() ***");
             return pingResultInfo;
         }
 
@@ -120,140 +139,160 @@ namespace devmon_library
 
         private static async Task<ResultInfo> OsTask(CommandInfo commandInfo)
         {
-            _logger.Debug("Starting OsTask");
-            var osCollector = new OsCollector(null);
-            var osUtilization = await osCollector.ReadOsUtilization();
-            var value = string.Empty;
-            var unit = string.Empty;
-            switch (commandInfo.Type)
+            _logger.Info("*** Starting OsTask() ***");
+            ResultInfo pingResultInfo = null;
+            try
             {
-                case "os.processes":
-                    value = osUtilization.Processes.ToString();
-                    break;
-                case "os.uptime":
-                    var output = ToHumanReadableString(osUtilization.UpTime);
-                    var parts = output.Split(' ');
-                    value = parts[0];
-                    unit =
-                        (parts.Length >= 2)
-                        ? parts[1]
-                        : string.Empty;
-                    break;
-                //case "os.pendingupdates":
-                //    value = osUtilization.Update.PendingUpdates.ToString();
-                //    break;
-                //case "os.lastupdated":
-                //    var lastUpdated = osUtilization.Update.LastUpdateInstalledAt;
-                //    value =
-                //        (lastUpdated == null)
-                //        ? "unknown"
-                //        : ((DateTime)lastUpdated).ToString("yyyy-MM-dd");
-                //    break;
-            }
+                var osCollector = new OsCollector(null);
+                var osUtilization = await osCollector.ReadOsUtilization();
+                var value = string.Empty;
+                var unit = string.Empty;
+                switch (commandInfo.Type)
+                {
+                    case "os.processes":
+                        value = osUtilization.Processes.ToString();
+                        break;
+                    case "os.uptime":
+                        var output = ToHumanReadableString(osUtilization.UpTime);
+                        var parts = output.Split(' ');
+                        value = parts[0];
+                        unit =
+                            (parts.Length >= 2)
+                            ? parts[1]
+                            : string.Empty;
+                        break;
+                }
 
-            var pingResultInfo = new ResultInfo(
-                                        commandInfo.MonitorCommandId,
-                                        value,
-                                        unit);
-            _logger.Debug("Ending OsTask");
+                pingResultInfo = new ResultInfo(
+                                            commandInfo.MonitorCommandId,
+                                            value,
+                                            unit);
+            }
+            catch (Exception ex)
+            {
+                _logger.Debug($"OsTask(): {ex.Message}");
+            }
+            _logger.Info("*** Ending OsTask() ***");
             return pingResultInfo;
         }
 
         private static async Task<ResultInfo> DriveTask(CommandInfo commandInfo)
         {
-            _logger.Debug("Starting DriveTask");
-            var driveCollector = new DriveCollector(null);
-            var driveUtilizations = await driveCollector.ReadDriveUtilization();
-
-            var pingResultInfo = new ResultInfo()
+            _logger.Info("*** Starting DriveTask() ***");
+            ResultInfo pingResultInfo = null;
+            try
             {
-                Id = commandInfo.MonitorCommandId,
-                Unit = "gb"
-            };
+                var driveCollector = new DriveCollector(null);
+                var driveUtilizations = await driveCollector.ReadDriveUtilization();
 
-            foreach (var driveUtilization in driveUtilizations)
-            {
-                if (commandInfo.Arg1 == driveUtilization.Name)
+                pingResultInfo = new ResultInfo()
                 {
-                    pingResultInfo.Value =
-                        driveUtilization.FreeBytes == null
-                        ? "-1"
-                        : ((ulong)(driveUtilization.FreeBytes / OneGb)).ToString("N1");
-                    _logger.Debug("Ending DriveTask");
-                    return pingResultInfo;
+                    Id = commandInfo.MonitorCommandId,
+                    Unit = "gb"
+                };
+
+                foreach (var driveUtilization in driveUtilizations)
+                {
+                    if (commandInfo.Arg1 == driveUtilization.Name)
+                    {
+                        pingResultInfo.Value =
+                            driveUtilization.FreeBytes == null
+                            ? "-1"
+                            : ((ulong)(driveUtilization.FreeBytes / OneGb)).ToString("N1");
+                        _logger.Debug("Ending DriveTask");
+                        return pingResultInfo;
+                    }
                 }
+                pingResultInfo.Value = "-2";
+                pingResultInfo.IsSuccess = false;
+                pingResultInfo.ReturnCode = -2;
             }
-            pingResultInfo.Value = "-2";
-            pingResultInfo.IsSuccess = false;
-            pingResultInfo.ReturnCode = -2;
+            catch (Exception ex)
+            {
+                _logger.Debug($"DriveTask(): {ex.Message}");
+            }
             pingResultInfo.ErrorMessage = "Drive does not exist";
-            _logger.Debug("Ending DriveTask");
+            _logger.Info("*** Ending DriveTask() ***");
             return pingResultInfo;
         }
 
         private static async Task<ResultInfo> NetworkTask(
                                                     CommandInfo commandInfo)
         {
-            _logger.Debug("Starting NetworkTask");
+            _logger.Info("*** Starting NetworkTask() ***");
             var networkCollector = new NetworkCollector(null);
-            var networkUtilizations = await networkCollector.ReadNetworkUtilization();
-            var pingResultInfo = new ResultInfo()
+            ResultInfo pingResultInfo = null;
+            try
             {
-                Id = commandInfo.MonitorCommandId,
-                Unit = "kbytes/sec"
-            };
-
-            foreach (var networkUtilization in networkUtilizations)
-            {
-                if (commandInfo.Arg1 == networkUtilization.Name)
+                var networkUtilizations = await networkCollector.ReadNetworkUtilization();
+                pingResultInfo = new ResultInfo()
                 {
-                    switch (commandInfo.Arg2)
+                    Id = commandInfo.MonitorCommandId,
+                    Unit = "kbytes/sec"
+                };
+
+                foreach (var networkUtilization in networkUtilizations)
+                {
+                    if (commandInfo.Arg1 == networkUtilization.Name)
                     {
-                        case "ReceivedBytesPerSeconds":
-                            pingResultInfo.Value = (networkUtilization.ReceivedBytesPerSecond / OneKb).ToString("N1");
-                            break;
-                        case "SentBytesPerSecond":
-                            pingResultInfo.Value = (networkUtilization.SentBytesPerSecond / OneKb).ToString("N1");
-                            break;
+                        switch (commandInfo.Arg2)
+                        {
+                            case "ReceivedBytesPerSeconds":
+                                pingResultInfo.Value = (networkUtilization.ReceivedBytesPerSecond / OneKb).ToString("N1");
+                                break;
+                            case "SentBytesPerSecond":
+                                pingResultInfo.Value = (networkUtilization.SentBytesPerSecond / OneKb).ToString("N1");
+                                break;
+                        }
+                        return pingResultInfo;
                     }
-                    _logger.Debug("Ending NetworkTask");
-                    return pingResultInfo;
                 }
+                pingResultInfo.Value = "-1";
+                pingResultInfo.IsSuccess = false;
+                pingResultInfo.ReturnCode = -1;
+                pingResultInfo.ErrorMessage = "Name does not match";
             }
-            pingResultInfo.Value = "-1";
-            pingResultInfo.IsSuccess = false;
-            pingResultInfo.ReturnCode = -1;
-            pingResultInfo.ErrorMessage = "Name does not match";
-            _logger.Debug("Ending NetworkTask");
+            catch (Exception ex)
+            {
+                _logger.Debug($"NetworkTask(): {ex.Message}");
+            }
+            _logger.Info("*** Ending NetworkTask() ***");
             return pingResultInfo;
         }
 
         private static async Task<ResultInfo> UrlTask(CommandInfo commandInfo)
         {
-            _logger.Debug($"Starting UrlTask: {commandInfo.Arg1}");
-
-
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            var result = await sHttpClient.GetAsync(commandInfo.Arg1);
-            watch.Stop();
-            var pingResultInfo = new ResultInfo()
+            _logger.Info($"*** Starting UrlTask: {commandInfo.Arg1} ***");
+            ResultInfo pingResultInfo = null;
+            try
             {
-                Id = commandInfo.MonitorCommandId,
-                IsSuccess = result.IsSuccessStatusCode,
-                Value = watch.ElapsedMilliseconds.ToString(),
-                ReturnCode = (int)result.StatusCode,
-                Unit = "ms"
-            };
-            pingResultInfo.ErrorMessage =
-                                (pingResultInfo.IsSuccess)
-                                ? string.Empty
-                                : result.ReasonPhrase;
-            _logger.Debug($"Ending UrlTask: {commandInfo.Arg1}: {watch.ElapsedMilliseconds} ms");
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                var result = await sHttpClient.GetAsync(commandInfo.Arg1);
+                watch.Stop();
+                pingResultInfo = new ResultInfo()
+                {
+                    Id = commandInfo.MonitorCommandId,
+                    IsSuccess = result.IsSuccessStatusCode,
+                    Value = watch.ElapsedMilliseconds.ToString(),
+                    ReturnCode = (int)result.StatusCode,
+                    Unit = "ms"
+                };
+                pingResultInfo.ErrorMessage =
+                                    (pingResultInfo.IsSuccess)
+                                    ? string.Empty
+                                    : result.ReasonPhrase;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"UrlTask(): {ex.Message}");
+            }
+            _logger.Info($"*** Ending UrlTask: {commandInfo.Arg1} ***");
             return pingResultInfo;
         }
 
         private async Task<List<ResultInfo>> ProcessTasksAsync(List<CommandInfo> commandInfos)
         {
+            _logger.Info("Starting *** ProcessTasksAsync() ***");
             var pingResults = new List<ResultInfo>();
             try
             {
@@ -276,6 +315,7 @@ namespace devmon_library
                 _logger.Error($"PingerJob.ProcessTaskAsync: {ex.StackTrace}");
                 return null;
             }
+            _logger.Info("*** Ending ProcessTasksAsync() ***");
             return pingResults;
         }
     }

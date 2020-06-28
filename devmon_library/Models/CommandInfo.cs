@@ -18,5 +18,6 @@ namespace devmon_library.Models
 
         [DefaultValue("")]
         public string Arg2 { get; set; }
+
     }
 }

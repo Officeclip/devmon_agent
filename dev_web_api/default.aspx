@@ -5,8 +5,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <meta http-equiv="refresh" content="30">
-    <title></title>
+    <title>Monitor Agent</title>
     <style>
+        table{
+            margin-top: 10px;
+        }
         table, th, td {
             text-align: center;
             border: 1px solid #CCC;
@@ -33,27 +36,25 @@
             background-color: lightpink;
         }
 
-        .notAvailable{
+        .notAvailable {
             background-color: lightblue;
         }
 
-        li{
+        li {
             line-height: 1.5em;
         }
     </style>
-    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-    <script type="text/javascript">
-        //setInterval(function () {
-        //    $('#my_div').load('http://localhost/monitor/default.aspx');
-        //}, 2000) /* time in milliseconds (ie 2 seconds)*/
-    </script>
+    <link rel="stylesheet" href="css/countdown.css" />
 </head>
 <body>
     <form id="form1" runat="server">
-
         <div style="margin: 20px 0">
             <div>
-                Last Updated: <%= DateTime.Now %>
+                <div id="app" style="float:left"></div>
+                <div style="margin: 5px 0 0 20px; float:left">
+                    Last Updated: <%= DateTime.Now %>
+                </div>
+                <div style="clear:both" />
             </div>
             <table id="tblMonitor" runat="server" />
             <div style="margin: 20px">
@@ -68,28 +69,27 @@
             </div>
             <div style="margin: 20px">
                 <asp:Button ID="btnHardware" runat="server"
-                    Text="Hardware" 
+                    Text="Hardware"
                     OnClick="btnHardware_Click" />
                 <asp:Button ID="btnSoftware" runat="server"
-                    Text="Software" 
+                    Text="Software"
                     OnClick="btnSoftware_Click" />
             </div>
-            <div style="margin:20px">
+            <div style="margin: 20px">
                 <asp:Button ID="btnSignOff" runat="server"
                     Text="Sign Off"
-                     OnClick="btnSignOff_Click" />
+                    OnClick="btnSignOff_Click" />
             </div>
             <div style="margin-top: 30px">
                 <h3>Agent Installation:</h3>
                 <ul>
-                    <li>
-                        Download and Install:
+                    <li>Download and Install:
                              
                                 <ol>
                                     <li>Download 
-                                        <a 
+                                        <a
                                             href="https://github.com/Officeclip/devmon_agent/releases/download/Release-0.5.2/AgentSetup.zip"
-                                            style="font-weight:bold">AgentSetup.zip</a></li>
+                                            style="font-weight: bold">AgentSetup.zip</a></li>
                                     <li>Unzip AgentSetup.zip</li>
                                     <li>Run <b>Setup.exe</b></li>
                                     <li>Enter Server Url: <b><%= GetWebUri() %></b></li>
@@ -101,16 +101,16 @@
 
                     <li>Uninstall:
                         <ul>
-                            <li>
-                                Go to the <i>Control Panel > Programs and Features</i>
+                            <li>Go to the <i>Control Panel > Programs and Features</i>
                                 and uninstall the Agent Monitor
                             </li>
                         </ul>
-                        
+
                     </li>
                 </ul>
             </div>
         </div>
     </form>
+    <script src="js/countdown.js"></script>
 </body>
 </html>

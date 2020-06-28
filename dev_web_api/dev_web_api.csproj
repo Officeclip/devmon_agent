@@ -109,9 +109,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="commandLimits.aspx" />
+    <Content Include="css\countdown.css" />
     <Content Include="default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="alias.aspx" />
+    <Content Include="js\countdown.js" />
     <Content Include="logon.aspx" />
     <Content Include="setup.aspx" />
     <Content Include="sql\testData.sql" />

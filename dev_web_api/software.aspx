@@ -10,17 +10,25 @@
     <form id="form1" runat="server">
         <div style="margin: 20px">
             <div>
-                Agents:
+                <div style="display: inline">
+                    Agents:
                 <asp:DropDownList ID="ddlAgents" runat="server"
                     AutoPostBack="true"
                     OnSelectedIndexChanged="ddlAgents_SelectedIndexChanged" />
+                </div>
+                <div style="display: inline; margin-left: 20px">
+                    <asp:Button ID="btnBack" runat="server"
+                        Text="Back to Monitor"
+                        Font-Bold="true"
+                        OnClick="btnBack_Click" />
+                </div>
             </div>
-            <div style="margin-top: 10px">
-                <asp:Label ID="lblEmptyData" runat="server"
-                     Text="Data for this agent is not available"
-                     ForeColor="Red" />
-                <asp:GridView ID="grdSoftware" runat="server" />
-            </div>
+        <div style="margin-top: 10px">
+            <asp:Label ID="lblEmptyData" runat="server"
+                Text="Data for this agent is not available"
+                ForeColor="Red" />
+            <asp:GridView ID="grdSoftware" runat="server" />
+        </div>
         </div>
     </form>
 </body>

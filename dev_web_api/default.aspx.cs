@@ -49,30 +49,34 @@ namespace dev_web_api
 
         protected void btnPopup_Click(object sender, EventArgs e)
         {
-            string queryString = "monitor.aspx";
-            string newWin = "window.open('" + queryString + "');";
-            ClientScript.RegisterStartupScript(this.GetType(), "monitor", newWin, true);
+            Response.Redirect("monitor.aspx");
+            //string queryString = "monitor.aspx";
+            //string newWin = "window.open('" + queryString + "');";
+            //ClientScript.RegisterStartupScript(this.GetType(), "monitor", newWin, true);
         }
 
         protected void btnHardware_Click(object sender, EventArgs e)
         {
-            string queryString = "hardware.aspx";
-            string newWin = "window.open('" + queryString + "');";
-            ClientScript.RegisterStartupScript(this.GetType(), "hardware", newWin, true);
+            Response.Redirect("hardware.aspx");
+            //string queryString = "hardware.aspx";
+            //string newWin = "window.open('" + queryString + "');";
+            //ClientScript.RegisterStartupScript(this.GetType(), "hardware", newWin, true);
         }
 
         protected void btnSoftware_Click(object sender, EventArgs e)
         {
-            string queryString = "software.aspx";
-            string newWin = "window.open('" + queryString + "');";
-            ClientScript.RegisterStartupScript(this.GetType(), "software", newWin, true);
+            Response.Redirect("software.aspx");
+            //string queryString = "software.aspx";
+            //string newWin = "window.open('" + queryString + "');";
+            //ClientScript.RegisterStartupScript(this.GetType(), "software", newWin, true);
         }
 
         protected void btnAlias_Click(object sender, EventArgs e)
         {
-            string queryString = "alias.aspx";
-            string newWin = "window.open('" + queryString + "');";
-            ClientScript.RegisterStartupScript(this.GetType(), "alias", newWin, true);
+            Response.Redirect("alias.aspx");
+            //string queryString = "alias.aspx";
+            //string newWin = "window.open('" + queryString + "');";
+            //ClientScript.RegisterStartupScript(this.GetType(), "alias", newWin, true);
         }
 
         protected void btnSignOff_Click(object sender, EventArgs e)
@@ -83,9 +87,10 @@ namespace dev_web_api
 
         protected void btnCommandLimit_Click(object sender, EventArgs e)
         {
-            string queryString = "commandLimits.aspx";
-            string newWin = "window.open('" + queryString + "');";
-            ClientScript.RegisterStartupScript(this.GetType(), "commandLimits", newWin, true);
+            Response.Redirect("commandLimits.aspx");
+            //string queryString = "commandLimits.aspx";
+            //string newWin = "window.open('" + queryString + "');";
+            //ClientScript.RegisterStartupScript(this.GetType(), "commandLimits", newWin, true);
         }
     }
 }

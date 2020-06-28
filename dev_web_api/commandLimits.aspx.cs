@@ -97,5 +97,10 @@ namespace dev_web_api
             }
             LoadValues();
         }
+
+        protected void btnBack_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("default.aspx");
+        }
     }
 }

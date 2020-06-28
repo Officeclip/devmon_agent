@@ -7,6 +7,10 @@
 </head>
 <body>
     <form id="form1" runat="server">
+                        <asp:Button ID="btnBack" runat="server"
+                    Text="Back to Monitor"
+                    Font-Bold="true"
+                    OnClick="btnBack_Click"/>
         <div style="margin: 20px">
             <table cellspacing="5" cellpadding="5" style="border: 1px solid gray">
                 <tr>

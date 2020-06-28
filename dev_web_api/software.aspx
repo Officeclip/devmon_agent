@@ -16,6 +16,9 @@
                     AutoPostBack="true"
                     OnSelectedIndexChanged="ddlAgents_SelectedIndexChanged" />
                 </div>
+                <div style="display:inline; margin-left: 20px">
+                    <asp:Literal ID="litDate" runat="server" />
+                </div>
                 <div style="display: inline; margin-left: 20px">
                     <asp:Button ID="btnBack" runat="server"
                         Text="Back to Monitor"

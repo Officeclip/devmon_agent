@@ -40,6 +40,7 @@ namespace dev_web_api
                 LoadJsonToTreeView(treeView1, agentResource.StableDeviceJson);
             }
             treeView1.ExpandAll();
+            litDate.Text = $"Last Updated: {agentResource.LastUpdatedDate} UTC";
         }
 
         /// <summary>
@@ -99,6 +100,7 @@ namespace dev_web_api
 
         protected void ddlAgents_SelectedIndexChanged(object sender, EventArgs e)
         {
+
             LoadData();
         }
 

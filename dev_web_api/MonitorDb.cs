@@ -614,12 +614,12 @@ namespace dev_web_api
                     (
                         {agentResource.AgentId},
                         '{EscapeQuote(agentResource.StableDeviceJson)}',
-                        '{agentResource.LastUpdatedDate}'
+                        '{agentResource.LastUpdatedDate:o}'
                     )
                     ON CONFLICT (agent_id)
                     DO update SET 
                             stable_device_json = '{EscapeQuote(agentResource.StableDeviceJson)}',
-                            last_updated_date = '{agentResource.LastUpdatedDate}'";
+                            last_updated_date = '{agentResource.LastUpdatedDate:o}'";
 
             var cmd = new SQLiteCommand(sqlLiteConn)
             {

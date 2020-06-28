@@ -41,6 +41,7 @@ namespace dev_web_api
                 grdSoftware.DataSource = Softwares(agentResource.StableDeviceJson);
                 grdSoftware.DataBind();
             }
+            litDate.Text = $"Last Updated: {agentResource.LastUpdatedDate} UTC";
         }
 
         /// <summary>

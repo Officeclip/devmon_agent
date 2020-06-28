@@ -92,7 +92,7 @@
                                 <ol>
                                     <li>Download 
                                         <a
-                                            href="https://github.com/Officeclip/devmon_agent/releases/download/Release-0.5.2/AgentSetup.zip"
+                                            href="https://github.com/Officeclip/devmon_agent/releases/download/Agent-0.5/AgentSetup.zip"
                                             style="font-weight: bold">AgentSetup.zip</a></li>
                                     <li>Unzip AgentSetup.zip</li>
                                     <li>Run <b>Setup.exe</b></li>

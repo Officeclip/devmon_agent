@@ -77,6 +77,7 @@ namespace dev_web_api
             }
             return false;
         }
+
         private static string GetBackgroundCellClass(
                                 MonitorValue monitorValue,
                                 List<MonitorCommand> monitorCommands,
@@ -104,16 +105,41 @@ namespace dev_web_api
             return (DateTime.UtcNow - agent.LastReplyReceived).TotalMinutes > 10;
         }
 
+        private static string GetColumnTitleLimit(
+                               MonitorCommand monitorCommand,
+                               List<MonitorCommandLimit> monitorCommandLimits)
+        {
+            var returnValue = string.Empty;
+            var monitorCommandLimit = monitorCommandLimits
+                                                .Find(x => x.Type == monitorCommand.Type);
+            if (monitorCommandLimit != null)
+            {
+                var warningLimit = $"Warning Limit: {monitorCommandLimit.WarningLimit}";
+                var errorLimit = $"Error Limit: {monitorCommandLimit.ErrorLimit}";
+                returnValue = $"{warningLimit}, {errorLimit}";
+            }
+            return returnValue;
+        }
+
         private static void SetHeaderRow(
                                 HtmlTable monitorTable,
-                                List<MonitorCommand> monitorCommands)
+                                List<MonitorCommand> monitorCommands,
+                                List<MonitorCommandLimit> monitorCommandLimits)
         {
             var row = new HtmlTableRow();
             monitorTable.Rows.Add(row);
             foreach (var monitorCommand in monitorCommands)
             {
                 var cell = new HtmlTableCell("th");
-                cell.InnerHtml = monitorCommand.Name;
+                cell.InnerText = monitorCommand.Name;
+                var title = GetColumnTitleLimit(monitorCommand, monitorCommandLimits);
+                if (title.Length > 0)
+                {
+                    cell.InnerHtml = 
+                        $@"<span style=""border-bottom: 1px dashed black"">{monitorCommand.Name }</span>";
+                    cell.Attributes.Add("title", title);
+                    cell.Attributes.Add("class", "headerTitle");
+                }
                 row.Cells.Add(cell);
             }
         }
@@ -181,7 +207,7 @@ namespace dev_web_api
                                     List<MonitorValue> monitorValues,
                                     List<MonitorCommandLimit> monitorCommandLimits)
         {
-            SetHeaderRow(monitorTable, monitorCommands);
+            SetHeaderRow(monitorTable, monitorCommands, monitorCommandLimits);
             foreach (var agent in agents)
             {
                 if (IsAgentUnavailable(agent))

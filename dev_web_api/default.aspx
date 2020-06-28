@@ -40,6 +40,10 @@
             background-color: lightblue;
         }
 
+        .headerTitle {
+            background-color: lightgray;
+        }
+
         li {
             line-height: 1.5em;
         }

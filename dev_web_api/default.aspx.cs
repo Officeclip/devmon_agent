@@ -31,6 +31,7 @@ namespace dev_web_api
                             monitorValues,
                             monitorCommandLimits);
             Util.SendMonitorLimitEmail(
+                            agents,
                             monitorValues,
                             monitorCommandLimits,
                             monitorCommands);

@@ -264,6 +264,7 @@ namespace dev_web_api
         }
 
         private static string EmailDescription(
+                                    Agent agent,
                                     MonitorCommand monitorCommand,
                                     MonitorValue monitorValue)
         {
@@ -277,11 +278,16 @@ namespace dev_web_api
             {
                 stringBuilder.Append($": {monitorCommand.Arg2}");
             }
+            if (agent != null)
+            {
+                stringBuilder.Append($" for Agent: ${agent.ScreenName}");
+            }
             stringBuilder.Append($" - {monitorValue.Value}{monitorValue.Unit}");
             return stringBuilder.ToString();
         }
 
         public static void SendMonitorLimitEmail(
+                                            List<Agent> agents,
                                             List<MonitorValue> monitorValues,
                                             List<MonitorCommandLimit> monitorCommandLimits,
                                             List<MonitorCommand> monitorCommands)
@@ -290,6 +296,8 @@ namespace dev_web_api
             {
                 var monitorCommand =
                         monitorCommands.Find(x => x.MonitorCommandId == monitorValue.MonitorCommandId);
+                var agent =
+                        agents.Find(x => x.AgentId == monitorValue.AgentId);
                 foreach (var monitorCommandLimit in monitorCommandLimits)
                 {
                     if (monitorCommandLimit.Type != monitorCommand.Type)
@@ -325,8 +333,8 @@ namespace dev_web_api
                         {
                             SendEmail(
                                     userNotification.EmailAddress,
-                                    "Your monitor limit is exceeded",
-                                    EmailDescription(monitorCommand, monitorValue));
+                                    EmailSubject(agent, monitorCommand),
+                                    EmailDescription(agent, monitorCommand, monitorValue));
                             userNotification.LastNotified = DateTime.UtcNow;
                             (new MonitorDb()).UpdateUserNotification(userNotification);
                         }
@@ -340,6 +348,11 @@ namespace dev_web_api
                     }
                 }
             }
+        }
+
+        private static string EmailSubject(Agent agent, MonitorCommand monitorCommand)
+        {
+            return $"Monitor limit is exceeded ${(agent?.ScreenName) ?? string.Empty}: {monitorCommand.Name}";
         }
 
         public static void SendEmail(

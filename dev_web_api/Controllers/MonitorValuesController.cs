@@ -25,7 +25,7 @@ namespace dev_web_api.Controllers
             }
             var guid = headers.GetValues("agent_guid").First();
             var agent = monitorDb.GetAgentByGuid(guid);
-
+            monitorDb.DeleteOldHistory();
             foreach (var commandValue in commandValues)
             {
                 var MonitorValue = new BusinessLayer.MonitorValue()

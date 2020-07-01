@@ -63,6 +63,15 @@ CREATE TABLE IF NOT EXISTS "monitorCommandLimits" (
 	"error_limit"	REAL,
 	"is_low_limit"	INTEGER
 );
+DROP TABLE IF EXISTS "history";
+CREATE TABLE IF NOT EXISTS "history" (
+	"frequency"	INTEGER NOT NULL DEFAULT 0,
+	"agent_id"	INTEGER NOT NULL,
+	"monitor_command_id"	INTEGER NOT NULL,
+	"date"	TEXT NOT NULL,
+	"value"	INTEGER NOT NULL
+);
+
 DROP INDEX IF EXISTS "agent-guid";
 CREATE UNIQUE INDEX IF NOT EXISTS "agent-guid" ON "agents" (
 	"guid"
@@ -76,4 +85,5 @@ CREATE INDEX IF NOT EXISTS "monitorValues_agentId_monitorCommandId" ON "monitorV
 	"agent_id",
 	"monitor_command_id"
 );
+
 COMMIT;

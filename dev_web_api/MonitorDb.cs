@@ -311,6 +311,85 @@ namespace dev_web_api
             }
         }
 
+        public void DeleteOldHistory()
+        {
+            _logger.Info("Method DeleteOldHistory()");
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn);
+            var dateCutOff = DateTime
+                                    .UtcNow
+                                    .Subtract(
+                                        new TimeSpan(
+                                                1, 0, 0))
+                                    .ToString("o");
+            cmd.CommandText = $@"
+                    DELETE FROM history 
+                    WHERE date < '{dateCutOff}'
+                    AND frequency = 0
+                    ";
+            _logger.Info(cmd.CommandText);
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (SQLiteException ex)
+            {
+                _logger.Error($"Database Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"General Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlLiteConn.Close();
+            }
+        }
+
+        public void InsertMonitorHistory(MonitorValue monitorValue)
+        {
+            _logger.Info("Method InsertMonitorHistory(...)");
+            _logger.Info(ObjectDumper.Dump(monitorValue));
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn);
+            cmd.CommandText = $@"
+                    INSERT INTO history
+                    (
+                        frequency,
+                        agent_id,
+                        monitor_command_id,
+                        date,
+                        value
+                    )
+                    VALUES
+                    (
+                        0,
+                        {monitorValue.AgentId},
+                        {monitorValue.MonitorCommandId},
+                        '{DateTime.UtcNow:o}',
+                        {monitorValue.Value}
+                    )";
+            _logger.Info(cmd.CommandText);
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (SQLiteException ex)
+            {
+                _logger.Error($"Database Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"General Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlLiteConn.Close();
+            }
+        }
+
         public void InsertMonitorValue(MonitorValue monitorValue)
         {
             _logger.Info("Method InsertMonitorValue(...)");
@@ -331,7 +410,7 @@ namespace dev_web_api
                     VALUES
                     (
                         {monitorValue.AgentId},
-                        '{monitorValue.MonitorCommandId}',
+                        {monitorValue.MonitorCommandId},
                         '{monitorValue.ErrorMessage}',
                         {monitorValue.ReturnCode},
                         '{monitorValue.Unit}',
@@ -517,6 +596,8 @@ namespace dev_web_api
             {
                 UpdateMonitorValue(monitorValue);
             }
+            InsertMonitorHistory(monitorValue);
+
         }
 
         private string EscapeQuote(string var)

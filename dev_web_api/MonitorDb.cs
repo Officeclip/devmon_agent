@@ -1030,5 +1030,84 @@ namespace dev_web_api
                 UpdateMonitorCommandLimit(monitorCommandLimit);
             }
         }
+
+        public List<ChartLine> GetChart(int monitorCommandId)
+        {
+            SQLiteDataReader sqlite_datareader;
+            SQLiteCommand sqlite_cmd;
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            sqlite_cmd = sqlLiteConn.CreateCommand();
+            sqlite_cmd.CommandText =
+                $@"
+                    SELECT * FROM 
+                        agent a, monitorValues mvs
+                    WHERE
+                        a.agent_id = mvs.agent_id AND
+                        mvs.monitor_command_id = {monitorCommandId}
+                    ORDER BY
+                        a.agent_id";
+            sqlite_datareader = sqlite_cmd.ExecuteReader();
+            var chartLines = new List<ChartLine>();
+            var chartPoints = new List<ChartPoint>();
+            var initialAgentId = 0;
+            int agentId = 0;
+            string agentName = string.Empty;
+            while (sqlite_datareader.Read())
+            {
+                agentId = Convert.ToInt32(sqlite_datareader["agent_id"]);
+                agentName = GetAgentName(sqlite_datareader);
+                if (agentId != initialAgentId)
+                {
+                    if (chartPoints.Count > 0)
+                    {
+                        var chartLine1 = new ChartLine()
+                        {
+                            AgentId = agentId,
+                            AgentName = agentName,
+                            ChartPoints = chartPoints
+                        };
+                        chartLines.Add(chartLine1);
+                        initialAgentId = agentId;
+                        chartPoints = new List<ChartPoint>();
+                    }
+                }
+
+                var chartPoint = new ChartPoint()
+                {
+                    Value = Convert.ToInt32(sqlite_datareader["value"])
+                };
+                var date = ConvertToUtcDateTime(sqlite_datareader["date"]);
+                chartPoint.Minutes = Convert.ToInt32(
+                                                DateTime.UtcNow.Subtract(date).TotalHours);
+                chartPoints.Add(chartPoint);
+            }
+            if (chartPoints.Count > 0)
+            {
+                var chartLine1 = new ChartLine()
+                {
+                    AgentId = agentId,
+                    AgentName = agentName,
+                    ChartPoints = chartPoints
+                };
+                chartLines.Add(chartLine1);
+            }
+            sqlite_datareader.Close();
+            sqlLiteConn.Close();
+            return chartLines;
+        }
+
+        private static string GetAgentName(SQLiteDataReader sqlite_datareader)
+        {
+            var machineName = sqlite_datareader["machine_name"].ToString();
+            var alias =
+                    sqlite_datareader["alias"] == DBNull.Value
+                    ? string.Empty
+                    : sqlite_datareader["alias"].ToString();
+            var agentName = (alias == string.Empty)
+                                    ? machineName
+                                    : alias;
+            return agentName;
+        }
     }
 }

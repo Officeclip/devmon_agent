@@ -113,6 +113,7 @@
     <Content Include="default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="alias.aspx" />
+    <Content Include="history.aspx" />
     <Content Include="js\countdown.js" />
     <Content Include="logon.aspx" />
     <Content Include="setup.aspx" />
@@ -126,6 +127,7 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="BusinessLayer\AgentResource.cs" />
+    <Compile Include="BusinessLayer\Chart.cs" />
     <Compile Include="BusinessLayer\MonitorCommandHelp.cs" />
     <Compile Include="BusinessLayer\MonitorCommandLimit.cs" />
     <Compile Include="BusinessLayer\User.cs" />
@@ -140,6 +142,13 @@
     </Compile>
     <Compile Include="commandLimits.aspx.designer.cs">
       <DependentUpon>commandLimits.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="history.aspx.cs">
+      <DependentUpon>history.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="history.aspx.designer.cs">
+      <DependentUpon>history.aspx</DependentUpon>
     </Compile>
     <Compile Include="logon.aspx.cs">
       <DependentUpon>logon.aspx</DependentUpon>

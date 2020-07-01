@@ -1055,7 +1055,7 @@ namespace dev_web_api
             string agentName = string.Empty;
             while (sqlite_datareader.Read())
             {
-                agentId = Convert.ToInt32(sqlite_datareader["agent_id"]);
+                agentId = Convert.ToInt32(sqlite_datareader["a.agent_id"]);
                 agentName = GetAgentName(sqlite_datareader);
                 if (agentId != initialAgentId)
                 {

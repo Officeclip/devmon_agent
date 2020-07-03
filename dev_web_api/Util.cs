@@ -415,11 +415,13 @@ namespace dev_web_api
         }
 
         public static ChartLine FixChart(
-                                ChartLine  chartLine,
+                                ChartLine chartLine,
                                 int chartRange)
         {
+            chartLine.ChartPoints.RemoveAll(x => x.Minutes > chartRange);
+            var maxMinutes = chartLine.ChartPoints.Max(x => x.Minutes);
             var newChartPoints = new List<ChartPoint>();
-            for (int mins = 0; mins <= chartRange; mins++)
+            for (int mins = 0; mins <= maxMinutes; mins++)
             {
                 var chartPoint = chartLine.ChartPoints.Find(x => x.Minutes == mins);
                 if (chartPoint == null)
@@ -427,7 +429,7 @@ namespace dev_web_api
                     chartPoint = new ChartPoint()
                     {
                         Minutes = mins,
-                        Value = -1
+                        Value = -50
                     };
                 }
                 newChartPoints.Add(chartPoint);

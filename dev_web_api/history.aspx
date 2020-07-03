@@ -5,67 +5,10 @@
 <head runat="server">
     <title></title>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
 <%--    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>--%>
 
-<script type="text/javascript">
-
-    function GenChart() {
-        $.ajax({
-            type: "POST",
-            url: "/monitor/history.aspx/GetChart",
-            data: "{monitorCommandId: \"" + $("[id*=ddlOne]").val() + "\"}",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: OnSuccess_,
-            failure: OnErrorCall_
-        });
-    }
-
-    function OnSuccess_(response) {
-        //debugger;
-        //alert("success: " + response.d);
-        var jsonarray = JSON.parse(response.d);
-
-        var labels = jsonarray.map(function (e) {
-            return e.text;
-        });
-        var data = jsonarray.map(function (e) {
-            return e.value;
-        });;
-
-        var ctx = $("#myChart").get(0).getContext("2d");
-        var config = {
-            responsive: true;
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Graph Line',
-                    data: data,
-                    backgroundColor: 'rgba(0, 119, 204, 0.3)'
-                }]
-            }
-        };
-
-        var chart = new Chart(ctx, config);
-        //var arr = [];
-        //$.each(aData, function (i, val) {
-        //    var obj = {};
-        //    alert(val);
-        //    obj.value = val.value;
-        //    obj.label = val.text;
-        //    arr.push(obj);
-        //});
-        //var ctx = $("#myChart").get(0).getContext("2d");
-        //var myPieChart = new Chart(ctx).Pie(arr);
-    }
-
-    function OnErrorCall_(response) {
-        alert("Error: " + response)
-    }
-
-    </script>
 </head>
 <body>
    <form id="form1" runat="server">
@@ -133,6 +76,17 @@
             });;
 
             var ctx = $("#myChart").get(0).getContext("2d");
+            var color = Chart.helpers.color;
+            window.chartColors = {
+                red: 'rgb(255, 99, 132)',
+                orange: 'rgb(255, 159, 64)',
+                yellow: 'rgb(255, 205, 86)',
+                green: 'rgb(75, 192, 192)',
+                blue: 'rgb(54, 162, 235)',
+                purple: 'rgb(153, 102, 255)',
+                grey: 'rgb(201, 203, 207)'
+            };
+            // see: https://www.chartjs.org/samples/latest/scales/time/line.html for syntax
             var config = {
                 type: 'line',
                 responsive: true,
@@ -140,19 +94,35 @@
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Graph Line',
+                        label: 'SKD-Surface',
                         data: data,
-                        backgroundColor: 'rgba(0, 119, 204, 0.3)'
+                        backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+                        borderColor: window.chartColors.red,
+                        fill: false
                     }]
                 },
                 options: {
                     scales: {
+                        yAxes: [
+                            {
+                                ticks: {
+                                    callback: function (value, index, values) {
+                                        return value + ' ms';
+                                    }
+                                }
+                            }
+                        ],
                         xAxes: [
                             {
                                 ticks: {
                                     display: true,
                                     beginAtZero: true,
-                                    maxTicksLimit: 12
+                                    max: 60,
+                                    maxTicksLimit: 12,
+                                    callback: function (value, index, values) {
+                                        if (value > 0) { value = -1 * value;}
+                                        return value + ' min';
+                                    }
                                 }
                             }
                         ]

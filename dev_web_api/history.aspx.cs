@@ -38,13 +38,13 @@ namespace dev_web_api
             var stringBuilder = new StringBuilder();
             //if (monitorCommandid == -1) return null;
             var charts = (new MonitorDb()).GetChart(monitorCommandId);
-            var chart = charts[0];
+            var chart = Util.FixChart(charts[0], 60);
             //if (chart == null) return null;
             stringBuilder.Append("[");
             foreach (var chartPoint in chart.ChartPoints)
             {
             stringBuilder.Append("{");
-            stringBuilder.Append($@"""text"": ""{chartPoint.Minutes}"", ""value"": {chartPoint.Value}");
+            stringBuilder.Append($@"""text"": {chartPoint.Minutes}, ""value"": {chartPoint.Value}");
             stringBuilder.Append("},");
             }
             stringBuilder = stringBuilder.Remove(stringBuilder.Length - 1, 1);

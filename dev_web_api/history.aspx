@@ -135,6 +135,7 @@
             var ctx = $("#myChart").get(0).getContext("2d");
             var config = {
                 type: 'line',
+                responsive: true,
                 maintainAspectRatio: false,
                 data: {
                     labels: labels,
@@ -143,20 +144,23 @@
                         data: data,
                         backgroundColor: 'rgba(0, 119, 204, 0.3)'
                     }]
+                },
+                options: {
+                    scales: {
+                        xAxes: [
+                            {
+                                ticks: {
+                                    display: true,
+                                    beginAtZero: true,
+                                    maxTicksLimit: 12
+                                }
+                            }
+                        ]
+                    }
                 }
             };
 
             var chart = new Chart(ctx, config);
-            //var arr = [];
-            //$.each(aData, function (i, val) {
-            //    var obj = {};
-            //    alert(val);
-            //    obj.value = val.value;
-            //    obj.label = val.text;
-            //    arr.push(obj);
-            //});
-            //var ctx = $("#myChart").get(0).getContext("2d");
-            //var myPieChart = new Chart(ctx).Pie(arr);
         }
 
         function OnErrorCall_(response) {

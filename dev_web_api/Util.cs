@@ -387,8 +387,10 @@ namespace dev_web_api
                     int agentId,
                     string agentName,
                     int minutes,
-                    int value)
+                    int value,
+                    int maxValue = 60)
         {
+            if (minutes > maxValue) return;
             ChartLine chartLine = null;
             chartLine = chartLines.Find(x => x.AgentId == agentId);
             if (chartLine == null)
@@ -410,6 +412,33 @@ namespace dev_web_api
                 chartLine.ChartPoints = new List<ChartPoint>();
             }
             chartLine.ChartPoints.Add(chartPoint);
+        }
+
+        public static ChartLine FixChart(
+                                ChartLine  chartLine,
+                                int chartRange)
+        {
+            var newChartPoints = new List<ChartPoint>();
+            for (int mins = 0; mins <= chartRange; mins++)
+            {
+                var chartPoint = chartLine.ChartPoints.Find(x => x.Minutes == mins);
+                if (chartPoint == null)
+                {
+                    chartPoint = new ChartPoint()
+                    {
+                        Minutes = mins,
+                        Value = -1
+                    };
+                }
+                newChartPoints.Add(chartPoint);
+            }
+            var newChartLine = new ChartLine()
+            {
+                AgentId = chartLine.AgentId,
+                AgentName = chartLine.AgentName,
+                ChartPoints = newChartPoints
+            };
+            return newChartLine;
         }
 
     }

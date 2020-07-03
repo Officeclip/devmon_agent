@@ -93,5 +93,10 @@ namespace dev_web_api
             //string newWin = "window.open('" + queryString + "');";
             //ClientScript.RegisterStartupScript(this.GetType(), "commandLimits", newWin, true);
         }
+
+        protected void btnHistory_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("history.aspx");
+        }
     }
 }

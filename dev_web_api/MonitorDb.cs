@@ -1041,56 +1041,29 @@ namespace dev_web_api
             sqlite_cmd.CommandText =
                 $@"
                     SELECT * FROM 
-                        agent a, monitorValues mvs
+                        agents a, history his
                     WHERE
-                        a.agent_id = mvs.agent_id AND
-                        mvs.monitor_command_id = {monitorCommandId}
+                        a.agent_id = his.agent_id AND
+                        his.monitor_command_id = {monitorCommandId}
                     ORDER BY
                         a.agent_id";
             sqlite_datareader = sqlite_cmd.ExecuteReader();
             var chartLines = new List<ChartLine>();
-            var chartPoints = new List<ChartPoint>();
-            var initialAgentId = 0;
-            int agentId = 0;
-            string agentName = string.Empty;
             while (sqlite_datareader.Read())
             {
-                agentId = Convert.ToInt32(sqlite_datareader["a.agent_id"]);
-                agentName = GetAgentName(sqlite_datareader);
-                if (agentId != initialAgentId)
-                {
-                    if (chartPoints.Count > 0)
-                    {
-                        var chartLine1 = new ChartLine()
-                        {
-                            AgentId = agentId,
-                            AgentName = agentName,
-                            ChartPoints = chartPoints
-                        };
-                        chartLines.Add(chartLine1);
-                        initialAgentId = agentId;
-                        chartPoints = new List<ChartPoint>();
-                    }
-                }
-
-                var chartPoint = new ChartPoint()
-                {
-                    Value = Convert.ToInt32(sqlite_datareader["value"])
-                };
+                var agentId = Convert.ToInt32(sqlite_datareader["agent_id"]);
+                var agentName = GetAgentName(sqlite_datareader);
                 var date = ConvertToUtcDateTime(sqlite_datareader["date"]);
-                chartPoint.Minutes = Convert.ToInt32(
-                                                DateTime.UtcNow.Subtract(date).TotalHours);
-                chartPoints.Add(chartPoint);
-            }
-            if (chartPoints.Count > 0)
-            {
-                var chartLine1 = new ChartLine()
-                {
-                    AgentId = agentId,
-                    AgentName = agentName,
-                    ChartPoints = chartPoints
-                };
-                chartLines.Add(chartLine1);
+                var minutes = Convert.ToInt32(
+                                        DateTime.UtcNow.Subtract(date).TotalMinutes);
+                var value = Convert.ToInt32(sqlite_datareader["value"]);
+                Util.AddChartItem(
+                            chartLines,
+                            agentId,
+                            agentName,
+                            minutes,
+                            value
+                );
             }
             sqlite_datareader.Close();
             sqlLiteConn.Close();

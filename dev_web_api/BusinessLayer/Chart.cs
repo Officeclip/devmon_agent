@@ -19,5 +19,6 @@ namespace dev_web_api.BusinessLayer
         public int AgentId { get; set; }
         public string AgentName { get; set; }
         public List<ChartPoint> ChartPoints { get; set; }
+
     }
 }

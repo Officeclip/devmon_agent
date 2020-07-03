@@ -78,6 +78,10 @@
                 <asp:Button ID="btnSoftware" runat="server"
                     Text="Software"
                     OnClick="btnSoftware_Click" />
+                <asp:Button ID="btnHistory" runat="server"
+                    Text="History"
+                     OnClick="btnHistory_Click"/>
+
             </div>
             <div style="margin: 20px">
                 <asp:Button ID="btnSignOff" runat="server"

@@ -382,5 +382,35 @@ namespace dev_web_api
             return File.ReadAllText(path, Encoding.UTF8);
         }
 
+        public static void AddChartItem(
+                    List<ChartLine> chartLines,
+                    int agentId,
+                    string agentName,
+                    int minutes,
+                    int value)
+        {
+            ChartLine chartLine = null;
+            chartLine = chartLines.Find(x => x.AgentId == agentId);
+            if (chartLine == null)
+            {
+                chartLine = new ChartLine()
+                {
+                    AgentId = agentId,
+                    AgentName = agentName
+                };
+                chartLines.Add(chartLine);
+            }
+            var chartPoint = new ChartPoint()
+            {
+                Minutes = minutes,
+                Value = value
+            };
+            if (chartLine.ChartPoints == null)
+            {
+                chartLine.ChartPoints = new List<ChartPoint>();
+            }
+            chartLine.ChartPoints.Add(chartPoint);
+        }
+
     }
 }

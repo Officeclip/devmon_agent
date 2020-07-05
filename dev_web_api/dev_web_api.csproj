@@ -117,8 +117,8 @@
     <Content Include="js\countdown.js" />
     <Content Include="logon.aspx" />
     <Content Include="setup.aspx" />
-    <Content Include="sql\testData.sql" />
-    <Content Include="sql\schema.sql" />
+    <None Include="sql\testData.sql" />
+    <None Include="sql\schema.sql" />
     <Content Include="software.aspx" />
     <Content Include="hardware.aspx" />
     <Content Include="monitor.aspx" />

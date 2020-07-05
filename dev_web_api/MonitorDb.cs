@@ -236,7 +236,8 @@ namespace dev_web_api
                     Name = sqlite_datareader["name"].ToString(),
                     Type = sqlite_datareader["type"].ToString(),
                     Arg1 = sqlite_datareader["arg1"].ToString(),
-                    Arg2 = sqlite_datareader["arg2"].ToString()
+                    Arg2 = sqlite_datareader["arg2"].ToString(),
+                    Unit = sqlite_datareader["unit"].ToString()
                 };
                 monitorCommands.Add(monitorCommand);
             }
@@ -263,7 +264,7 @@ namespace dev_web_api
                     AgentId = Convert.ToInt32(sqlite_datareader["agent_id"]),
                     MonitorCommandId = Convert.ToInt32(sqlite_datareader["monitor_command_id"]),
                     Value = Convert.ToDouble(sqlite_datareader["value"]),
-                    Unit = sqlite_datareader["unit"].ToString(),
+                    //Unit = sqlite_datareader["unit"].ToString(),
                     ReturnCode = Convert.ToInt32(sqlite_datareader["return_code"]),
                     ErrorMessage = sqlite_datareader["error_message"].ToString()
                 };
@@ -288,7 +289,8 @@ namespace dev_web_api
                             name = '{monitorCommand.Name}',
                             type = '{monitorCommand.Type}',
                             arg1 = '{strArg1}',
-                            arg2 = '{strArg2}'
+                            arg2 = '{strArg2}',
+                            unit = '{monitorCommand.Unit}'
                     WHERE
                         monitor_command_id = {monitorCommand.MonitorCommandId}";
             cmd.ExecuteNonQuery();
@@ -404,7 +406,6 @@ namespace dev_web_api
                         monitor_command_id,
                         error_message,
                         return_code,
-                        unit,
                         value
                     )
                     VALUES
@@ -413,7 +414,6 @@ namespace dev_web_api
                         {monitorValue.MonitorCommandId},
                         '{monitorValue.ErrorMessage}',
                         {monitorValue.ReturnCode},
-                        '{monitorValue.Unit}',
                         {monitorValue.Value}
                     )";
             _logger.Info(cmd.CommandText);
@@ -515,7 +515,6 @@ namespace dev_web_api
                     update monitorValues SET 
                         error_message = '{monitorValue.ErrorMessage}',
                         return_code = {monitorValue.ReturnCode},
-                        unit = '{monitorValue.Unit}',
                         value = {monitorValue.Value}
                     WHERE
                         agent_id = {monitorValue.AgentId} AND
@@ -559,7 +558,6 @@ namespace dev_web_api
                     monitorValue = new MonitorValue()
                     {
                         Value = Convert.ToDouble(sqlite_datareader["value"]),
-                        Unit = sqlite_datareader["unit"].ToString(),
                         ReturnCode = Convert.ToInt32(sqlite_datareader["return_code"]),
                         ErrorMessage = sqlite_datareader["error_message"].ToString()
                     };
@@ -614,13 +612,14 @@ namespace dev_web_api
             var strArg2 = EscapeQuote(monitorCommand.Arg2);
             cmd.CommandText = $@"
                     INSERT INTO monitorCommands
-                        (name, type, arg1, arg2) 
+                        (name, type, arg1, arg2, unit) 
                     VALUES
                         (
                         '{monitorCommand.Name}', 
                         '{monitorCommand.Type}', 
                         '{strArg1}', 
-                        '{strArg2}')";
+                        '{strArg2}',
+                        '{monitorCommand.Unit}')";
             cmd.ExecuteNonQuery();
             sqlLiteConn.Close();
         }

@@ -58,11 +58,11 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Helper.js" />
-    <Content Include="Helper.min.js" />
+    <None Include="Helper.js" />
+    <None Include="Helper.min.js" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="Helper.ts" />
+    <None Include="Helper.ts" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

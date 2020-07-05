@@ -24,19 +24,16 @@ namespace devmon_library.Models
         [JsonProperty("value")]
         public string Value { get; set; }
 
-        [JsonProperty("unit")]
-        public string Unit { get; set; }
-
         public ResultInfo()
         {
 
         }
 
-        public ResultInfo(string id, string value, string unit)
+        public ResultInfo(string id, string value)
         {
             Id = id;
             Value = value;
-            Unit = unit;
+            //Unit = unit;
         }
     }
 }

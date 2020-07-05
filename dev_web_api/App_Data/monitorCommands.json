@@ -3,42 +3,42 @@
     "type": "url.ping",
     "description": "Pings the url and returns the access time",
     "arg1": "The url to ping to (e.g. https://www.google.com)",
-    "arg2": ""
+    "arg2": "",
+    "unit":  "ms"
   },
   {
     "type": "cpu.percent",
     "description": "Returns the percentage cpu load",
     "arg1": "",
-    "arg2": ""
+    "arg2": "",
+    "unit": "%"
   },
   {
     "type": "memory.free",
     "description": "Amount of memory (RAM) free",
     "arg1": "",
-    "arg2": ""
+    "arg2": "",
+    "unit": "gb"
   },
   {
     "type": "network.specific",
     "description": "Network load of a specific network",
     "arg1": "Specific network name  (see the hardware list for networks)",
-    "arg2": "Enter ReceivedBytesPerSecond or SentBytesPerSecond"
+    "arg2": "Enter ReceivedBytesPerSecond or SentBytesPerSecond",
+    "unit": "kb/sec"
   },
   {
     "type": "drive.free",
     "description": "Free disk space in the hard drive",
     "arg1": "Name of the drive (e.g C:\\)",
-    "arg2": ""
-  },
-  {
-    "type": "os.processes",
-    "description": "Number of processes in running in the os",
-    "arg1": "",
-    "arg2": ""
+    "arg2": "",
+    "unit": "gb"
   },
   {
     "type": "os.uptime",
     "description": "Time elapsed since the last reboot",
     "arg1": "",
-    "arg2": ""
+    "arg2": "",
+    "unit": "days"
   }
 ]

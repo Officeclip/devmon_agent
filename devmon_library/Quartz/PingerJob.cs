@@ -83,8 +83,7 @@ namespace devmon_library.Quartz
             var memoryUtilization = await memoryCollector.ReadMemoryUtilization();
             var pingResultInfo = new ResultInfo(
                                        commandInfo.MonitorCommandId,
-                                       (memoryUtilization.FreeBytes/OneGb).ToString("N1"),
-                                       "gb");
+                                       (memoryUtilization.FreeBytes/OneGb).ToString("N1"));
             _logger.Debug("Ending MemTask");
             return pingResultInfo;
         }
@@ -97,8 +96,7 @@ namespace devmon_library.Quartz
 
             var pingResultInfo = new ResultInfo(
                                         commandInfo.MonitorCommandId,
-                                        cpuUtilization.LoadPercentage.ToString("N2"),
-                                        "%");
+                                        cpuUtilization.LoadPercentage.ToString("N2"));
             _logger.Debug("Ending CpuTask");
             return pingResultInfo;
         }
@@ -131,7 +129,7 @@ namespace devmon_library.Quartz
             var osCollector = new OsCollector(null);
             var osUtilization = await osCollector.ReadOsUtilization();
             var value = string.Empty;
-            var unit = string.Empty;
+            //var unit = string.Empty;
             switch (commandInfo.Type)
             {
                 case "os.processes":
@@ -141,10 +139,10 @@ namespace devmon_library.Quartz
                     var output = ToHumanReadableString(osUtilization.UpTime);
                     var parts = output.Split(' ');
                     value = parts[0];
-                    unit =
-                        (parts.Length >= 2)
-                        ? parts[1]
-                        : string.Empty;
+                    //unit =
+                    //    (parts.Length >= 2)
+                    //    ? parts[1]
+                    //    : string.Empty;
                     break;
                 //case "os.pendingupdates":
                 //    value = osUtilization.Update.PendingUpdates.ToString();
@@ -160,8 +158,7 @@ namespace devmon_library.Quartz
 
             var pingResultInfo = new ResultInfo(
                                         commandInfo.MonitorCommandId,
-                                        value,
-                                        unit);
+                                        value);
             _logger.Debug("Ending OsTask");
             return pingResultInfo;
         }
@@ -175,7 +172,7 @@ namespace devmon_library.Quartz
             var pingResultInfo = new ResultInfo()
             {
                 Id = commandInfo.MonitorCommandId,
-                Unit = "gb"
+                //Unit = "gb"
             };
 
             foreach (var driveUtilization in driveUtilizations)
@@ -207,7 +204,7 @@ namespace devmon_library.Quartz
             var pingResultInfo = new ResultInfo()
             {
                 Id = commandInfo.MonitorCommandId,
-                Unit = "kbytes/sec"
+                //Unit = "kbytes/sec"
             };
 
             foreach (var networkUtilization in networkUtilizations)
@@ -249,7 +246,7 @@ namespace devmon_library.Quartz
                 IsSuccess = result.IsSuccessStatusCode,
                 Value = watch.ElapsedMilliseconds.ToString(),
                 ReturnCode = (int)result.StatusCode,
-                Unit = "ms"
+                //Unit = "ms"
             };
             pingResultInfo.ErrorMessage =
                                 (pingResultInfo.IsSuccess)

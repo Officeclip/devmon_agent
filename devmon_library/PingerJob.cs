@@ -82,8 +82,7 @@ namespace devmon_library
                 var memoryUtilization = await memoryCollector.ReadMemoryUtilization();
                 pingResultInfo = new ResultInfo(
                                            commandInfo.MonitorCommandId,
-                                           (memoryUtilization.FreeBytes / OneGb).ToString("N1"),
-                                           "gb");
+                                           (memoryUtilization.FreeBytes / OneGb).ToString("N1"));
             }
             catch (Exception ex)
             {
@@ -104,8 +103,7 @@ namespace devmon_library
 
                 pingResultInfo = new ResultInfo(
                                             commandInfo.MonitorCommandId,
-                                            cpuUtilization.LoadPercentage.ToString("N2"),
-                                            "%");
+                                            cpuUtilization.LoadPercentage.ToString("N2"));
             }
             catch (Exception ex)
             {
@@ -146,7 +144,7 @@ namespace devmon_library
                 var osCollector = new OsCollector(null);
                 var osUtilization = await osCollector.ReadOsUtilization();
                 var value = string.Empty;
-                var unit = string.Empty;
+                //var unit = string.Empty;
                 switch (commandInfo.Type)
                 {
                     case "os.processes":
@@ -156,17 +154,16 @@ namespace devmon_library
                         var output = ToHumanReadableString(osUtilization.UpTime);
                         var parts = output.Split(' ');
                         value = parts[0];
-                        unit =
-                            (parts.Length >= 2)
-                            ? parts[1]
-                            : string.Empty;
+                        //unit =
+                        //    (parts.Length >= 2)
+                        //    ? parts[1]
+                        //    : string.Empty;
                         break;
                 }
 
                 pingResultInfo = new ResultInfo(
                                             commandInfo.MonitorCommandId,
-                                            value,
-                                            unit);
+                                            value);
             }
             catch (Exception ex)
             {
@@ -188,7 +185,7 @@ namespace devmon_library
                 pingResultInfo = new ResultInfo()
                 {
                     Id = commandInfo.MonitorCommandId,
-                    Unit = "gb"
+                    //Unit = "gb"
                 };
 
                 foreach (var driveUtilization in driveUtilizations)
@@ -228,7 +225,7 @@ namespace devmon_library
                 pingResultInfo = new ResultInfo()
                 {
                     Id = commandInfo.MonitorCommandId,
-                    Unit = "kbytes/sec"
+                    //Unit = "kbytes/sec"
                 };
 
                 foreach (var networkUtilization in networkUtilizations)
@@ -275,7 +272,7 @@ namespace devmon_library
                     IsSuccess = result.IsSuccessStatusCode,
                     Value = watch.ElapsedMilliseconds.ToString(),
                     ReturnCode = (int)result.StatusCode,
-                    Unit = "ms"
+                    //Unit = "ms"
                 };
                 pingResultInfo.ErrorMessage =
                                     (pingResultInfo.IsSuccess)

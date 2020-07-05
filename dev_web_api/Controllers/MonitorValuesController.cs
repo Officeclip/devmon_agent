@@ -34,7 +34,7 @@ namespace dev_web_api.Controllers
                     MonitorCommandId = commandValue.Id,
                     ReturnCode = commandValue.ReturnCode,
                     Value = commandValue.Value,
-                    Unit = commandValue.Unit,
+                    //Unit = commandValue.Unit,
                     ErrorMessage = commandValue.ErrorMessage
                 };
                 monitorDb.UpsertMonitorValue(MonitorValue);

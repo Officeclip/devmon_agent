@@ -59,6 +59,9 @@ namespace dev_web_api
                 Arg1 = txtArg1.Text.Trim(),
                 Arg2 = txtArg2.Text.Trim()
             };
+            monitorCommand.Unit =
+                   monitorCommandHelps.Find
+                                        (x => x.Type == monitorCommand.Type).Unit;
             monitorDb.InsertMonitorCommand(monitorCommand);
             Response.Redirect(Request.RawUrl);
         }
@@ -141,6 +144,14 @@ namespace dev_web_api
                 Arg1 = GetGridViewText(e, 5),
                 Arg2 = GetGridViewText(e, 6)
             };
+            var monitorCommandHelp =
+                   monitorCommandHelps.Find
+                                        (x => x.Type == monitorCommand.Type);
+            if (monitorCommandHelp == null)
+            {
+                return;
+            }
+            monitorCommand.Unit = monitorCommandHelp.Unit;
             monitorDb.UpsertMonitorCommand(monitorCommand);
             GridView1.EditIndex = -1;
             LoadData();

@@ -41,7 +41,6 @@ CREATE TABLE IF NOT EXISTS "monitorValues" (
 	"agent_id"	INTEGER NOT NULL,
 	"monitor_command_id"	INTEGER NOT NULL,
 	"value"	REAL NOT NULL,
-	"unit"	TEXT NOT NULL,
 	"return_code"	INTEGER,
 	"error_message"	TEXT,
 	FOREIGN KEY("agent_id") REFERENCES "agents"("agent_id")
@@ -53,7 +52,8 @@ CREATE TABLE IF NOT EXISTS "monitorCommands" (
 	"org_id"	INTEGER NOT NULL DEFAULT 1,
 	"type"	TEXT NOT NULL,
 	"arg1"	TEXT,
-	"arg2"	TEXT
+	"arg2"	TEXT,
+	"unit"  TEXT
 );
 DROP TABLE IF EXISTS "monitorCommandLimits";
 CREATE TABLE IF NOT EXISTS "monitorCommandLimits" (

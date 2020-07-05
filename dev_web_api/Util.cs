@@ -183,7 +183,10 @@ namespace dev_web_api
                         cell.Attributes.Add("class", "systemError");
                         break;
                     default:
-                        cell.InnerText = $"{monitorValue.Value} {monitorValue.Unit}";
+                        var monitorCommand = monitorCommands
+                                                        .Find(x => x.MonitorCommandId == monitorValue.MonitorCommandId);
+                        var unit = monitorCommand?.Unit ?? string.Empty;
+                        cell.InnerText = $"{monitorValue.Value} {unit}";
                         var cssClass = GetBackgroundCellClass(
                                 monitorValue,
                                 monitorCommands,
@@ -282,7 +285,7 @@ namespace dev_web_api
             {
                 stringBuilder.Append($" for Agent: ${agent.ScreenName}");
             }
-            stringBuilder.Append($" - {monitorValue.Value}{monitorValue.Unit}");
+            stringBuilder.Append($" - {monitorValue.Value}{monitorCommand.Unit}");
             return stringBuilder.ToString();
         }
 

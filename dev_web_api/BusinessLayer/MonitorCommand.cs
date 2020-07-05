@@ -12,5 +12,6 @@ namespace dev_web_api.BusinessLayer
         public string Type { get; set; }
         public string Arg1 { get; set; }
         public string Arg2 { get; set; }
+        public string Unit { get; set; }
     }
 }

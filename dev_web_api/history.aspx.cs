@@ -5,6 +5,9 @@ using System.Data.SqlClient;
 using System.Configuration;
 using System;
 using System.Web.Script.Services;
+using ChartServerConfiguration.Model;
+using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace dev_web_api
 {
@@ -25,6 +28,68 @@ namespace dev_web_api
             {
                 LoadData();
             }
+        }
+
+        private ChartConfiguration CreateServerConfiguration(int monitorCommandId)
+        {
+            var charts = (new MonitorDb()).GetChart(monitorCommandId);
+            var dataSets = new List<DataSetItem>();
+            for (int i = 0; i < charts.Count; i++)
+            {
+                var chart = charts[i];
+                var dataSetItem = new DataSetItem()
+                {
+                    Label = chart.AgentName,
+                    Data = chart.ChartPointValues,
+                    BorderWidth = 1,
+                    BackgroundColor = Util.GetColors(),
+                    BorderColor = Util.GetColors()[i % 6],
+                    Fill = false
+                };
+            }
+            var xAxesCallback = @"function (value, index, values) {
+                                        if (value > 0) { value = -1 * value;}
+                                        return value + ' min';
+                                    }";
+            var yAxesCallback = @"callback: function (value, index, values) {
+                                        return value + ' ms';
+                                    }";
+            var chartConfig = new ChartConfiguration
+            {
+                Type = ChartType.line.GetChartType(),
+                Data =
+                {
+                    Labels = charts[0]
+                                    .ChartPointMinutes
+                                    .ConvertAll<string>(x => x.ToString()),
+                    Datasets = dataSets
+                },
+                Options =
+                {
+                    Scales =
+                    {
+                        XAxes =
+                        {
+                             new Ticks()
+                             {
+                                 Display = true,
+                                 BeginAtZero = true,
+                                 Max = 60,
+                                 MaxTickLimit = 60,
+                                 Callback = new JRaw(xAxesCallback)
+                             }
+                        },
+                        YAxes =
+                        {
+                             new Ticks()
+                             {
+                                Callback = new JRaw(yAxesCallback)
+                             }
+                        }
+                    }
+                }
+            };
+            return chartConfig;
         }
 
         private void LoadData()

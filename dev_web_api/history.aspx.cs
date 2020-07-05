@@ -8,15 +8,18 @@ using System.Web.Script.Services;
 using ChartServerConfiguration.Model;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
+using dev_web_api.BusinessLayer;
 
 namespace dev_web_api
 {
     public partial class history : System.Web.UI.Page
     {
         MonitorDb monitorDb = new MonitorDb();
+        List<MonitorCommand> monitorCommands; 
         protected string chartConfigString;
         protected void Page_Init(object sender, EventArgs e)
         {
+            monitorCommands = monitorDb.GetMonitorCommands();
             ddlMonitorCommands.DataSource = monitorDb.GetMonitorCommands();
             ddlMonitorCommands.DataTextField = "Name";
             ddlMonitorCommands.DataValueField = "MonitorCommandId";
@@ -41,6 +44,8 @@ namespace dev_web_api
         private ChartConfiguration CreateServerConfiguration(int monitorCommandId)
         {
             var charts = (new MonitorDb()).GetChart(monitorCommandId);
+            var unit = monitorCommands
+                                .Find(x => x.MonitorCommandId == monitorCommandId).Unit;
             var dataSets = new List<DataSetItem>();
             for (int i = 0; i < charts.Count; i++)
             {
@@ -74,9 +79,9 @@ namespace dev_web_api
             var xAxesTicksItem = new TicksItem() { ticks = xAxesTicks };
 
 
-            var yAxesCallback = @"function (value, index, values) {
-                                        return value + ' ms';
-                                    }";
+            var yAxesCallback = $@"function (value, index, values) {{
+                                        return value + ' {unit}';
+                                    }}";
 
             var yAxesTicks = new Ticks()
             {

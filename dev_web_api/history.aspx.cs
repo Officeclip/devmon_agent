@@ -14,6 +14,7 @@ namespace dev_web_api
     public partial class history : System.Web.UI.Page
     {
         MonitorDb monitorDb = new MonitorDb();
+        protected string chartConfigString;
         protected void Page_Init(object sender, EventArgs e)
         {
             ddlMonitorCommands.DataSource = monitorDb.GetMonitorCommands();
@@ -24,13 +25,17 @@ namespace dev_web_api
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            var chartConfig = CreateServerConfiguration(1);
-            litTest.Text = chartConfig.MakeChart();
-            //this.chartConfig = chartConfig.MakeChart();
-            //if (!Page.IsPostBack)
-            //{
-            //    LoadData();
-            //}
+            if (!Page.IsPostBack)
+            {
+                LoadPage();
+            }
+        }
+
+        private void LoadPage()
+        {
+            var monitorCommandId = Convert.ToInt32(ddlMonitorCommands.SelectedValue);
+            var chartConfig = CreateServerConfiguration(monitorCommandId);
+            chartConfigString = chartConfig.MakeChart();
         }
 
         private ChartConfiguration CreateServerConfiguration(int monitorCommandId)
@@ -62,14 +67,14 @@ namespace dev_web_api
                 Display = true,
                 BeginAtZero = true,
                 Max = 60,
-                MaxTickLimit = 60,
+                MaxTickLimit = 12,
                 Callback = (new JRaw(xAxesCallback))
             };
 
             var xAxesTicksItem = new TicksItem() { ticks = xAxesTicks };
 
 
-            var yAxesCallback = @"callback: function (value, index, values) {
+            var yAxesCallback = @"function (value, index, values) {
                                         return value + ' ms';
                                     }";
 
@@ -92,6 +97,10 @@ namespace dev_web_api
                 },
                 Options =
                 {
+                    Title =
+                    {
+                        Text = ddlMonitorCommands.SelectedItem.Text
+                    },
                     Scales = new Scales()
                     {
                         XAxes = new List<TicksItem>()
@@ -108,35 +117,9 @@ namespace dev_web_api
             return chartConfig;
         }
 
-        private void LoadData()
-        {
-            //throw new NotImplementedException();
-        }
-
-        [WebMethod]
-        public static string GetChart(int monitorCommandId)
-        {
-            var stringBuilder = new StringBuilder();
-            //if (monitorCommandid == -1) return null;
-            var charts = (new MonitorDb()).GetChart(monitorCommandId);
-            var chart = Util.FixChart(charts[0], 60);
-            //if (chart == null) return null;
-            stringBuilder.Append("[");
-            foreach (var chartPoint in chart.ChartPoints)
-            {
-            stringBuilder.Append("{");
-            stringBuilder.Append($@"""text"": {chartPoint.Minutes}, ""value"": {chartPoint.Value}");
-            stringBuilder.Append("},");
-            }
-            stringBuilder = stringBuilder.Remove(stringBuilder.Length - 1, 1);
-            stringBuilder.Append("]");
-            return stringBuilder.ToString();
-            //return @"[{""text"": ""one"", ""value"": 21}]";
-        }
-
         protected void ddlMonitorCommands_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var monitorCommandiId = Convert.ToInt32(ddlMonitorCommands.SelectedValue);
+            LoadPage();
         }
 
     }

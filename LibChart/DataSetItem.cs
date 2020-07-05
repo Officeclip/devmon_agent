@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace ChartServerConfiguration.Model
 {
@@ -9,7 +10,8 @@ namespace ChartServerConfiguration.Model
         public int BorderWidth { get; set; }
         public List<string> BackgroundColor { get; set; }
         public string BorderColor { get; set; }
-        public bool Fill { get; set; }
+        [DefaultValue(true)]
+        public bool Fill { get; set; } = true;
 
     }
 }

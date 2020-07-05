@@ -18,13 +18,14 @@ namespace ChartServerConfiguration.Model
         [DefaultValue(50)]
         public int DefaultFontSize { get; set; } = 50;
         public Title Title { get; set; }
+        [DefaultValue(true)]
         public bool Responsive { get; set; } = true;       
 
     }
 
     public class Title
     {
-        public string Text { get; set; } = "Your Chart Title";
+        public string Text { get; set; }
         public string Position { get; set; } = "top";
         public bool Display { get; set; } = true;
     }

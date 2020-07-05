@@ -16,7 +16,14 @@ namespace ChartServerConfiguration.Model
 
         public static string MakeChart(this ChartConfiguration configuration)
         {
-            var result = JsonConvert.SerializeObject(configuration,(Newtonsoft.Json.Formatting) Formatting.Indented, new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+            var result = JsonConvert.SerializeObject(
+                                            configuration,
+                                            (Newtonsoft.Json.Formatting) Formatting.Indented, 
+                                            new JsonSerializerSettings() 
+                                            { 
+                                                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                                                DefaultValueHandling = DefaultValueHandling.Ignore
+                                            });
             return result;
         }
     }

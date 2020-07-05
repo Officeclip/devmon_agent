@@ -43,10 +43,11 @@
         </div>
        <button id="btnGenerateChart" onclick="GenChart()">Create Chart</button>
     </form>
+    <asp:Literal ID="litTest" runat="server" />
     <div style="width:800px; height: 800px">
     <canvas id="myChart"></canvas>
         </div>
-    <script type="text/javascript">
+<%--    <script type="text/javascript">
         $(document).ready(function () {
             console.log("ready!");
             GenChart();
@@ -137,6 +138,6 @@
             alert("Error: " + response)
         }
 
-    </script>
+    </script>--%>
 </body>
 </html>

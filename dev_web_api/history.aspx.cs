@@ -24,10 +24,13 @@ namespace dev_web_api
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!Page.IsPostBack)
-            {
-                LoadData();
-            }
+            var chartConfig = CreateServerConfiguration(1);
+            litTest.Text = chartConfig.MakeChart();
+            //this.chartConfig = chartConfig.MakeChart();
+            //if (!Page.IsPostBack)
+            //{
+            //    LoadData();
+            //}
         }
 
         private ChartConfiguration CreateServerConfiguration(int monitorCommandId)
@@ -46,14 +49,37 @@ namespace dev_web_api
                     BorderColor = Util.GetColors()[i % 6],
                     Fill = false
                 };
+                dataSets.Add(dataSetItem);
             }
+
             var xAxesCallback = @"function (value, index, values) {
                                         if (value > 0) { value = -1 * value;}
                                         return value + ' min';
                                     }";
+
+            var xAxesTicks = new Ticks()
+            {
+                Display = true,
+                BeginAtZero = true,
+                Max = 60,
+                MaxTickLimit = 60,
+                Callback = (new JRaw(xAxesCallback))
+            };
+
+            var xAxesTicksItem = new TicksItem() { ticks = xAxesTicks };
+
+
             var yAxesCallback = @"callback: function (value, index, values) {
                                         return value + ' ms';
                                     }";
+
+            var yAxesTicks = new Ticks()
+            {
+                Callback = new JRaw(yAxesCallback)
+            };
+
+            var yAxesTicksItem = new TicksItem() { ticks = yAxesTicks };
+
             var chartConfig = new ChartConfiguration
             {
                 Type = ChartType.line.GetChartType(),
@@ -66,25 +92,15 @@ namespace dev_web_api
                 },
                 Options =
                 {
-                    Scales =
+                    Scales = new Scales()
                     {
-                        XAxes =
+                        XAxes = new List<TicksItem>()
                         {
-                             new Ticks()
-                             {
-                                 Display = true,
-                                 BeginAtZero = true,
-                                 Max = 60,
-                                 MaxTickLimit = 60,
-                                 Callback = new JRaw(xAxesCallback)
-                             }
+                            xAxesTicksItem
                         },
-                        YAxes =
+                        YAxes = new List<TicksItem>()
                         {
-                             new Ticks()
-                             {
-                                Callback = new JRaw(yAxesCallback)
-                             }
+                            yAxesTicksItem
                         }
                     }
                 }

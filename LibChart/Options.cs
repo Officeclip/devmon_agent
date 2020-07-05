@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Security.AccessControl;
 
 namespace ChartServerConfiguration.Model
@@ -12,6 +14,8 @@ namespace ChartServerConfiguration.Model
         }
         public Scales Scales { get; set; }
         public string DefaultColor { get; set; }
+
+        [DefaultValue(50)]
         public int DefaultFontSize { get; set; } = 50;
         public Title Title { get; set; }
         public bool Responsive { get; set; } = true;       
@@ -34,29 +38,32 @@ namespace ChartServerConfiguration.Model
     {
         public Scales()
         {
-            XAxes = new List<Ticks>();
-            YAxes = new List<Ticks>();
+            XAxes = new List<TicksItem>();
+            YAxes = new List<TicksItem>();
         }
-        public List<Ticks> XAxes { get; set; }
-        public List<Ticks>  YAxes { get; set; }
+        public List<TicksItem> XAxes { get; set; }
+        public List<TicksItem>  YAxes { get; set; }
     }
 
-    public class XAxes
+    public class TicksItem
     {
-        public List<Ticks> ticks { get; set; }
-    }
-
-    public class YAxes
-    {
-        public List<Ticks> ticks { get; set; }
+        public Ticks ticks { get; set; }
     }
 
     public class Ticks
     {
-        public bool Display { get; set; }
-        public bool BeginAtZero { get; set; }
-        public int Max { get; set; }
-        public int MaxTickLimit { get; set; }
+        [DefaultValue(true)]
+        public bool Display { get; set; } = true;
+
+        [DefaultValue(true)]
+        public bool BeginAtZero { get; set; } = true;
+
+        [DefaultValue(0)]
+        public int Max { get; set; } = 0;
+
+        [DefaultValue(11)]
+        public int MaxTickLimit { get; set; } = 11;
+
         public JRaw Callback { get; set; } //https://stackoverflow.com/a/16800514/89256
     }
 }

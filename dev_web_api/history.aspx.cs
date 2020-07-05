@@ -67,7 +67,7 @@ namespace dev_web_api
                 Display = true,
                 BeginAtZero = true,
                 Max = 60,
-                MaxTickLimit = 12,
+                MaxTicksLimit = 12,
                 Callback = (new JRaw(xAxesCallback))
             };
 

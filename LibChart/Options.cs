@@ -62,8 +62,8 @@ namespace ChartServerConfiguration.Model
         [DefaultValue(0)]
         public int Max { get; set; } = 0;
 
-        [DefaultValue(11)]
-        public int MaxTickLimit { get; set; } = 11;
+        [DefaultValue(0)]
+        public int MaxTicksLimit { get; set; } = 0;
 
         public JRaw Callback { get; set; } //https://stackoverflow.com/a/16800514/89256
     }

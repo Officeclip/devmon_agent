@@ -1,11 +1,12 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="default.aspx.cs" Inherits="dev_web_api._default" %>
+﻿<%@ Page 
+        Language="C#" 
+        MasterPageFile="~/Site.Master" 
+        Title="Monitor Agent" 
+        AutoEventWireup="true" 
+        CodeBehind="default.aspx.cs" 
+        Inherits="dev_web_api._default" %>
 
-<!DOCTYPE html>
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-    <meta http-equiv="refresh" content="30">
-    <title>Monitor Agent</title>
+<asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
         table{
             margin-top: 10px;
@@ -49,76 +50,74 @@
         }
     </style>
     <link rel="stylesheet" href="css/countdown.css" />
-</head>
-<body>
-    <form id="form1" runat="server">
-        <div style="margin: 20px 0">
-            <div>
-                <div id="app" style="float:left"></div>
-                <div style="margin: 5px 0 0 20px; float:left">
-                    Last Updated: <%= DateTime.Now %>
-                </div>
-                <div style="clear:both" />
-            </div>
-            <table id="tblMonitor" runat="server" />
-            <div style="margin: 20px">
-                <asp:Button ID="btnPopup" runat="server"
-                    Text="Edit Monitor"
-                    OnClick="btnPopup_Click" />
-                <asp:Button ID="btnCommandLimit" runat="server"
-                    Text="Command Limits" OnClick="btnCommandLimit_Click" />
-                <asp:Button ID="btnAlias" runat="server"
-                    Text="Edit Agent"
-                    OnClick="btnAlias_Click" />
-            </div>
-            <div style="margin: 20px">
-                <asp:Button ID="btnHardware" runat="server"
-                    Text="Hardware"
-                    OnClick="btnHardware_Click" />
-                <asp:Button ID="btnSoftware" runat="server"
-                    Text="Software"
-                    OnClick="btnSoftware_Click" />
-                <asp:Button ID="btnHistory" runat="server"
-                    Text="History"
-                     OnClick="btnHistory_Click"/>
 
+    <div style="margin: 20px 0">
+        <div>
+            <div id="app" style="float:left"></div>
+            <div style="margin: 5px 0 0 20px; float:left">
+                Last Updated: <%= DateTime.Now %>
             </div>
-            <div style="margin: 20px">
-                <asp:Button ID="btnSignOff" runat="server"
-                    Text="Sign Off"
-                    OnClick="btnSignOff_Click" />
-            </div>
-            <div style="margin-top: 30px">
-                <h3>Agent Installation:</h3>
-                <ul>
-                    <li>Download and Install:
-                             
-                                <ol>
-                                    <li>Download 
-                                        <a
-                                            href="https://github.com/Officeclip/devmon_agent/releases/download/Agent-0.5/AgentSetup.zip"
-                                            style="font-weight: bold">AgentSetup.zip</a></li>
-                                    <li>Unzip AgentSetup.zip</li>
-                                    <li>Run <b>Setup.exe</b></li>
-                                    <li>Enter Server Url: <b><%= GetWebUri() %></b></li>
-                                    <li>Enter Server Key: <b><%= serverGuid %></b></li>
-                                </ol>
-
-                    </li>
-
-
-                    <li>Uninstall:
-                        <ul>
-                            <li>Go to the <i>Control Panel > Programs and Features</i>
-                                and uninstall the Agent Monitor
-                            </li>
-                        </ul>
-
-                    </li>
-                </ul>
-            </div>
+            <div style="clear:both" />
         </div>
-    </form>
+        <table id="tblMonitor" runat="server" />
+        <div style="margin: 20px">
+            <asp:Button ID="btnPopup" runat="server"
+                Text="Edit Monitor"
+                OnClick="btnPopup_Click" />
+            <asp:Button ID="btnCommandLimit" runat="server"
+                Text="Command Limits" OnClick="btnCommandLimit_Click" />
+            <asp:Button ID="btnAlias" runat="server"
+                Text="Edit Agent"
+                OnClick="btnAlias_Click" />
+        </div>
+        <div style="margin: 20px">
+            <asp:Button ID="btnHardware" runat="server"
+                Text="Hardware"
+                OnClick="btnHardware_Click" />
+            <asp:Button ID="btnSoftware" runat="server"
+                Text="Software"
+                OnClick="btnSoftware_Click" />
+            <asp:Button ID="btnHistory" runat="server"
+                Text="History"
+                    OnClick="btnHistory_Click"/>
+
+        </div>
+        <div style="margin: 20px">
+            <asp:Button ID="btnSignOff" runat="server"
+                Text="Sign Off"
+                OnClick="btnSignOff_Click" />
+        </div>
+        <div style="margin-top: 30px">
+            <h3>Agent Installation:</h3>
+            <ul>
+                <li>Download and Install:
+                             
+                            <ol>
+                                <li>Download 
+                                    <a
+                                        href="https://github.com/Officeclip/devmon_agent/releases/download/Agent-0.5/AgentSetup.zip"
+                                        style="font-weight: bold">AgentSetup.zip</a></li>
+                                <li>Unzip AgentSetup.zip</li>
+                                <li>Run <b>Setup.exe</b></li>
+                                <li>Enter Server Url: <b><%= GetWebUri() %></b></li>
+                                <li>Enter Server Key: <b><%= serverGuid %></b></li>
+                            </ol>
+
+                </li>
+
+
+                <li>Uninstall:
+                    <ul>
+                        <li>Go to the <i>Control Panel > Programs and Features</i>
+                            and uninstall the Agent Monitor
+                        </li>
+                    </ul>
+
+                </li>
+            </ul>
+        </div>
+    </div>
+
     <script src="js/countdown.js"></script>
-</body>
-</html>
+
+</asp:Content>

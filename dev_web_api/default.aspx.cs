@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 namespace dev_web_api
@@ -97,6 +98,14 @@ namespace dev_web_api
         protected void btnHistory_Click(object sender, EventArgs e)
         {
             Response.Redirect("history.aspx");
+        }
+
+        protected void Page_PreRender(object sender, EventArgs e)
+        {
+            HtmlGenericControl ctrl = new HtmlGenericControl("meta");
+            ctrl.Attributes["http-equiv"] = "refresh";
+            ctrl.Attributes["content"] = "30";
+            this.Page.Header.Controls.Add(ctrl);
         }
     }
 }

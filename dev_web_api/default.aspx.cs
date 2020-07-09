@@ -49,57 +49,6 @@ namespace dev_web_api
             return $"{absoluteUri}/api";
         }
 
-        protected void btnPopup_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("monitor.aspx");
-            //string queryString = "monitor.aspx";
-            //string newWin = "window.open('" + queryString + "');";
-            //ClientScript.RegisterStartupScript(this.GetType(), "monitor", newWin, true);
-        }
-
-        protected void btnHardware_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("hardware.aspx");
-            //string queryString = "hardware.aspx";
-            //string newWin = "window.open('" + queryString + "');";
-            //ClientScript.RegisterStartupScript(this.GetType(), "hardware", newWin, true);
-        }
-
-        protected void btnSoftware_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("software.aspx");
-            //string queryString = "software.aspx";
-            //string newWin = "window.open('" + queryString + "');";
-            //ClientScript.RegisterStartupScript(this.GetType(), "software", newWin, true);
-        }
-
-        protected void btnAlias_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("alias.aspx");
-            //string queryString = "alias.aspx";
-            //string newWin = "window.open('" + queryString + "');";
-            //ClientScript.RegisterStartupScript(this.GetType(), "alias", newWin, true);
-        }
-
-        protected void btnSignOff_Click(object sender, EventArgs e)
-        {
-            FormsAuthentication.SignOut();
-            Response.Redirect("logon.aspx");
-        }
-
-        protected void btnCommandLimit_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("commandLimits.aspx");
-            //string queryString = "commandLimits.aspx";
-            //string newWin = "window.open('" + queryString + "');";
-            //ClientScript.RegisterStartupScript(this.GetType(), "commandLimits", newWin, true);
-        }
-
-        protected void btnHistory_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("history.aspx");
-        }
-
         protected void Page_PreRender(object sender, EventArgs e)
         {
             HtmlGenericControl ctrl = new HtmlGenericControl("meta");

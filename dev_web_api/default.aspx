@@ -1,7 +1,7 @@
 ﻿<%@ Page 
         Language="C#" 
         MasterPageFile="~/Site.Master" 
-        Title="Monitor Agent" 
+        Title="Home" 
         AutoEventWireup="true" 
         CodeBehind="default.aspx.cs" 
         Inherits="dev_web_api._default" %>
@@ -60,33 +60,7 @@
             <div style="clear:both" />
         </div>
         <table id="tblMonitor" runat="server" />
-        <div style="margin: 20px">
-            <asp:Button ID="btnPopup" runat="server"
-                Text="Edit Monitor"
-                OnClick="btnPopup_Click" />
-            <asp:Button ID="btnCommandLimit" runat="server"
-                Text="Command Limits" OnClick="btnCommandLimit_Click" />
-            <asp:Button ID="btnAlias" runat="server"
-                Text="Edit Agent"
-                OnClick="btnAlias_Click" />
-        </div>
-        <div style="margin: 20px">
-            <asp:Button ID="btnHardware" runat="server"
-                Text="Hardware"
-                OnClick="btnHardware_Click" />
-            <asp:Button ID="btnSoftware" runat="server"
-                Text="Software"
-                OnClick="btnSoftware_Click" />
-            <asp:Button ID="btnHistory" runat="server"
-                Text="History"
-                    OnClick="btnHistory_Click"/>
 
-        </div>
-        <div style="margin: 20px">
-            <asp:Button ID="btnSignOff" runat="server"
-                Text="Sign Off"
-                OnClick="btnSignOff_Click" />
-        </div>
         <div style="margin-top: 30px">
             <h3>Agent Installation:</h3>
             <ul>

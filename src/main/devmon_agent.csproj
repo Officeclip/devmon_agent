@@ -79,6 +79,10 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\ChartJS\libChart\libChart.csproj">
+      <Project>{3ed8a6b0-b19d-4d07-b276-0dae8a17c1e3}</Project>
+      <Name>libChart</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\devmon_library\devmon_library.csproj">
       <Project>{16dce9d4-7df2-41ca-abb5-2800ef1356dd}</Project>
       <Name>devmon_library</Name>

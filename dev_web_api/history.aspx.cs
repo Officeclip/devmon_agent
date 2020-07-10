@@ -38,12 +38,18 @@ namespace dev_web_api
         {
             var monitorCommandId = Convert.ToInt32(ddlMonitorCommands.SelectedValue);
             var chartConfig = CreateServerConfiguration(monitorCommandId);
-            chartConfigString = chartConfig.MakeChart();
+            chartConfigString = chartConfig?.MakeChart();
         }
 
         private ChartConfiguration CreateServerConfiguration(int monitorCommandId)
         {
             var charts = (new MonitorDb()).GetChart(monitorCommandId);
+            if (
+                (charts == null) ||
+                (charts.Count == 0))
+            {
+                return null;
+            }
             var unit = monitorCommands
                                 .Find(x => x.MonitorCommandId == monitorCommandId).Unit;
             var dataSets = new List<DataSetItem>();

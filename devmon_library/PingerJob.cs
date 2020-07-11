@@ -71,6 +71,7 @@ namespace devmon_library
                 case "os.uptime":
                 case "os.pendingupdates":
                 case "os.lastupdated":
+                case "os.idletime":
                     return await OsTask(commandInfo);
                 default:
                     return null;
@@ -159,10 +160,9 @@ namespace devmon_library
                         var output = ToHumanReadableString(osUtilization.UpTime);
                         var parts = output.Split(' ');
                         value = parts[0];
-                        //unit =
-                        //    (parts.Length >= 2)
-                        //    ? parts[1]
-                        //    : string.Empty;
+                        break;
+                    case "os.idletime":
+                        value = osUtilization.IdleTime.ToString();
                         break;
                 }
 

@@ -40,5 +40,12 @@
     "arg1": "",
     "arg2": "",
     "unit": "days"
+  },
+  {
+    "type": "os.idletime",
+    "description": "Time since the machine is idle",
+    "arg1": "",
+    "arg2": "",
+    "unit": "mins"
   }
 ]

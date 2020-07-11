@@ -3,6 +3,7 @@ using Microsoft.VisualBasic.Devices;
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using WUApiLib;
 
@@ -10,12 +11,44 @@ namespace devmon_library.Core
 {
     internal sealed class OsCollector : IOsCollector
     {
+        [DllImport("user32.dll")]
+        static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
+
+        [StructLayout(LayoutKind.Sequential)]
+        struct LASTINPUTINFO
+        {
+            public uint cbSize;
+            public int dwTime;
+        }
+
         private ICancellation _cancellation;
 
         public OsCollector(ICancellation cancellation)
         {
             _cancellation = cancellation;
         }
+
+        private DateTime BootTime
+        {
+            get
+            {
+                return DateTime.UtcNow.AddMilliseconds(-Environment.TickCount);
+            }
+        }
+
+        private DateTime LastInputTime
+        {
+            get
+            {
+                LASTINPUTINFO lii = new LASTINPUTINFO();
+                lii.cbSize = (uint)Marshal.SizeOf(typeof(LASTINPUTINFO));
+                GetLastInputInfo(ref lii);
+
+                DateTime lastInputTime = BootTime.AddMilliseconds(lii.dwTime);
+                return lastInputTime;
+            }
+        }
+
 
         public Task<OsInfo> ReadOsInfo()
         {
@@ -42,7 +75,7 @@ namespace devmon_library.Core
             var os = new OsUtilization
             {
                 Processes = Process.GetProcesses().Length,
-                //Update = await GetLatestUpdateInfo(),
+                IdleTime = (int)DateTime.UtcNow.Subtract(LastInputTime).TotalMinutes,
                 UpTime = upTime
             };
 

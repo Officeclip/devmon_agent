@@ -30,7 +30,12 @@ namespace devmon_library
                                                     appSettings,
                                                     jsonSerializer,
                                                     restClientFactory);
-            var response = serverConnector.SendPing().Result;
+            var response = serverConnector.SendPing()?.Result;
+            if (response == null)
+            {
+                _logger.Error("*** PingerJob is aborted ***");
+                return;
+            }
             var body = response.Content;
             var commands = JsonConvert.DeserializeObject<List<CommandInfo>>(body);
             _logger.Debug("**** CommandInfo List ****");

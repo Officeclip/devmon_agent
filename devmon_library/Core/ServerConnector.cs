@@ -133,6 +133,7 @@ namespace devmon_library.Core
             catch(Exception ex)
             {
                 _logger.Error($"Error: {ex.Message}");
+                return null;
             }
             return restResponse;
         }

@@ -1,8 +1,10 @@
 ﻿using devmon_library.Models;
 using Microsoft.VisualBasic.Devices;
+using NLog;
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Management;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using WUApiLib;
@@ -11,8 +13,16 @@ namespace devmon_library.Core
 {
     internal sealed class OsCollector : IOsCollector
     {
-        [DllImport("user32.dll")]
-        static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
+        //[DllImport("user32.dll")]
+        //static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
+
+        static DateTime lastAction = DateTime.Now;
+        static UInt64 previousReadOpCount = 0;
+
+        [DllImport("kernel32.dll")]
+        public static extern UInt64 GetTickCount64();
+
+        static ILogger _logger;
 
         [StructLayout(LayoutKind.Sequential)]
         struct LASTINPUTINFO
@@ -23,9 +33,10 @@ namespace devmon_library.Core
 
         private ICancellation _cancellation;
 
-        public OsCollector(ICancellation cancellation)
+        public OsCollector(ICancellation cancellation, ILogger logger = null)
         {
             _cancellation = cancellation;
+            _logger = logger;
         }
 
         private DateTime BootTime
@@ -36,18 +47,58 @@ namespace devmon_library.Core
             }
         }
 
-        private DateTime LastInputTime
+        private int MinutesIdle()
         {
-            get
+            UInt64 totalReadOpCount = GetTotalReadOperationCount();
+            var minutesIdle = 0;
+            if (totalReadOpCount != previousReadOpCount)
             {
-                LASTINPUTINFO lii = new LASTINPUTINFO();
-                lii.cbSize = (uint)Marshal.SizeOf(typeof(LASTINPUTINFO));
-                GetLastInputInfo(ref lii);
-
-                DateTime lastInputTime = BootTime.AddMilliseconds(lii.dwTime);
-                return lastInputTime;
+                previousReadOpCount = totalReadOpCount;
+                lastAction = DateTime.Now;
             }
+            else
+            {
+                minutesIdle = (int)DateTime.Now.Subtract(lastAction).TotalMinutes;
+            }
+            return minutesIdle;
         }
+
+        private UInt64 GetTotalReadOperationCount()
+        {
+            UInt64 readOps = 0;
+            try
+            {
+                ManagementObjectSearcher searcher =
+                   new ManagementObjectSearcher("root\\CIMV2",
+                   "SELECT * FROM Win32_Process where Name = 'csrss.exe'");
+                foreach (ManagementObject queryObj in searcher.Get())
+                {
+                    readOps += Convert.ToUInt64(queryObj["ReadOperationCount"]);
+                }
+                return readOps;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("*** An error occurred while querying for WMI data: " + e.Message);
+            }
+            return 0;
+        }
+
+        //private DateTime LastInputTime
+        //{
+        //    get
+        //    {
+        //        LASTINPUTINFO lii = new LASTINPUTINFO();
+        //        lii.cbSize = (uint)Marshal.SizeOf(typeof(LASTINPUTINFO));
+        //        GetLastInputInfo(ref lii);
+
+        //        DateTime lastInputTime = BootTime.AddMilliseconds(lii.dwTime);
+        //        //_logger.Debug($"*** LastInputTime ***: BootTime: {BootTime}");
+        //        //_logger.Debug($"*** LastInputTime ***: lii.dwTime: {lii.dwTime}");
+        //        //_logger.Debug($"*** LastInputTime ***: DateTime.UtcNow: {DateTime.UtcNow}");
+        //        return lastInputTime;
+        //    }
+        //}
 
 
         public Task<OsInfo> ReadOsInfo()
@@ -67,15 +118,21 @@ namespace devmon_library.Core
             return Task.FromResult(info);
         }
 
+
+
         public async Task<OsUtilization> ReadOsUtilization()
         {
-            var ticks = (double)Stopwatch.GetTimestamp();
-            var upTime = TimeSpan.FromSeconds(ticks / Stopwatch.Frequency);
+            //var ticks = (double)Stopwatch.GetTimestamp();
+            //var upTime = TimeSpan.FromSeconds(ticks / Stopwatch.Frequency);
+
+            var tickCount64 = GetTickCount64();
+            var upTime = TimeSpan.FromTicks((long)tickCount64);
+            //var upTime = MinutesIdle();
 
             var os = new OsUtilization
             {
                 Processes = Process.GetProcesses().Length,
-                IdleTime = (int)DateTime.UtcNow.Subtract(LastInputTime).TotalMinutes,
+                IdleTime = MinutesIdle(),
                 UpTime = upTime
             };
 

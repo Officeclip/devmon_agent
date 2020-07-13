@@ -147,7 +147,7 @@ namespace devmon_library
             ResultInfo pingResultInfo = null;
             try
             {
-                var osCollector = new OsCollector(null);
+                var osCollector = new OsCollector(null, _logger);
                 var osUtilization = await osCollector.ReadOsUtilization();
                 var value = string.Empty;
                 //var unit = string.Empty;

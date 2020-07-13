@@ -61,7 +61,7 @@ namespace dev_web_api
                     Label = chart.AgentName,
                     Data = chart.ChartPointValues,
                     BorderWidth = 1,
-                    BackgroundColor = LibChart.Util.GetColors(i),
+                    BackgroundColor = LibChart.Util.GetColors(i % 6),
                     BorderColor = LibChart.Util.GetColors()[i % 6],
                     Fill = false
                 };

@@ -4,7 +4,14 @@
     "description": "Pings the url and returns the access time",
     "arg1": "The url to ping to (e.g. https://www.google.com)",
     "arg2": "",
-    "unit":  "ms"
+    "unit": "ms"
+  },
+  {
+    "type": "url.check",
+    "description": "Checks the url and finds out if stirng matches in the result",
+    "arg1": "The url to ping to (e.g. https://www.google.com)",
+    "arg2": "Regular exression to match",
+    "unit": "ms"
   },
   {
     "type": "cpu.percent",

@@ -1,9 +1,11 @@
 ﻿using devmon_library.Core;
 using devmon_library.Models;
+using HtmlAgilityPack;
 using Newtonsoft.Json;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -67,6 +69,8 @@ namespace devmon_library
                     return await NetworkTask(commandInfo);
                 case "drive.free":
                     return await DriveTask(commandInfo);
+                case "url.check":
+                    return await UrlCheck(commandInfo);
                 case "os.processes":
                 case "os.uptime":
                 case "os.pendingupdates":
@@ -289,6 +293,51 @@ namespace devmon_library
                 _logger.Error($"UrlTask(): {ex.Message}");
             }
             _logger.Info($"*** Ending UrlTask: {commandInfo.Arg1} ***");
+            return pingResultInfo;
+        }
+        private static async Task<ResultInfo> UrlCheck(CommandInfo commandInfo)
+        {
+            _logger.Info($"*** Starting UrlTask: {commandInfo.Arg1} ***");
+            _logger.Info($"*** Starting UrlTask: {commandInfo.Arg2} ***");
+            ResultInfo pingResultInfo = null;
+            var isExists = false;
+            var errorMessage = string.Empty;
+            try
+            {
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                var result = await sHttpClient.GetAsync(commandInfo.Arg1);
+                watch.Stop();
+                if (result.IsSuccessStatusCode)
+                {
+                    var messageString = await result.Content.ReadAsStringAsync();
+                    HtmlDocument doc = new HtmlDocument();
+                    doc.LoadHtml(messageString);
+                    string body = doc.DocumentNode.SelectSingleNode("/html/body").InnerHtml.ToLower();
+                    isExists = body.Contains(commandInfo.Arg2.ToLower());
+                    if (!isExists)
+                    {
+                        errorMessage = "Could not match the regular expression";
+                    }
+                }
+                else
+                {
+                    errorMessage = result.ReasonPhrase;
+                }
+                pingResultInfo = new ResultInfo()
+                {
+                    Id = commandInfo.MonitorCommandId,
+                    IsSuccess = isExists,
+                    Value = watch.ElapsedMilliseconds.ToString(),
+                    ReturnCode = (int)result.StatusCode,
+                    ErrorMessage = errorMessage
+                    //Unit = "ms"
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"UrlCheck(): {ex.Message}");
+            }
+            _logger.Info($"*** Ending UrlCheck: {commandInfo.Arg1} ***");
             return pingResultInfo;
         }
 

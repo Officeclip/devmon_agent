@@ -56,13 +56,14 @@ namespace dev_web_api
             for (int i = 0; i < charts.Count; i++)
             {
                 var chart = charts[i];
+                var colorCount = LibChart.Util.GetColors().Count;
                 var dataSetItem = new DataSetItem()
                 {
                     Label = chart.AgentName,
                     Data = chart.ChartPointValues,
                     BorderWidth = 1,
-                    BackgroundColor = LibChart.Util.GetColors(i % 6),
-                    BorderColor = LibChart.Util.GetColors()[i % 6],
+                    BackgroundColor = LibChart.Util.GetColors(i % colorCount),
+                    BorderColor = LibChart.Util.GetColors()[i % colorCount],
                     Fill = false
                 };
                 dataSets.Add(dataSetItem);

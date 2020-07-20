@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace devmon_library
@@ -312,9 +313,13 @@ namespace devmon_library
                     var messageString = await result.Content.ReadAsStringAsync();
                     HtmlDocument doc = new HtmlDocument();
                     doc.LoadHtml(messageString);
-                    string body = doc.DocumentNode.SelectSingleNode("/html/body").InnerHtml.ToLower();
-                    isExists = body.Contains(commandInfo.Arg2.ToLower());
-                    if (!isExists)
+                    string body = doc.DocumentNode.SelectSingleNode("/html/body").InnerText.ToLower();                   
+                    var match = Regex.Matches(body, commandInfo.Arg2.ToLower(), RegexOptions.IgnoreCase);
+                    if (match.Count > 0)
+                    {
+                        isExists = true;
+                    }
+                    else
                     {
                         errorMessage = "Could not match the regular expression";
                     }

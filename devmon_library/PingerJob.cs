@@ -273,6 +273,7 @@ namespace devmon_library
             ResultInfo pingResultInfo = null;
             try
             {
+
                 var watch = System.Diagnostics.Stopwatch.StartNew();
                 var result = await sHttpClient.GetAsync(commandInfo.Arg1);
                 watch.Stop();

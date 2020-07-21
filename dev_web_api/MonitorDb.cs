@@ -373,6 +373,8 @@ namespace dev_web_api
                         '{DateTime.UtcNow:o}',
                         {monitorValue.Value}
                     )";
+           InsertHoursHistory(monitorValue);
+
             _logger.Info(cmd.CommandText);
             try
             {
@@ -390,6 +392,99 @@ namespace dev_web_api
             {
                 sqlLiteConn.Close();
             }
+        }
+
+        private void InsertHoursHistory(MonitorValue monitorValue)
+        {
+            var dateNow = DateTime.UtcNow;
+            var dateStartOfHour = new DateTime(dateNow.Year, dateNow.Month, dateNow.Day, dateNow.Hour, 0, 0);
+            var dateOneHourBefore = dateNow.AddHours(-1);
+            var dateStartOfHourOneHourBefore = new DateTime(dateNow.Year, dateNow.Month, dateNow.Day, dateNow.Hour, 0, 0);
+            var entriesCount = GetExistingRecords(monitorValue, dateStartOfHour);
+            var avgValueOfExistingHour = GetExistingHrAvgValue(monitorValue, dateStartOfHourOneHourBefore, dateOneHourBefore);
+            if (entriesCount > 0)
+            {
+               
+            }
+            else
+            {
+                var sqlLiteConn = new SQLiteConnection(ConnectionString);
+                sqlLiteConn.Open();
+                var cmd = new SQLiteCommand(sqlLiteConn);
+                cmd.CommandText = $@"
+                    INSERT INTO history
+                    (
+                        frequency,
+                        agent_id,
+                        monitor_command_id,
+                        date,
+                        value
+                    )
+                    VALUES
+                    (
+                        1,
+                        {monitorValue.AgentId},
+                        {monitorValue.MonitorCommandId},
+                        '{DateTime.UtcNow:o}',
+                        {avgValueOfExistingHour}
+                    )";
+                _logger.Info(cmd.CommandText);
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SQLiteException ex)
+                {
+                    _logger.Error($"Database Error: {ex.Message}");
+                }
+            }
+
+        }
+
+        private object GetExistingHrAvgValue(MonitorValue monitorValue, DateTime dateStartOfHourOneHourBefore, DateTime dateOneHourBefore)
+        {
+            var averageValue = 0.00;
+            SQLiteDataReader sqlite_datareader;
+            SQLiteCommand sqlite_cmd;
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            sqlite_cmd = sqlLiteConn.CreateCommand();
+            sqlite_cmd.CommandText = $@"SELECT IFNULL(AVG(value),0.00) as average_value FROM history
+                                    WHERE frequency = 0 AND agent_id = {monitorValue.AgentId } 
+                                    AND monitor_command_id = { monitorValue.MonitorCommandId } AND
+                                     date BETWEEN '{dateOneHourBefore:o}' AND '{dateStartOfHourOneHourBefore:o}'";
+            sqlite_datareader = sqlite_cmd.ExecuteReader();
+            while (sqlite_datareader.Read())
+            {
+                averageValue = Convert.ToInt32(sqlite_datareader["average_value"]);
+            }
+            sqlite_datareader.Close();
+            sqlLiteConn.Close();
+            return averageValue;
+        }
+
+        private int GetExistingRecords(MonitorValue monitorValue, DateTime dateStartOfHour)
+        {
+            var existingEntriesCount = -1;
+            SQLiteDataReader sqlite_datareader;
+            SQLiteCommand sqlite_cmd;
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            sqlite_cmd = sqlLiteConn.CreateCommand();
+            sqlite_cmd.CommandText = $@"SELECT count(*) as entries_count FROM history
+                                    WHERE frequency = 1 AND agent_id = {monitorValue.AgentId } 
+                                    AND monitor_command_id = { monitorValue.MonitorCommandId } AND
+                                    date > '{ dateStartOfHour:o}'";
+            _logger.Debug("--------Sql COmmand-------");
+            _logger.Debug(sqlite_cmd.CommandText);
+            sqlite_datareader = sqlite_cmd.ExecuteReader();
+            while (sqlite_datareader.Read())
+            {
+                existingEntriesCount = Convert.ToInt32(sqlite_datareader["entries_count"]);
+            }
+            sqlite_datareader.Close();
+            sqlLiteConn.Close();
+            return existingEntriesCount;
         }
 
         public void InsertMonitorValue(MonitorValue monitorValue)
@@ -608,7 +703,7 @@ namespace dev_web_api
             var sqlLiteConn = new SQLiteConnection(ConnectionString);
             sqlLiteConn.Open();
             var cmd = new SQLiteCommand(sqlLiteConn);
-            var strArg1 = EscapeQuote(monitorCommand.Arg1); 
+            var strArg1 = EscapeQuote(monitorCommand.Arg1);
             var strArg2 = EscapeQuote(monitorCommand.Arg2);
             cmd.CommandText = $@"
                     INSERT INTO monitorCommands

@@ -135,7 +135,7 @@ namespace dev_web_api
                 var title = GetColumnTitleLimit(monitorCommand, monitorCommandLimits);
                 if (title.Length > 0)
                 {
-                    cell.InnerHtml = 
+                    cell.InnerHtml =
                         $@"<span style=""border-bottom: 1px dashed black"">{monitorCommand.Name }</span>";
                     cell.Attributes.Add("title", title);
                     cell.Attributes.Add("class", "headerTitle");
@@ -234,12 +234,15 @@ namespace dev_web_api
         {
             foreach (HtmlTableRow row in monitorTable.Rows)
             {
-                var cell = new HtmlTableCell();
+                var cell = new HtmlTableCell();             
                 row.Cells.Insert(0, cell);
             }
             for (int i = 0; i < agents.Count; i++)
             {
-                monitorTable.Rows[i + 1].Cells[0].InnerHtml = agents[i].ScreenName;
+                monitorTable.Rows[i + 1].Cells[0].InnerHtml = $@"<span style=""border-bottom: 1px dashed black"">{ agents[i].ScreenName}</span>";
+                var title = $"Last Response {agents[i].LastReplyReceived}";
+                monitorTable.Rows[i + 1].Cells[0].Attributes.Add("title", title);
+                monitorTable.Rows[i + 1].Cells[0].Attributes.Add("class", "headerTitle");
             }
         }
 
@@ -274,7 +277,8 @@ namespace dev_web_api
             var stringBuilder = new StringBuilder();
             stringBuilder.Append("Monitor limit exceeded for ");
             stringBuilder.Append(monitorCommand.Name);
-            if (!string.IsNullOrEmpty(monitorCommand.Arg1)){
+            if (!string.IsNullOrEmpty(monitorCommand.Arg1))
+            {
                 stringBuilder.Append($": {monitorCommand.Arg1}");
             }
             if (!string.IsNullOrEmpty(monitorCommand.Arg2))
@@ -374,9 +378,9 @@ namespace dev_web_api
             };
 
             smtpClient.Send(
-                        monitorSettings.Email.FromEmail, 
+                        monitorSettings.Email.FromEmail,
                         toEmailAddress,
-                        subject, 
+                        subject,
                         body);
         }
 

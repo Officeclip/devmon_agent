@@ -23,7 +23,7 @@ namespace dev_web_api
         {
             if (!Page.IsPostBack)
             {
-                LoadData();
+                LoadData();             
             }
         }
 
@@ -39,7 +39,7 @@ namespace dev_web_api
         private void LoadData()
         {
             HiddenField1.Value = "View";
-            GridView1.DataSource = monitorDb.GetMonitorCommands();
+            GridView1.DataSource = monitorDb.GetMonitorCommands();        
             GridView1.DataBind();
             grdMonitorHelp.DataSource = monitorCommandHelps;
             grdMonitorHelp.DataBind();

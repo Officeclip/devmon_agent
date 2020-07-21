@@ -13,36 +13,43 @@
     <div class="pt">
         <div>
             <div>
-                <div style="float: right; padding-top: 20px; margin-left: 50px;">
-                    <asp:Button ID="btnBack" runat="server"
-                        Text="Back to Monitor"
-                        Font-Bold="true"
-                        OnClick="btnBack_Click" />
-                </div>
             </div>
             <div>
-                <table>
+                <table style="background: burlywood">
                     <tr>
-                        <td>Name:</td>
-                        <td class="pl">Type:</td>
-                        <td class="pl">Arg1:</td>
-                        <td class="pl">Arg2:</td>
-                    </tr>
-                    <tr>
-                        <td>
+                        <td class="pt">Name:</td>
+                        '
+                        <td class="pl">
                             <asp:TextBox ID="txtName" runat="server"></asp:TextBox>
                         </td>
-                        <td class="pl">
+                    </tr>
+                    <tr>
+                        <td class="pl pt">Type:</td>
+                        <td class="pl pt">
                             <asp:TextBox ID="txtType" runat="server"></asp:TextBox>
-
                         </td>
-                        <td class="pl">
+                    </tr>
+                    <tr>
+                        <td class="pl pt">Arg1:</td>
+                        <td class="pl pt">
                             <asp:TextBox ID="txtArg1" runat="server"></asp:TextBox></td>
-                        <td class="pl">
-                            <asp:TextBox ID="txtArg2" runat="server"></asp:TextBox></td>
-                        <td class="pl">
-                            <asp:Button ID="Button1" runat="server" Text="save" OnClick="Button1_Click" />
+                    </tr>
+                    <tr>
+                        <td class="pl pt">Arg2:</td>
 
+                        <td class="pl pt">
+                            <asp:TextBox ID="txtArg2" runat="server"></asp:TextBox></td>
+
+                    </tr>
+                    <tr>
+                        <td class="pl">
+                           <asp:Button ID="btnBack" runat="server"
+                                    Text="Back to Monitor"
+                                    Font-Bold="true"
+                                    OnClick="btnBack_Click" />
+                            <div class="pl"  style="float:left">
+                                 <asp:Button ID="Button1" runat="server" Text="save" OnClick="Button1_Click" />
+                            </div>
                         </td>
                         <td class="pl">
                             <asp:Label ID="lblError" runat="server"
@@ -67,7 +74,7 @@
             OnRowUpdating="GridView1_RowUpdating"
             CellPadding="4"
             ForeColor="#333333"
-            GridLines="None" Width="100%">
+            GridLines="None" Width="100%" >
             <AlternatingRowStyle BackColor="White" />
             <Columns>
                 <asp:CommandField ShowEditButton="True" />

@@ -59,6 +59,11 @@
             </div>
             <div style="clear:both" />
         </div>
+        <div>
+            <div style="float:right">
+                <asp:Button ID="btnTestData" runat="server" Text="Test" ToolTip="Click to generate test Data" OnClick="btnTestData_Click" />
+            </div>
+        </div>
         <table id="tblMonitor" runat="server" />
 
         <div style="margin-top: 30px">

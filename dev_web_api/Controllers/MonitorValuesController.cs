@@ -1,5 +1,6 @@
 ﻿using dev_web_api.Models;
 using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -25,7 +26,8 @@ namespace dev_web_api.Controllers
             }
             var guid = headers.GetValues("agent_guid").First();
             var agent = monitorDb.GetAgentByGuid(guid);
-            monitorDb.DeleteOldHistory();
+            
+            monitorDb.DeleteOldHistory( DateTime.UtcNow);
             foreach (var commandValue in commandValues)
             {
                 var MonitorValue = new BusinessLayer.MonitorValue()

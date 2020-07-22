@@ -56,5 +56,33 @@ namespace dev_web_api
             ctrl.Attributes["content"] = "30";
             this.Page.Header.Controls.Add(ctrl);
         }
+        private int GetRandomNumber()
+        {
+            var randomNumber = new Random();
+            return randomNumber.Next(100, 500);
+        }
+
+        protected void btnTestData_Click(object sender, EventArgs e)
+        {
+            var dateTimeNow = DateTime.UtcNow;
+            var datetime = new DateTime(dateTimeNow.Year, dateTimeNow.Month, dateTimeNow.Day, dateTimeNow.Hour,dateTimeNow.Minute, dateTimeNow.Second);
+            datetime.AddHours(-4);
+            MonitorDb monitorDb = new MonitorDb();
+
+            var monitorValue = new MonitorValue
+            {
+                AgentId = 1,
+                MonitorCommandId = 1,              
+                ErrorMessage = ""
+            };
+            for (var i = 0; i < 300; i++)
+            {
+                monitorValue.Value = GetRandomNumber();
+                var date = datetime.AddMinutes(i);
+                monitorDb.DeleteOldHistory(date);
+                monitorDb.InsertMonitorHistory(monitorValue, date);
+                monitorDb.UpdateLastReceivedReply(1);
+            }
+        }
     }
 }

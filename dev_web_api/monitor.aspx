@@ -14,11 +14,10 @@
         <div>
             <div>
             </div>
-            <div>
-                <table style="background: burlywood">
+            <div style="background: burlywood">
+                <table >
                     <tr>
                         <td class="pt">Name:</td>
-                        '
                         <td class="pl">
                             <asp:TextBox ID="txtName" runat="server"></asp:TextBox>
                         </td>
@@ -39,21 +38,22 @@
 
                         <td class="pl pt">
                             <asp:TextBox ID="txtArg2" runat="server"></asp:TextBox></td>
-
                     </tr>
-                    <tr>
+                </table>
+                <table class="pt">
+                    <tr>                   
                         <td class="pl">
-                           <asp:Button ID="btnBack" runat="server"
-                                    Text="Back to Monitor"
-                                    Font-Bold="true"
-                                    OnClick="btnBack_Click" />
-                            <div class="pl"  style="float:left">
-                                 <asp:Button ID="Button1" runat="server" Text="save" OnClick="Button1_Click" />
+                            <div class="pl" style="float: left">
+                                <asp:Button ID="Button1" runat="server" Text="save" OnClick="Button1_Click" />
                             </div>
-                        </td>
-                        <td class="pl">
                             <asp:Label ID="lblError" runat="server"
                                 ForeColor="Red" />
+                        </td>
+                        <td class="pl">
+                            <asp:Button ID="btnBack" runat="server"
+                                Text="Back to Monitor"
+                                Font-Bold="true"
+                                OnClick="btnBack_Click" />
                         </td>
                     </tr>
                 </table>
@@ -74,7 +74,7 @@
             OnRowUpdating="GridView1_RowUpdating"
             CellPadding="4"
             ForeColor="#333333"
-            GridLines="None" Width="100%" >
+            GridLines="None" Width="100%">
             <AlternatingRowStyle BackColor="White" />
             <Columns>
                 <asp:CommandField ShowEditButton="True" />

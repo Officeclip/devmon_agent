@@ -240,7 +240,7 @@ namespace dev_web_api
             for (int i = 0; i < agents.Count; i++)
             {
                 monitorTable.Rows[i + 1].Cells[0].InnerHtml = $@"<span style=""border-bottom: 1px dashed black"">{ agents[i].ScreenName}</span>";
-                var title = $"Last Response {agents[i].LastReplyReceived}";
+                var title = $"Last Response {agents[i].LastReplyReceived}(utc)";
                 monitorTable.Rows[i + 1].Cells[0].Attributes.Add("title", title);
                 monitorTable.Rows[i + 1].Cells[0].Attributes.Add("class", "headerTitle");
             }

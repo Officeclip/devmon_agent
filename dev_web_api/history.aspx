@@ -14,46 +14,9 @@
     <form id="form1" runat="server">
         <asp:ScriptManager ID="ScriptManager1" runat="server">
         </asp:ScriptManager>
-        <%--<div style="margin: 20px">
-            <div>
-                <div style="display: inline">
-                    Monitor Commands:
-                <asp:DropDownList ID="ddlMonitorCommands" runat="server"
-                    AutoPostBack="true"
-                    OnSelectedIndexChanged="ddlMonitorCommands_SelectedIndexChanged" />
-                </div>
-
-                <div style="display: inline; margin-left: 20px">
-                    <asp:Literal ID="litDate" runat="server" />
-                </div>
-                <div style="display: inline; margin-left: 20px">
-                    <asp:Button ID="btnBack" runat="server"
-                        Text="Back to Monitor"
-                        Font-Bold="true" />
-                </div>
-            </div>
-            <div style="margin-top: 10px">
-                <asp:Label ID="lblEmptyData" runat="server"
-                    Text="Data for this agent is not available"
-                    ForeColor="Red" />
-            </div>
-        </div>
-        <div style="width: 800px; height: 800px">
-            <canvas id="myChart"></canvas>
-        </div>--%>
         <div>
             <ocTag:graphControl ID="graphControl" runat="server"></ocTag:graphControl>
         </div>
-
-        <div>
-               <ocTag:graphControl ID="graphCtrlHrs" runat="server"></ocTag:graphControl>
-        </div>
-
-<%--        <script type="text/javascript">
-            var ctx = $("#myChart").get(0).getContext("2d");
-            var config = <%= chartConfigString %>;
-            var chart = new Chart(ctx, config);
-        </script>--%>
     </form>
 
 </body>

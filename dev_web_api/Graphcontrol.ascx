@@ -26,7 +26,7 @@
         </div>
     </div>
     <div style="margin-top: 10px">
-        <asp:Label ID="lblEmptyData" runat="server"
+        <asp:Label ID="lblEmptyData" runat="server" Visible="false"
             Text="Data for this agent is not available"
             ForeColor="Red" />
     </div>

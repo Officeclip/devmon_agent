@@ -17,126 +17,16 @@ namespace dev_web_api
         MonitorDb monitorDb = new MonitorDb();
         List<MonitorCommand> monitorCommands; 
         protected string chartConfigString;
-        public dev_web_api.Graphcontrol graphControl;
         public dev_web_api.Graphcontrol graphCtrlHrs;
         protected void Page_Init(object sender, EventArgs e)
         {
             monitorCommands = monitorDb.GetMonitorCommands();
-            //ddlMonitorCommands.DataSource = monitorDb.GetMonitorCommands();
-            //ddlMonitorCommands.DataTextField = "Name";
-            //ddlMonitorCommands.DataValueField = "MonitorCommandId";
-            //ddlMonitorCommands.DataBind();
         }
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!Page.IsPostBack)
-            {
-                LoadPage();
-                graphControl.frequency = 1;
-                graphCtrlHrs.frequency = 1;
-            }
-        }
 
-        private void LoadPage()
-        {
-           // var monitorCommandId = Convert.ToInt32(ddlMonitorCommands.SelectedValue);
-          //  var chartConfig = CreateServerConfiguration(monitorCommandId,1);
-           // chartConfigString = chartConfig?.MakeChart();
-        }
-
-        private ChartConfiguration CreateServerConfiguration(int monitorCommandId, int frequency)
-        {
-            var charts = (new MonitorDb()).GetChart(monitorCommandId, frequency);
-            if (
-                (charts == null) ||
-                (charts.Count == 0))
-            {
-                return null;
-            }
-            var unit = monitorCommands
-                                .Find(x => x.MonitorCommandId == monitorCommandId).Unit;
-            var dataSets = new List<DataSetItem>();
-            for (int i = 0; i < charts.Count; i++)
-            {
-                var chart = charts[i];
-                var colorCount = LibChart.Util.GetColors().Count;
-                var dataSetItem = new DataSetItem()
-                {
-                    Label = chart.AgentName,
-                    Data = chart.ChartPointValues,
-                    BorderWidth = 1,
-                    BackgroundColor = LibChart.Util.GetColors(i % colorCount),
-                    BorderColor = LibChart.Util.GetColors()[i % colorCount],
-                    Fill = false
-                };
-                dataSets.Add(dataSetItem);
-            }
-
-            var xAxesCallback = @"function (value, index, values) {
-                                        if (value > 0) { value = -1 * value;}
-                                        return value + ' min';
-                                    }";
-
-            var xAxesTicks = new Ticks()
-            {
-                Display = true,
-                BeginAtZero = true,
-                Max = 60,
-                MaxTicksLimit = 12,
-                Callback = (new JRaw(xAxesCallback))
-            };
-
-            var xAxesTicksItem = new TicksItem() { ticks = xAxesTicks };
-
-
-            var yAxesCallback = $@"function (value, index, values) {{
-                                        return value + ' {unit}';
-                                    }}";
-
-            var yAxesTicks = new Ticks()
-            {
-                Callback = new JRaw(yAxesCallback)
-            };
-
-            var yAxesTicksItem = new TicksItem() { ticks = yAxesTicks };
-
-            var chartConfig = new ChartConfiguration
-            {
-                Type = ChartType.line.GetChartType(),
-                Data =
-                {
-                    Labels = charts[0]
-                                    .ChartPointMinutes
-                                    .ConvertAll<string>(x => x.ToString()),
-                    Datasets = dataSets
-                },
-                Options =
-                {
-                    Title =
-                    {
-                       // Text = ddlMonitorCommands.SelectedItem.Text
-                    },
-                    Scales = new Scales()
-                    {
-                        XAxes = new List<TicksItem>()
-                        {
-                            xAxesTicksItem
-                        },
-                        YAxes = new List<TicksItem>()
-                        {
-                            yAxesTicksItem
-                        }
-                    }
-                }
-            };
-            return chartConfig;
-        }
-
-        protected void ddlMonitorCommands_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            LoadPage();
-        }
+        }  
 
     }
 }

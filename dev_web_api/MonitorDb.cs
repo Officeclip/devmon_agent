@@ -7,6 +7,7 @@ using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Hosting;
 
 namespace dev_web_api
 {
@@ -315,19 +316,43 @@ namespace dev_web_api
 
         public void DeleteOldHistory(DateTime dateTime)
         {
-            _logger.Info("Method DeleteOldHistory()");
-            var sqlLiteConn = new SQLiteConnection(ConnectionString);
-            sqlLiteConn.Open();
-            var cmd = new SQLiteCommand(sqlLiteConn);
+            DeleteHourlyHistory(dateTime);
+            DeleteDailyHistory(dateTime);
+        }
+
+        private void DeleteHourlyHistory(DateTime dateTime)
+        {
+            var HistoryFrequencyForHour = 0;
             var dateCutOff = dateTime
                                     .Subtract(
                                         new TimeSpan(
                                                 1, 0, 0))
                                     .ToString("o");
+            DeleteHistory(dateCutOff, HistoryFrequencyForHour);
+        }
+
+        private void DeleteDailyHistory(DateTime dateTime)
+        {
+            var HistoryFrequencyForDay = 1;
+            var dateCutOff = dateTime
+                                    .Subtract(
+                                        new TimeSpan(
+                                                24, 0, 0))
+                                    .ToString("o");
+            DeleteHistory(dateCutOff, HistoryFrequencyForDay);
+        }
+
+        public void DeleteHistory(string dateTime, int frequency)
+        {
+            _logger.Info("Method DeleteOldHistory()");
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn);
+
             cmd.CommandText = $@"
                     DELETE FROM history 
-                    WHERE date < '{dateCutOff}'
-                    AND frequency = 0
+                    WHERE date < '{dateTime}'
+                    AND frequency = {frequency}
                     ";
             _logger.Info(cmd.CommandText);
             try
@@ -354,9 +379,12 @@ namespace dev_web_api
             _logger.Info(ObjectDumper.Dump(monitorValue));
             InsertHistory(monitorValue, dateTime, 0);
             InsertHoursHistory(monitorValue, dateTime);
+            InsertHistoryFor24Hrs(monitorValue, dateTime);
         }
 
-        private void InsertHistory(MonitorValue monitorValue, DateTime dateTime, int frequency)
+
+
+        public void InsertHistory(MonitorValue monitorValue, DateTime dateTime, int frequency)
         {
             var sqlLiteConn = new SQLiteConnection(ConnectionString);
             sqlLiteConn.Open();
@@ -399,20 +427,34 @@ namespace dev_web_api
 
         private void InsertHoursHistory(MonitorValue monitorValue, DateTime dateTime)
         {
-          //  var dateNow = DateTime.UtcNow;
+            var frequncyOfHour = 1;
             var dateStartOfHour = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, 0, 0);
             var dateOneHourBefore = dateStartOfHour.AddHours(-1);
-            var entriesCount = GetExistingRecords(monitorValue, dateStartOfHour);
+            var entriesCount = GetExistingRecords(monitorValue, dateStartOfHour, frequncyOfHour);
             if (entriesCount <= 0)
             {
-                var avgValueOfExistingHour = GetExistingHrAvgValue(monitorValue, dateStartOfHour, dateOneHourBefore);
+                var avgValueOfExistingHour = GetExistingRecordsAvgValue(monitorValue, dateStartOfHour, dateOneHourBefore, 0);
                 monitorValue.Value = avgValueOfExistingHour;
-                InsertHistory(monitorValue, dateStartOfHour, 1);
+                InsertHistory(monitorValue, dateStartOfHour, frequncyOfHour);
+            }
+
+        }
+        private void InsertHistoryFor24Hrs(MonitorValue monitorValue, DateTime dateTime)
+        {
+            var frequncyOf24Hrs = 2;
+            var dateStartOfHour = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, 0, 0);
+            var existingdateHoursBefore = dateStartOfHour.AddHours(-24);
+            var entriesCount = GetExistingRecords(monitorValue, dateStartOfHour, frequncyOf24Hrs);
+            if (entriesCount <= 0)
+            {
+                var avgValueOfExistingEntries = GetExistingRecordsAvgValue(monitorValue, dateStartOfHour, existingdateHoursBefore, 1);
+                monitorValue.Value = avgValueOfExistingEntries;
+                InsertHistory(monitorValue, dateStartOfHour, frequncyOf24Hrs);
             }
 
         }
 
-        private int GetExistingHrAvgValue(MonitorValue monitorValue, DateTime dateStartOfHour, DateTime dateOneHourBefore)
+        private int GetExistingRecordsAvgValue(MonitorValue monitorValue, DateTime currentDateStartOfHour, DateTime existingdateOneHourBefore, int frequency)
         {
             var averageValue = 0;
             SQLiteDataReader sqlite_datareader;
@@ -421,9 +463,9 @@ namespace dev_web_api
             sqlLiteConn.Open();
             sqlite_cmd = sqlLiteConn.CreateCommand();
             sqlite_cmd.CommandText = $@"SELECT IFNULL(AVG(value),0.00) as average_value FROM history
-                                    WHERE frequency = 0 AND agent_id = {monitorValue.AgentId } 
+                                    WHERE frequency = {frequency} AND agent_id = {monitorValue.AgentId } 
                                     AND monitor_command_id = { monitorValue.MonitorCommandId } AND
-                                     date BETWEEN '{dateOneHourBefore:o}' AND '{dateStartOfHour:o}'";
+                                     date BETWEEN '{existingdateOneHourBefore:o}' AND '{currentDateStartOfHour:o}'";
             sqlite_datareader = sqlite_cmd.ExecuteReader();
             while (sqlite_datareader.Read())
             {
@@ -434,7 +476,7 @@ namespace dev_web_api
             return averageValue;
         }
 
-        private int GetExistingRecords(MonitorValue monitorValue, DateTime dateStartOfHour)
+        private int GetExistingRecords(MonitorValue monitorValue, DateTime dateStartOfHour, int frequency)
         {
             var existingEntriesCount = -1;
             SQLiteDataReader sqlite_datareader;
@@ -443,7 +485,7 @@ namespace dev_web_api
             sqlLiteConn.Open();
             sqlite_cmd = sqlLiteConn.CreateCommand();
             sqlite_cmd.CommandText = $@"SELECT count(*) as entries_count FROM history
-                                    WHERE frequency = 1 AND agent_id = {monitorValue.AgentId } 
+                                    WHERE frequency = {frequency} AND agent_id = {monitorValue.AgentId } 
                                     AND monitor_command_id = { monitorValue.MonitorCommandId } AND
                                     date = '{ dateStartOfHour:o}'";
             _logger.Debug("--------Sql COmmand-------");
@@ -1096,7 +1138,7 @@ namespace dev_web_api
             }
         }
 
-        public List<ChartLine> GetChart(int monitorCommandId)
+        public List<ChartLine> GetChart(int monitorCommandId, int frequency)
         {
             SQLiteDataReader sqlite_datareader;
             SQLiteCommand sqlite_cmd;
@@ -1107,9 +1149,8 @@ namespace dev_web_api
                 $@"
                     SELECT * FROM 
                         agents a, history his
-                    WHERE
-                        a.agent_id = his.agent_id AND
-                        his.monitor_command_id = {monitorCommandId}
+                    WHERE                       
+                        his.monitor_command_id = {monitorCommandId} AND frequency = {frequency}
                     ORDER BY
                         a.agent_id";
             sqlite_datareader = sqlite_cmd.ExecuteReader();
@@ -1122,12 +1163,22 @@ namespace dev_web_api
                 var minutes = Convert.ToInt32(
                                         DateTime.UtcNow.Subtract(date).TotalMinutes);
                 var value = Convert.ToInt32(sqlite_datareader["value"]);
+                var maxValue = 60;
+                if (frequency == 1)
+                {
+                    maxValue = 1440;
+                }
+                else
+                {
+                    maxValue = 43200;
+                }
                 Util.AddChartItem(
                             chartLines,
                             agentId,
                             agentName,
                             minutes,
-                            value
+                            value,
+                            maxValue
                 );
             }
             sqlite_datareader.Close();

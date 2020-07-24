@@ -234,7 +234,7 @@ namespace dev_web_api
         {
             foreach (HtmlTableRow row in monitorTable.Rows)
             {
-                var cell = new HtmlTableCell();             
+                var cell = new HtmlTableCell();
                 row.Cells.Insert(0, cell);
             }
             for (int i = 0; i < agents.Count; i++)
@@ -395,7 +395,7 @@ namespace dev_web_api
                     string agentName,
                     int minutes,
                     int value,
-                    int maxValue = 60)
+                    int maxValue)
         {
             if (minutes > maxValue) return;
             ChartLine chartLine = null;

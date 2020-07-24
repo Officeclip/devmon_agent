@@ -1,31 +1,27 @@
-﻿using System.Data;
-using System.Text;
-using System.Web.Services;
-using System.Data.SqlClient;
-using System.Configuration;
-using System;
-using System.Web.Script.Services;
-using ChartServerConfiguration.Model;
-using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
+﻿using ChartServerConfiguration.Model;
 using dev_web_api.BusinessLayer;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 
 namespace dev_web_api
 {
-    public partial class history : System.Web.UI.Page
+    public partial class DailyHistory : System.Web.UI.Page
     {
         MonitorDb monitorDb = new MonitorDb();
-        List<MonitorCommand> monitorCommands; 
-        protected string chartConfigString;
-        public dev_web_api.Graphcontrol graphControl;
-        public dev_web_api.Graphcontrol graphCtrlHrs;
+        List<MonitorCommand> monitorCommands;
+        protected string chartConfigStringForDay;
         protected void Page_Init(object sender, EventArgs e)
         {
             monitorCommands = monitorDb.GetMonitorCommands();
-            //ddlMonitorCommands.DataSource = monitorDb.GetMonitorCommands();
-            //ddlMonitorCommands.DataTextField = "Name";
-            //ddlMonitorCommands.DataValueField = "MonitorCommandId";
-            //ddlMonitorCommands.DataBind();
+            ddlMonitorCommands.DataSource = monitorDb.GetMonitorCommands();
+            ddlMonitorCommands.DataTextField = "Name";
+            ddlMonitorCommands.DataValueField = "MonitorCommandId";
+            ddlMonitorCommands.DataBind();
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -33,16 +29,14 @@ namespace dev_web_api
             if (!Page.IsPostBack)
             {
                 LoadPage();
-                graphControl.frequency = 1;
-                graphCtrlHrs.frequency = 1;
             }
         }
 
         private void LoadPage()
         {
-           // var monitorCommandId = Convert.ToInt32(ddlMonitorCommands.SelectedValue);
-          //  var chartConfig = CreateServerConfiguration(monitorCommandId,1);
-           // chartConfigString = chartConfig?.MakeChart();
+            var monitorCommandId = Convert.ToInt32(ddlMonitorCommands.SelectedValue);
+            var chartConfig = CreateServerConfiguration(monitorCommandId, 1);
+            chartConfigStringForDay = chartConfig?.MakeChart();
         }
 
         private ChartConfiguration CreateServerConfiguration(int monitorCommandId, int frequency)
@@ -82,7 +76,7 @@ namespace dev_web_api
             {
                 Display = true,
                 BeginAtZero = true,
-                Max = 60,
+                Max = 24,
                 MaxTicksLimit = 12,
                 Callback = (new JRaw(xAxesCallback))
             };
@@ -115,7 +109,7 @@ namespace dev_web_api
                 {
                     Title =
                     {
-                       // Text = ddlMonitorCommands.SelectedItem.Text
+                        Text = ddlMonitorCommands.SelectedItem.Text
                     },
                     Scales = new Scales()
                     {

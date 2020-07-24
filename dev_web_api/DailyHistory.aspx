@@ -1,6 +1,7 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="history.aspx.cs" Inherits="dev_web_api.history" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="DailyHistory.aspx.cs" Inherits="dev_web_api.DailyHistory" %>
 
-<%@ Register TagPrefix="ocTag" TagName="graphControl" Src="~/Graphcontrol.ascx" %>
+<!DOCTYPE html>
+
 <html>
 
 <head runat="server">
@@ -14,7 +15,7 @@
     <form id="form1" runat="server">
         <asp:ScriptManager ID="ScriptManager1" runat="server">
         </asp:ScriptManager>
-        <%--<div style="margin: 20px">
+        <div style="margin: 20px">
             <div>
                 <div style="display: inline">
                     Monitor Commands:
@@ -22,7 +23,7 @@
                     AutoPostBack="true"
                     OnSelectedIndexChanged="ddlMonitorCommands_SelectedIndexChanged" />
                 </div>
-
+                
                 <div style="display: inline; margin-left: 20px">
                     <asp:Literal ID="litDate" runat="server" />
                 </div>
@@ -40,21 +41,14 @@
         </div>
         <div style="width: 800px; height: 800px">
             <canvas id="myChart"></canvas>
-        </div>--%>
-        <div>
-            <ocTag:graphControl ID="graphControl" runat="server"></ocTag:graphControl>
         </div>
-
-        <div>
-               <ocTag:graphControl ID="graphCtrlHrs" runat="server"></ocTag:graphControl>
-        </div>
-
-<%--        <script type="text/javascript">
-            var ctx = $("#myChart").get(0).getContext("2d");
-            var config = <%= chartConfigString %>;
-            var chart = new Chart(ctx, config);
-        </script>--%>
+         <script type="text/javascript">
+             var ctxDay = $("#myChart").get(0).getContext("2d");
+             var config = <%= chartConfigStringForDay %>;
+             var chartforDay = new Chart(ctxDay, config);
+        </script>  
     </form>
-
+ 
 </body>
 </html>
+

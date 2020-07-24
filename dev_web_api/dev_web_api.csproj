@@ -149,11 +149,13 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Site.css" />
     <Content Include="css\countdown.css" />
+    <Content Include="DailyHistory.aspx" />
     <Content Include="default.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="alias.aspx" />
+    <Content Include="Graphcontrol.ascx" />
     <Content Include="history.aspx" />
     <Content Include="js\countdown.js" />
     <Content Include="logon.aspx" />
@@ -341,6 +343,20 @@
     <Compile Include="Contact.aspx.designer.cs">
       <DependentUpon>Contact.aspx</DependentUpon>
     </Compile>
+    <Compile Include="DailyHistory.aspx.cs">
+      <DependentUpon>DailyHistory.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DailyHistory.aspx.designer.cs">
+      <DependentUpon>DailyHistory.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Graphcontrol.ascx.cs">
+      <DependentUpon>Graphcontrol.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Graphcontrol.ascx.designer.cs">
+      <DependentUpon>Graphcontrol.ascx</DependentUpon>
+    </Compile>
     <Compile Include="history.aspx.cs">
       <DependentUpon>history.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -355,6 +371,7 @@
     <Compile Include="logon.aspx.designer.cs">
       <DependentUpon>logon.aspx</DependentUpon>
     </Compile>
+    <Compile Include="monitorCommands.cs" />
     <Compile Include="setup.aspx.cs">
       <DependentUpon>setup.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

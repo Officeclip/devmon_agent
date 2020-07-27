@@ -58,38 +58,40 @@ namespace dev_web_api
         }
         private int GetRandomNumber()
         {
+            //var ticks =Convert.ToInt32( DateTime.Now.Ticks);
             var randomNumber = new Random();
             return randomNumber.Next(100, 500);
         }
 
         protected void btnTestData_Click(object sender, EventArgs e)
         {
-            /// CreateDataForanHour();
-            InsertDataDirectly();
+            CreateDataForanHour();
+            // InsertDataDirectly();
         }
         protected void CreateDataForanHour()
         {
-            var dateTimeNow = DateTime.UtcNow;
-            var datetime = new DateTime(dateTimeNow.Year, dateTimeNow.Month, dateTimeNow.Day, dateTimeNow.Hour, dateTimeNow.Minute, dateTimeNow.Second);
-            //  datetime.AddHours(-4);
-            MonitorDb monitorDb = new MonitorDb();
+            var dateTimeNow = DateTime.UtcNow.AddHours(-72);
 
-            var monitorValue = new MonitorValue
+        //    var datetime = new DateTime(dateTimeNow.Year, dateTimeNow.Month, dateTimeNow.Day, dateTimeNow.Hour, dateTimeNow.Minute, dateTimeNow.Second);           
+            MonitorDb monitorDb = new MonitorDb();
+            var iterationCount = 0;
+            for (var i = 0; i < 48; i++)
             {
-                AgentId = 1,
-                MonitorCommandId = 1,
-                ErrorMessage = ""
-            };
-            //for (var i = 0; i < 60; i++)
-            //{
-            //    monitorValue.Value = GetRandomNumber();
-            //    var date = dateTimeNow.AddMinutes(i);
-            //    //monitorDb.DeleteOldHistory(date);
-            //    //monitorDb.InsertMonitorHistory(monitorValue, date);
-            //    //monitorDb.UpdateLastReceivedReply(1);
-            //    monitorDb.InsertHistory(monitorValue, date,0);
-            //}
-            InsertDataDirectly();
+                var monitorValue = new MonitorValue
+                {
+                    AgentId = 1,
+                    MonitorCommandId = 1,
+                    Value = 246,
+                    ErrorMessage = ""
+                };
+                var date = dateTimeNow.AddHours(i);
+                monitorDb.DeleteOldHistory(date);
+                monitorDb.InsertMonitorHistory(monitorValue, date);
+                iterationCount = i;
+
+            }
+            var result = iterationCount;
+            // InsertDataDirectly();
         }
 
 
@@ -99,23 +101,17 @@ namespace dev_web_api
             //var datetime = new DateTime(dateTimeNow.Year, dateTimeNow.Month, dateTimeNow.Day, dateTimeNow.Hour, dateTimeNow.Minute, dateTimeNow.Second);
             //datetime.AddHours(-24);
             MonitorDb monitorDb = new MonitorDb();
-            var monitorValuesForAgent = new List<MonitorValue>();
-            var monitorValues = monitorDb.GetMonitorValues();
-            foreach (var agent in monitorValues)
-            {
-                monitorValuesForAgent = monitorValues
-                                            .FindAll(x => x.AgentId == agent.AgentId);
-            }
-            foreach (var agent in monitorValuesForAgent)
-            {
 
+            foreach (var agent in agents)
+            {
+                var agentId = agent.AgentId;
                 foreach (var command in monitorCommand)
                 {
                     var monitorCommand =
                            this.monitorCommand.Find(x => x.MonitorCommandId == command.MonitorCommandId);
                     var monitorValue = new MonitorValue
                     {
-                        AgentId = agent.MonitorCommandId,
+                        AgentId = agentId,
                         MonitorCommandId = monitorCommand.MonitorCommandId,
                         ErrorMessage = ""
                     };
@@ -140,6 +136,5 @@ namespace dev_web_api
                 }
             }
         }
-
     }
 }

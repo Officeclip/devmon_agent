@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -31,13 +32,13 @@ namespace dev_web_api
             if (!Page.IsPostBack)
             {
                 ddlMonitorCommands.SelectedIndex = ddlFrequancy.SelectedIndex = 1;
-                LoadGraph(Convert.ToInt32(ddlMonitorCommands.SelectedValue),Convert.ToInt32(ddlFrequancy.SelectedValue));
+                LoadGraph(Convert.ToInt32(ddlMonitorCommands.SelectedValue), Convert.ToInt32(ddlFrequancy.SelectedValue));
             }
         }
 
-        protected void LoadGraph(int monitorCommandId,int selecedFrequency = 0)
+        protected void LoadGraph(int monitorCommandId, int selecedFrequency = 0)
         {
-           // var monitorCommandId = Convert.ToInt32(ddlMonitorCommands.SelectedValue);
+            // var monitorCommandId = Convert.ToInt32(ddlMonitorCommands.SelectedValue);
             var chartConfig = CreateServerConfiguration(monitorCommandId, selecedFrequency);
             chartConfigStringForDay = chartConfig?.MakeChart();
         }
@@ -52,13 +53,14 @@ namespace dev_web_api
         private ChartConfiguration CreateServerConfiguration(int monitorCommandId, int frequency)
         {
             var charts = (new MonitorDb()).GetChart(monitorCommandId, frequency);
+            var unitStr = GetUnitString(frequency);
             if (
                 (charts == null) ||
                 (charts.Count == 0))
             {
                 lblEmptyData.Visible = true;
-               return null;
-                
+                return null;
+
             }
             var unit = monitorCommands
                                 .Find(x => x.MonitorCommandId == monitorCommandId).Unit;
@@ -79,10 +81,7 @@ namespace dev_web_api
                 dataSets.Add(dataSetItem);
             }
 
-            var xAxesCallback = @"function (value, index, values) {
-                                        if (value > 0) { value = -1 * value;}
-                                        return value + ' min';
-                                    }";
+            var xAxesCallback = GetxAxesCallback(frequency);
             var units = GetMaxUnits(frequency);
             var xAxesTicks = new Ticks()
             {
@@ -139,6 +138,32 @@ namespace dev_web_api
             return chartConfig;
         }
 
+        private string GetxAxesCallback(int frequency)
+        {
+            var sb = new StringBuilder(@"function (value, index, values)");
+            sb.Append ("{ if (value > 0) { value = -1 * value;}") ;
+            sb.Append($" return value + ' {GetUnitString(frequency)}';");
+            sb.Append('}');
+            return sb.ToString();
+        }
+        private String GetUnitString(int frequency)
+        {
+            var unitStr = "";
+            switch (frequency)
+            {
+                case 0:
+                    unitStr = "min";
+                    break;
+                case 1:
+                    unitStr = "hour";
+                    break;
+                case 2:
+                    unitStr = "day";
+                    break;
+            }
+            return unitStr;
+        }
+
         private int GetMaxUnits(int frequency)
         {
             var numOfTicks = -1;
@@ -159,7 +184,7 @@ namespace dev_web_api
 
         protected void ddlMonitorCommands_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LoadGraph(Convert.ToInt32(ddlMonitorCommands.SelectedValue),Convert.ToInt32(ddlFrequancy.SelectedValue));
+            LoadGraph(Convert.ToInt32(ddlMonitorCommands.SelectedValue), Convert.ToInt32(ddlFrequancy.SelectedValue));
         }
 
         protected void ddlFrequancy_SelectedIndexChanged(object sender, EventArgs e)

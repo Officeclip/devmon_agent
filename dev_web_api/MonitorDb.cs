@@ -107,43 +107,98 @@ namespace dev_web_api
                             .ToList();
         }
 
-        public List<Agent> GetAgents()
+        public List<Agent> GetAgents(int agentId = 0)
         {
             SQLiteDataReader sqlite_datareader;
             SQLiteCommand sqlite_cmd;
             var sqlLiteConn = new SQLiteConnection(ConnectionString);
             sqlLiteConn.Open();
             sqlite_cmd = sqlLiteConn.CreateCommand();
-            sqlite_cmd.CommandText = "SELECT * FROM agents ORDER By agent_id";
+            if (agentId > 0)
+            {
+                sqlite_cmd.CommandText = $@"SELECT * FROM agents where agent_id = {agentId} ORDER By agent_id";
+            }
+            else
+            {
+                sqlite_cmd.CommandText = "SELECT * FROM agents ORDER By agent_id";
+            }
             var agents = new List<Agent>();
             sqlite_datareader = sqlite_cmd.ExecuteReader();
             try
             {
+                agents = ExtractAgents(sqlite_datareader);
+            }
+            catch (SQLiteException ex)
+            {
+                _logger.Error($"Database Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"General Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlite_datareader.Close();
+                sqlLiteConn.Close();
+            }
+            return agents;
+        }
+
+        private List<Agent> ExtractAgents(SQLiteDataReader sqlite_datareader)
+        {
+            var agents = new List<Agent>();
+            while (sqlite_datareader.Read())
+            {
+                Agent agent = GetEnabledAgent(sqlite_datareader);
+
+                agents.Add(agent);
+            }
+            return agents;
+        }
+
+        private Agent GetEnabledAgent(SQLiteDataReader sqlite_datareader)
+        {
+            var agent = new Agent()
+            {
+                AgentId = Convert.ToInt32(sqlite_datareader["agent_id"]),
+                Guid = sqlite_datareader["guid"].ToString(),
+                MachineName = sqlite_datareader["machine_name"].ToString(),
+                Alias =
+                        sqlite_datareader["alias"] == DBNull.Value
+                        ? string.Empty
+                        : sqlite_datareader["alias"].ToString(),
+                Enabled = Convert.ToBoolean(sqlite_datareader["enabled"])
+            };
+            agent.RegistrationDate =
+                              ConvertToUtcDateTime(
+                                            sqlite_datareader["registration_date"]);
+            agent.LastQueried =
+                              ConvertToUtcDateTime(
+                                            sqlite_datareader["last_queried"]);
+            agent.LastReplyReceived =
+                              ConvertToUtcDateTime(
+                                            sqlite_datareader["last_reply_received"]);
+            return agent;
+        }
+
+        public List<Agent> GetAgentsBySelectedGroup(int agentGroupId)
+        {
+            SQLiteDataReader sqlite_datareader;
+            SQLiteCommand sqlite_cmd;
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            sqlite_cmd = sqlLiteConn.CreateCommand();
+            sqlite_cmd.CommandText = $"SELECT * from agents where agent_id in(SELECT agent_id from agent_group_agent where agent_group_id={agentGroupId})";
+            var agents = new List<Agent>();
+            sqlite_datareader = sqlite_cmd.ExecuteReader();
+            try
+            {
+
                 while (sqlite_datareader.Read())
                 {
-                    var agent = new Agent()
-                    {
-                        AgentId = Convert.ToInt32(sqlite_datareader["agent_id"]),
-                        Guid = sqlite_datareader["guid"].ToString(),
-                        MachineName = sqlite_datareader["machine_name"].ToString(),
-                        Alias =
-                                sqlite_datareader["alias"] == DBNull.Value
-                                ? string.Empty
-                                : sqlite_datareader["alias"].ToString(),
-                        Enabled = Convert.ToBoolean(sqlite_datareader["enabled"])
-                    };
-                    agent.RegistrationDate =
-                                      ConvertToUtcDateTime(
-                                                    sqlite_datareader["registration_date"]);
-                    agent.LastQueried =
-                                      ConvertToUtcDateTime(
-                                                    sqlite_datareader["last_queried"]);
-                    agent.LastReplyReceived =
-                                      ConvertToUtcDateTime(
-                                                    sqlite_datareader["last_reply_received"]);
-
-                    agents.Add(agent);
+                    agents = ExtractAgents(sqlite_datareader);
                 }
+
             }
             catch (SQLiteException ex)
             {
@@ -315,7 +370,7 @@ namespace dev_web_api
 
         public void DeleteOldHistory(DateTime dateTime)
         {
-           // DeleteHourlyHistory(dateTime);
+            // DeleteHourlyHistory(dateTime);
             DeleteDailyHistory(dateTime);
         }
 
@@ -376,7 +431,7 @@ namespace dev_web_api
         {
             _logger.Info("Method InsertMonitorHistory(...)");
             _logger.Info(ObjectDumper.Dump(monitorValue));
-           // InsertHistory(monitorValue, dateTime, 0);
+            // InsertHistory(monitorValue, dateTime, 0);
             InsertHourlyHistory(monitorValue, dateTime);
             InsertMonthlyHistory(monitorValue, dateTime);
         }
@@ -452,8 +507,8 @@ namespace dev_web_api
         {
             var frequncyOf24Hrs = 2;
             var dateStartOfHour = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, 0, 0);
-               var existingdateHoursBefore = dateStartOfHour.AddHours(-24);
-           // var existingdateHoursBefore =  new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0).AddDays(-1);
+            var existingdateHoursBefore = dateStartOfHour.AddHours(-24);
+            // var existingdateHoursBefore =  new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0).AddDays(-1);
             var entriesCount = GetExistingRecordsOfMonth(monitorValue, existingdateHoursBefore, dateStartOfHour, frequncyOf24Hrs);
             if (entriesCount <= 0)
             {
@@ -814,6 +869,22 @@ namespace dev_web_api
                     DELETE FROM monitorCommands
                     WHERE
                         monitor_command_id = {id}";
+            cmd.ExecuteNonQuery();
+            sqlLiteConn.Close();
+        }
+
+        public void DeleteAgentGroup(int agenGrpId)
+        {
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn);
+            cmd.CommandText = $@"
+                    DELETE FROM agent_groups
+                    WHERE
+                        agent_group_id = {agenGrpId};
+                    DELETE FROM agent_group_agent
+                    WHERE
+                        agent_group_id = {agenGrpId}";
             cmd.ExecuteNonQuery();
             sqlLiteConn.Close();
         }
@@ -1261,5 +1332,148 @@ namespace dev_web_api
                                     : alias;
             return agentName;
         }
+
+        public void InsertAgentGroup(
+                                      string groupName)
+        {
+
+            using (var sqlLiteConn = new SQLiteConnection(ConnectionString))
+            {
+                sqlLiteConn.Open();
+                SQLiteTransaction transaction;
+                transaction = sqlLiteConn.BeginTransaction();
+                var cmd = new SQLiteCommand(sqlLiteConn);
+                cmd.CommandText = $@"
+                    INSERT INTO agent_groups
+                    (
+                        agent_group_name,
+                         org_id
+                    )
+                    VALUES
+                    (
+                       '{groupName}',{1})";
+                _logger.Info(cmd.CommandText);
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                    transaction.Commit();
+                }
+                catch (SQLiteException ex)
+                {
+                    transaction.Rollback();
+                    _logger.Error($"Database Error: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    _logger.Error($"General Error: {ex.Message}");
+                }
+                finally
+                {
+                    sqlLiteConn.Close();
+                }
+            }
+
+
+        }
+
+        public void AddAgentsIntoAgentGroup(int grpId, int agentId)
+
+        {
+            using (var sqlLiteConn = new SQLiteConnection(ConnectionString))
+            {
+                sqlLiteConn.Open();
+                SQLiteTransaction transaction;
+                transaction = sqlLiteConn.BeginTransaction();
+                var cmd = new SQLiteCommand(sqlLiteConn);
+                cmd.CommandText = $@"
+                    INSERT INTO agent_group_agent
+                    (
+                        agent_group_id,
+                       agent_id
+                    )
+                    VALUES
+                    (
+                       {grpId},
+                       {agentId} )";
+                _logger.Info(cmd.CommandText);
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                    transaction.Commit();
+                }
+                catch (SQLiteException ex)
+                {
+                    transaction.Rollback();
+                    _logger.Error($"Database Error: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    _logger.Error($"General Error: {ex.Message}");
+                }
+                finally
+                {
+                    sqlLiteConn.Close();
+                }
+            }
+
+        }
+        public List<AgentGroups> GetAgentGroups(int orgId)
+        {
+            SQLiteDataReader sqlite_datareader;
+            SQLiteCommand sqlite_cmd;
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            sqlite_cmd = sqlLiteConn.CreateCommand();
+            sqlite_cmd.CommandText = $@"select * from agent_groups where org_id = {orgId} ";
+            var agentGroups = new List<AgentGroups>();
+            sqlite_datareader = sqlite_cmd.ExecuteReader();
+            try
+            {
+                while (sqlite_datareader.Read())
+                {
+                    var agentGroup = new AgentGroups()
+                    {
+                        AgentGroupId = Convert.ToInt32(sqlite_datareader["agent_group_id"]),
+                        OrgId = Convert.ToInt32(sqlite_datareader["org_id"]),
+                        AgentGroupName = sqlite_datareader["agent_group_name"].ToString(),
+                    };                
+                    agentGroups.Add(agentGroup);
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                _logger.Error($"Database Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"General Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlite_datareader.Close();
+                sqlLiteConn.Close();
+            }
+            return agentGroups;
+        }
+
+        public void UpdateAgentGroup(AgentGroups agent)
+        {
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn);
+
+            cmd.CommandText = $@"
+                    UPDATE agent_groups
+                    SET 
+					agent_group_name = {agent.AgentGroupName}                         
+                    WHERE
+                      agent_group_id   = {agent.AgentGroupId}";
+            cmd.ExecuteNonQuery();
+            sqlLiteConn.Close();
+        }
+
     }
+
 }

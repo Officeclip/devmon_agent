@@ -56,6 +56,9 @@
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li>
+                            <a runat="server" href="~/addeditagentgroups.aspx">Agent Groups</a>
+                        </li>
+                        <li>
                             <a runat="server" href="~/monitor.aspx">Edit Monitors</a>
                         </li>
                         <li>

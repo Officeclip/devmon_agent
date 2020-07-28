@@ -1,16 +1,17 @@
-﻿<%@ Page 
-        Language="C#" 
-        MasterPageFile="~/Site.Master" 
-        Title="Home" 
-        AutoEventWireup="true" 
-        CodeBehind="default.aspx.cs" 
-        Inherits="dev_web_api._default" %>
+﻿<%@ Page
+    Language="C#"
+    MasterPageFile="~/Site.Master"
+    Title="Home"
+    AutoEventWireup="true"
+    CodeBehind="default.aspx.cs"
+    Inherits="dev_web_api._default" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        table{
+        table {
             margin-top: 10px;
         }
+
         table, th, td {
             text-align: center;
             border: 1px solid #CCC;
@@ -53,14 +54,30 @@
 
     <div style="margin: 20px 0">
         <div>
-            <div id="app" style="float:left"></div>
-            <div style="margin: 5px 0 0 20px; float:left">
+            <div>
+                <div></div>
+                <div style=" float: right">
+                    Select Agent Group:<asp:DropDownList ID="ddlAgentGroups" 
+                        runat="server"
+                        OnSelectedIndexChanged="ddlAgentGroups_SelectedIndexChanged"
+                        AutoPostBack="true"  >
+                        <asp:ListItem Value="-1" Text="All groups" Selected="True">
+                            
+                        </asp:ListItem>
+                                       </asp:DropDownList>
+                </div>
+            </div>
+            <div id="app" style="float: left"></div>
+            <div style="margin: 5px 0 0 20px; float: left">
                 Last Updated: <%= DateTime.Now %>
             </div>
-            <div style="clear:both" />
+            <div style="clear: both" />
+            
         </div>
+
+
         <div>
-            <div style="float:right">
+            <div style="float: right">
                 <asp:Button ID="btnTestData" runat="server" Text="Test" ToolTip="Click to generate test Data" OnClick="btnTestData_Click" />
             </div>
         </div>

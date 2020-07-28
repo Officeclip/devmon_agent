@@ -141,6 +141,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="About.aspx" />
+    <Content Include="AddAgentGroup.aspx" />
+    <Content Include="AddEditAgentGroups.aspx" />
+    <Content Include="AgentGroups.aspx" />
     <Content Include="commandLimits.aspx" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\bootstrap-theme.css" />
@@ -316,9 +319,31 @@
     <Compile Include="About.aspx.designer.cs">
       <DependentUpon>About.aspx</DependentUpon>
     </Compile>
+    <Compile Include="AddAgentGroup.aspx.cs">
+      <DependentUpon>AddAgentGroup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AddAgentGroup.aspx.designer.cs">
+      <DependentUpon>AddAgentGroup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="AddEditAgentGroups.aspx.cs">
+      <DependentUpon>AddEditAgentGroups.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AddEditAgentGroups.aspx.designer.cs">
+      <DependentUpon>AddEditAgentGroups.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="AgentGroups.aspx.cs">
+      <DependentUpon>AgentGroups.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AgentGroups.aspx.designer.cs">
+      <DependentUpon>AgentGroups.aspx</DependentUpon>
+    </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="BusinessLayer\AgentGroups.cs" />
     <Compile Include="BusinessLayer\AgentResource.cs" />
     <Compile Include="BusinessLayer\Chart.cs" />
     <Compile Include="BusinessLayer\MonitorCommandHelp.cs" />

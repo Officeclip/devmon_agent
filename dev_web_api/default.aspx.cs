@@ -17,25 +17,59 @@ namespace dev_web_api
         List<MonitorCommandLimit> monitorCommandLimits;
         List<Agent> agents;
         List<MonitorCommand> monitorCommand;
+        MonitorDb monitorDb = new MonitorDb();
         protected string serverGuid = (new MonitorDb()).GetServerGuid(true);
+        protected const int OrgId = 1;
         protected void Page_Load(object sender, EventArgs e)
         {
-            MonitorDb monitorDb = new MonitorDb();
-            agents = monitorDb.GetEnabledAgents();
-            monitorCommand = monitorDb.GetMonitorCommands();
-            var monitorValues = monitorDb.GetMonitorValues();
-            monitorCommandLimits = monitorDb.GetMonitorCommandLimits();
-            Util.SetupMonitorTable(
-                            tblMonitor,
-                            agents,
-                            monitorCommand,
-                            monitorValues,
-                            monitorCommandLimits);
-            Util.SendMonitorLimitEmail(
-                            agents,
-                            monitorValues,
-                            monitorCommandLimits,
-                            monitorCommand);
+            if (!IsPostBack)
+            {
+                LoadAgentGroups();
+                if (ddlAgentGroups.SelectedValue == "-1")
+                {
+                    agents = monitorDb.GetEnabledAgents();
+                }
+                else
+                {
+                    var agentGroupId = Convert.ToInt32(ddlAgentGroups.SelectedValue);
+                    if (agentGroupId > 0)
+                    {
+                        agents = monitorDb.GetAgentsBySelectedGroup(agentGroupId);
+                    }
+                }
+                monitorCommand = monitorDb.GetMonitorCommands();
+                var monitorValues = monitorDb.GetMonitorValues();
+                monitorCommandLimits = monitorDb.GetMonitorCommandLimits();
+                Util.SetupMonitorTable(
+                                tblMonitor,
+                                agents,
+                                monitorCommand,
+                                monitorValues,
+                                monitorCommandLimits);
+                Util.SendMonitorLimitEmail(
+                                agents,
+                                monitorValues,
+                                monitorCommandLimits,
+                                monitorCommand);
+            }
+
+        }
+
+        private void LoadAgentGroups()
+        {
+            ddlAgentGroups.Items.Clear();
+            var agentGroupInfo = monitorDb.GetAgentGroups(OrgId);
+            var info = new AgentGroups()
+            {
+                AgentGroupId = -1,
+                AgentGroupName = "All groups"
+            };
+            agentGroupInfo.Add(info);
+            ddlAgentGroups.DataSource = agentGroupInfo;
+            ddlAgentGroups.DataValueField = "AgentGroupId";
+            ddlAgentGroups.DataTextField = "AgentGroupName";
+            ddlAgentGroups.SelectedValue = "-1";
+            ddlAgentGroups.DataBind();
         }
 
         protected string GetWebUri()
@@ -70,38 +104,36 @@ namespace dev_web_api
         }
         protected void CreateDataForanHour()
         {
-            var dateTimeNow = DateTime.UtcNow.AddHours(-72);
+            //var dateTimeNow = DateTime.UtcNow.AddHours(-72);
 
-        //    var datetime = new DateTime(dateTimeNow.Year, dateTimeNow.Month, dateTimeNow.Day, dateTimeNow.Hour, dateTimeNow.Minute, dateTimeNow.Second);           
-            MonitorDb monitorDb = new MonitorDb();
-            var iterationCount = 0;
-            for (var i = 0; i < 48; i++)
-            {
-                var monitorValue = new MonitorValue
-                {
-                    AgentId = 1,
-                    MonitorCommandId = 1,
-                    Value = 246,
-                    ErrorMessage = ""
-                };
-                var date = dateTimeNow.AddHours(i);
-                monitorDb.DeleteOldHistory(date);
-                monitorDb.InsertMonitorHistory(monitorValue, date);
-                iterationCount = i;
+            //MonitorDb monitorDb = new MonitorDb();
+            //var iterationCount = 0;
+            //for (var i = 0; i < 48; i++)
+            //{
+            //    var monitorValue = new MonitorValue
+            //    {
+            //        AgentId = 1,
+            //        MonitorCommandId = 1,
+            //        Value = 246,
+            //        ErrorMessage = ""
+            //    };
+            //    var date = dateTimeNow.AddHours(i);
+            //    monitorDb.DeleteOldHistory(date);
+            //    monitorDb.InsertMonitorHistory(monitorValue, date);
+            //    iterationCount = i;
 
-            }
-            var result = iterationCount;
-            // InsertDataDirectly();
+            //}
+            //var result = iterationCount;
+            InsertDataDirectly();
         }
 
 
         protected void InsertDataDirectly()
         {
             var dateTimeNow = DateTime.UtcNow;
-            //var datetime = new DateTime(dateTimeNow.Year, dateTimeNow.Month, dateTimeNow.Day, dateTimeNow.Hour, dateTimeNow.Minute, dateTimeNow.Second);
-            //datetime.AddHours(-24);
             MonitorDb monitorDb = new MonitorDb();
-
+            agents = monitorDb.GetEnabledAgents();
+            monitorCommand = monitorDb.GetMonitorCommands();
             foreach (var agent in agents)
             {
                 var agentId = agent.AgentId;
@@ -135,6 +167,33 @@ namespace dev_web_api
                     }
                 }
             }
+        }
+
+        protected void ddlAgentGroups_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var agentGroupId = Convert.ToInt32(ddlAgentGroups.SelectedValue);
+            if (agentGroupId > 0)
+            {
+                agents = monitorDb.GetAgentsBySelectedGroup(agentGroupId);
+            }
+            else
+            {
+                agents = monitorDb.GetEnabledAgents();
+            }
+            monitorCommand = monitorDb.GetMonitorCommands();
+            var monitorValues = monitorDb.GetMonitorValues();
+            monitorCommandLimits = monitorDb.GetMonitorCommandLimits();
+            Util.SetupMonitorTable(
+                            tblMonitor,
+                            agents,
+                            monitorCommand,
+                            monitorValues,
+                            monitorCommandLimits);
+            Util.SendMonitorLimitEmail(
+                            agents,
+                            monitorValues,
+                            monitorCommandLimits,
+                            monitorCommand);
         }
     }
 }

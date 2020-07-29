@@ -398,16 +398,41 @@ namespace dev_web_api
 
         public void DeleteHistory(string dateTime, int frequency)
         {
-            _logger.Info("Method DeleteOldHistory()");
+            _logger.Info("Method DeleteHistory()");
             var sqlLiteConn = new SQLiteConnection(ConnectionString);
             sqlLiteConn.Open();
             var cmd = new SQLiteCommand(sqlLiteConn);
-
             cmd.CommandText = $@"
                     DELETE FROM history 
                     WHERE date < '{dateTime}'
                     AND frequency = {frequency}
                     ";
+            _logger.Info(cmd.CommandText);
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (SQLiteException ex)
+            {
+                _logger.Error($"Database Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"General Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlLiteConn.Close();
+            }
+        }
+        public void DeleteAllHistory()
+        {
+            _logger.Info("Method DeleteAllHistory()");
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn);
+            cmd.CommandText = $@"
+                    DELETE FROM history ";
             _logger.Info(cmd.CommandText);
             try
             {
@@ -1481,10 +1506,10 @@ namespace dev_web_api
         }
 
         public void InsertBulkData(
-                            bool isrealSimulation = false, 
-                            int hours= 24, 
-                            int minutes = 60, 
-                            int days=30)
+                            bool isrealSimulation = false,
+                            int hours = 24,
+                            int minutes = 60,
+                            int days = 30)
         {
             CreateDailyData(isrealSimulation, hours);
             CreateHourlyData(isrealSimulation, minutes);

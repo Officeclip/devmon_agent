@@ -129,9 +129,7 @@ namespace dev_web_api
         {
             var monitorDb = new MonitorDb();
             monitorDb.DeleteAllHistory();
-            monitorDb.InsertBulkData(false, 24, 2);
-            // InsertDataDirectly();
-            //monitorDb.CreateDailyData(48);
+            monitorDb.InsertBulkData(true, 24, 180);
         }
 
         //protected void InsertDataDirectly()

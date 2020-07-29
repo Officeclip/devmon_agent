@@ -377,6 +377,7 @@ namespace dev_web_api
         private int ConvertFrequencyToHour(int frequency)
         {
             int hours;
+
             switch (frequency)
             {
                 case 0:
@@ -388,41 +389,18 @@ namespace dev_web_api
                 default:
                     throw new Exception("Frequency not supported");
             }
+
             return hours;
         }
-
         public void DeleteOldHistory(DateTime dateTime, int frequency)
         {
             TimeSpan timespan = new TimeSpan(
-                                          ConvertFrequencyToHour(frequency), 0, 0);            
+                                          ConvertFrequencyToHour(frequency), 0, 0);
             var dateCutOff = dateTime
                                     .Subtract(
                                         timespan);
             DeleteHistory(dateCutOff, frequency);
-        }
-
-        //private void DeleteHourlyHistory(DateTime dateTime)
-        //{
-        //    var HistoryFrequencyForHour = 0;
-        //    var dateCutOff = dateTime
-        //                            .Subtract(
-        //                                new TimeSpan(
-        //                                        1, 0, 0))
-        //                            .ToString("o");
-        //    DeleteHistory(dateCutOff, HistoryFrequencyForHour);
-        //}
-
-        //private void DeleteDailyHistory(DateTime dateTime)
-        //{
-        //    var HistoryFrequencyForDay = 1;
-        //    var dateCutOff = dateTime
-        //                            .Subtract(
-        //                                new TimeSpan(
-        //                                        24, 0, 0))
-        //                            .ToString("o");
-        //    DeleteHistory(dateCutOff, HistoryFrequencyForDay);
-        //}
-
+        }      
         public void DeleteHistory(DateTime dateTime, int frequency)
         {
             _logger.Info("Method DeleteHistory()");
@@ -485,8 +463,8 @@ namespace dev_web_api
             _logger.Info("Method InsertMonitorHistory(...)");
             _logger.Info(ObjectDumper.Dump(monitorValue));
             InsertHistory(monitorValue, dateTime, 0);
-            InsertHourlyHistory(monitorValue, dateTime);
-            InsertMonthlyHistory(monitorValue, dateTime);
+            ProcessHistoryByFrequency(monitorValue, dateTime, 1);
+            ProcessHistoryByFrequency(monitorValue, dateTime, 2);
         }
 
 
@@ -538,38 +516,50 @@ namespace dev_web_api
                 }
             }
         }
-
-        public void InsertHourlyHistory(MonitorValue monitorValue, DateTime dateTime)
+        public void ProcessHistoryByFrequency(MonitorValue monitorValue, DateTime dateTime, int frequency)
         {
-            var frequncyOfHour = 1;
-            var dateStartOfHour = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, 0, 0);
-            var dateOneHourBefore = dateStartOfHour.AddHours(-1);
-            var entriesCount = GetExistingRecords(monitorValue, dateStartOfHour, frequncyOfHour);
-            if (entriesCount <= 0)
+            //var timespan = new TimeSpan(
+            //                             ConvertFrequencyToHour(frequency, true), 0, 0);
+
+            DateTime dateStart;
+            DateTime dateEnd;
+            switch (frequency)
             {
-                var avgValueOfExistingHour = GetExistingRecordsAvgValue(monitorValue, dateStartOfHour, dateOneHourBefore, 0);
-                monitorValue.Value = avgValueOfExistingHour;
-                InsertHistory(monitorValue, dateStartOfHour, frequncyOfHour);
+                case 1:
+                    dateStart = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, 0, 0);
+                    dateEnd = dateStart.Subtract(new TimeSpan(1, 0, 0));
+                    break;
+                case 2:
+                    dateStart = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0);
+                    dateEnd = dateStart.Subtract(new TimeSpan(24, 0, 0));
+                    break;
+                default:
+                    throw new Exception("frequency is not supported");
             }
+            bool isEntryPresentinDb = isEntryPresent(monitorValue, dateStart, frequency);
 
-        }
-        public void InsertMonthlyHistory(MonitorValue monitorValue, DateTime dateTime)
-        {
-            var frequncyOf24Hrs = 2;
-            var dateStartOfHour = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, 0, 0);
-            var existingdateHoursBefore = dateStartOfHour.AddHours(-24);
-            // var existingdateHoursBefore =  new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0).AddDays(-1);
-            var entriesCount = GetExistingRecordsOfMonth(monitorValue, existingdateHoursBefore, dateStartOfHour, frequncyOf24Hrs);
-            if (entriesCount <= 0)
+
+            if (!isEntryPresentinDb)
             {
-                var avgValueOfExistingEntries = GetExistingRecordsAvgValue(monitorValue, dateStartOfHour, existingdateHoursBefore, 1);
-                monitorValue.Value = avgValueOfExistingEntries;
-                InsertHistory(monitorValue, dateStartOfHour, frequncyOf24Hrs);
+                int frequencyToAvgEntries;
+                switch (frequency)
+                {
+                    case 1:
+                        frequencyToAvgEntries = 0;
+                        break;
+                    case 2:
+                        frequencyToAvgEntries = 1;
+                        break;
+                    default:
+                        throw new Exception("frequency is not supported");
+                }
+
+                var averageValue = GetAverageValue(monitorValue, dateStart, dateEnd, frequencyToAvgEntries);
+                monitorValue.Value = averageValue;
+                InsertHistory(monitorValue, dateStart, frequency);
             }
-
         }
-
-        private int GetExistingRecordsAvgValue(MonitorValue monitorValue, DateTime currentDateStartOfHour, DateTime existingdateOneHourBefore, int frequency)
+        private int GetAverageValue(MonitorValue monitorValue, DateTime dateStart, DateTime dateEnd, int frequency)
         {
             var averageValue = 0;
             SQLiteDataReader sqlite_datareader;
@@ -580,7 +570,7 @@ namespace dev_web_api
             sqlite_cmd.CommandText = $@"SELECT IFNULL(AVG(value),0.00) as average_value FROM history
                                     WHERE frequency = {frequency} AND agent_id = {monitorValue.AgentId } 
                                     AND monitor_command_id = { monitorValue.MonitorCommandId } AND
-                                     date BETWEEN '{existingdateOneHourBefore:o}' AND '{currentDateStartOfHour:o}'";
+                                     date BETWEEN '{dateEnd:o}Z' AND '{dateStart:o}Z'";
             sqlite_datareader = sqlite_cmd.ExecuteReader();
             while (sqlite_datareader.Read())
             {
@@ -590,30 +580,7 @@ namespace dev_web_api
             sqlLiteConn.Close();
             return averageValue;
         }
-        private int GetExistingRecordsOfMonth(MonitorValue monitorValue, DateTime dateStartOfHour, DateTime dateHoursBefore, int frequency)
-        {
-            var existingEntriesCount = -1;
-            SQLiteDataReader sqlite_datareader;
-            SQLiteCommand sqlite_cmd;
-            var sqlLiteConn = new SQLiteConnection(ConnectionString);
-            sqlLiteConn.Open();
-            sqlite_cmd = sqlLiteConn.CreateCommand();
-            sqlite_cmd.CommandText = $@"SELECT count(*) as entries_count FROM history
-                                    WHERE frequency = {frequency} AND agent_id = {monitorValue.AgentId } 
-                                    AND monitor_command_id = { monitorValue.MonitorCommandId } AND
-                                     date < '{dateHoursBefore:o}' AND date > '{dateStartOfHour:o}'";
-            _logger.Debug("--------Sql COmmand-------");
-            _logger.Debug(sqlite_cmd.CommandText);
-            sqlite_datareader = sqlite_cmd.ExecuteReader();
-            while (sqlite_datareader.Read())
-            {
-                existingEntriesCount = Convert.ToInt32(sqlite_datareader["entries_count"]);
-            }
-            sqlite_datareader.Close();
-            sqlLiteConn.Close();
-            return existingEntriesCount;
-        }
-        private int GetExistingRecords(MonitorValue monitorValue, DateTime dateStartOfHour, int frequency)
+        private bool isEntryPresent(MonitorValue monitorValue, DateTime dateStartOfHour, int frequency)
         {
             var existingEntriesCount = -1;
             SQLiteDataReader sqlite_datareader;
@@ -634,7 +601,7 @@ namespace dev_web_api
             }
             sqlite_datareader.Close();
             sqlLiteConn.Close();
-            return existingEntriesCount;
+            return existingEntriesCount > 0 ? true : false;
         }
 
         public void InsertMonitorValue(MonitorValue monitorValue)
@@ -1525,9 +1492,9 @@ namespace dev_web_api
         }
         private int GetRandomNumber()
         {
-            var ticks = (int) DateTime.Now.Ticks;
+            var ticks = (int)DateTime.Now.Ticks;
             var randomNumber = new Random(ticks);
-            return randomNumber.Next(100, 500);
+            return randomNumber.Next(250, 300);
         }
 
         public void InsertBulkData(
@@ -1536,7 +1503,7 @@ namespace dev_web_api
                             int minutes = 60,
                             int days = 30)
         {
-            CreateHourData(isrealSimulation, hours);
+            //  CreateHourData(isrealSimulation, hours);
             CreateMinuteData(isrealSimulation, minutes);
         }
         public void CreateHourData(bool isRealSimulation, int hours)
@@ -1554,19 +1521,18 @@ namespace dev_web_api
                 if (isRealSimulation)
                 {
                     DeleteHistory(date, 1);
-                    // Add insert code here
+                    InsertMonitorHistory(monitorValue, date);
                 }
                 else
                 {
                     InsertHistory(monitorValue, date, 1);
                 }
-                //InsertMonitorHistory(monitorValue, date);
             }
         }
 
         public void CreateMinuteData(bool isRealSimulation, int minutes)
         {
-            for (var i = 0; i < minutes; i++)
+            for (var i = minutes - 1; i >= 0; i--)
             {
                 var monitorValue = new MonitorValue
                 {
@@ -1578,8 +1544,8 @@ namespace dev_web_api
                 var date = DateTime.UtcNow.AddMinutes(-i);
                 if (isRealSimulation)
                 {
-                    DeleteHistory(date, 0);
-                    // Add insert code here
+                    DeleteOldHistory(date, 0);
+                    InsertMonitorHistory(monitorValue, date);
                 }
                 else
                 {

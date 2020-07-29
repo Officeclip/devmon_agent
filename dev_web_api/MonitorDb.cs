@@ -374,22 +374,27 @@ namespace dev_web_api
             DeleteOldHistory(dateTime, 1);
         }
 
-        public void DeleteOldHistory(DateTime dateTime, int frequency)
+        private int ConvertFrequencyToHour(int frequency)
         {
-            TimeSpan timespan;
+            int hours;
             switch (frequency)
             {
                 case 0:
-                    timespan = new TimeSpan(
-                                                1, 0, 0);
+                    hours = 1;
                     break;
                 case 1:
-                    timespan = new TimeSpan(
-                                                24, 0, 0);
+                    hours = 24;
                     break;
                 default:
                     throw new Exception("Frequency not supported");
             }
+            return hours;
+        }
+
+        public void DeleteOldHistory(DateTime dateTime, int frequency)
+        {
+            TimeSpan timespan = new TimeSpan(
+                                          ConvertFrequencyToHour(frequency), 0, 0);            
             var dateCutOff = dateTime
                                     .Subtract(
                                         timespan);

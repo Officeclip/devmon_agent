@@ -7,49 +7,7 @@
     Inherits="dev_web_api._default" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    <style>
-        table {
-            margin-top: 10px;
-        }
-
-        table, th, td {
-            text-align: center;
-            border: 1px solid #CCC;
-        }
-
-        th, td {
-            padding: 5px;
-        }
-
-            td:nth-child(1), th {
-                font-weight: bold;
-                background-color: #EEE;
-            }
-
-        .warningLimit {
-            background-color: lightgoldenrodyellow;
-        }
-
-        .errorLimit {
-            background-color: lightcoral;
-        }
-
-        .systemError {
-            background-color: lightpink;
-        }
-
-        .notAvailable {
-            background-color: lightblue;
-        }
-
-        .headerTitle {
-            background-color: lightgray;
-        }
-
-        li {
-            line-height: 1.5em;
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.min.css">
     <link rel="stylesheet" href="css/countdown.css" />
 
     <div style="margin: 20px 0">
@@ -81,7 +39,7 @@
                 <asp:Button ID="btnTestData" runat="server" Text="Test" ToolTip="Click to generate test Data" OnClick="btnTestData_Click" />
             </div>
         </div>
-        <table id="tblMonitor" runat="server" />
+        <table id="tblMonitor" class="monitor" runat="server" />
 
         <div style="margin-top: 30px">
             <h3>Agent Installation:</h3>

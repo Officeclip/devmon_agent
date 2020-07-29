@@ -6,6 +6,7 @@
     Inherits="dev_web_api.hardware" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <link rel="stylesheet" href="css/style.min.css">
     <div style="margin: 20px">
         <div>
             <div style="display: inline">
@@ -15,13 +16,13 @@
                         OnSelectedIndexChanged="ddlAgents_SelectedIndexChanged" />
             </div>
             <div style="display: inline; margin-left: 20px">
-                <asp:Literal ID="litDate" runat="server" />
-            </div>
-            <div style="display: inline; margin-left: 20px">
                 <asp:Button ID="btnBack" runat="server"
                     Text="Back to Monitor"
                     Font-Bold="true"
                     OnClick="btnBack_Click" />
+            </div>
+            <div class="lastUpdated">
+                <asp:Literal ID="litDate" runat="server" />
             </div>
         </div>
         <div style="margin-top: 10px">

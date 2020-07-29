@@ -370,41 +370,64 @@ namespace dev_web_api
 
         public void DeleteOldHistory(DateTime dateTime)
         {
-            DeleteHourlyHistory(dateTime);
-            DeleteDailyHistory(dateTime);
+            DeleteOldHistory(dateTime, 0);
+            DeleteOldHistory(dateTime, 1);
         }
 
-        private void DeleteHourlyHistory(DateTime dateTime)
+        public void DeleteOldHistory(DateTime dateTime, int frequency)
         {
-            var HistoryFrequencyForHour = 0;
+            TimeSpan timespan;
+            switch (frequency)
+            {
+                case 0:
+                    timespan = new TimeSpan(
+                                                1, 0, 0);
+                    break;
+                case 1:
+                    timespan = new TimeSpan(
+                                                24, 0, 0);
+                    break;
+                default:
+                    throw new Exception("Frequency not supported");
+            }
             var dateCutOff = dateTime
                                     .Subtract(
-                                        new TimeSpan(
-                                                1, 0, 0))
-                                    .ToString("o");
-            DeleteHistory(dateCutOff, HistoryFrequencyForHour);
+                                        timespan);
+            DeleteHistory(dateCutOff, frequency);
         }
 
-        private void DeleteDailyHistory(DateTime dateTime)
-        {
-            var HistoryFrequencyForDay = 1;
-            var dateCutOff = dateTime
-                                    .Subtract(
-                                        new TimeSpan(
-                                                24, 0, 0))
-                                    .ToString("o");
-            DeleteHistory(dateCutOff, HistoryFrequencyForDay);
-        }
+        //private void DeleteHourlyHistory(DateTime dateTime)
+        //{
+        //    var HistoryFrequencyForHour = 0;
+        //    var dateCutOff = dateTime
+        //                            .Subtract(
+        //                                new TimeSpan(
+        //                                        1, 0, 0))
+        //                            .ToString("o");
+        //    DeleteHistory(dateCutOff, HistoryFrequencyForHour);
+        //}
 
-        public void DeleteHistory(string dateTime, int frequency)
+        //private void DeleteDailyHistory(DateTime dateTime)
+        //{
+        //    var HistoryFrequencyForDay = 1;
+        //    var dateCutOff = dateTime
+        //                            .Subtract(
+        //                                new TimeSpan(
+        //                                        24, 0, 0))
+        //                            .ToString("o");
+        //    DeleteHistory(dateCutOff, HistoryFrequencyForDay);
+        //}
+
+        public void DeleteHistory(DateTime dateTime, int frequency)
         {
             _logger.Info("Method DeleteHistory()");
+            string strDateTime = dateTime.ToString("o");
             var sqlLiteConn = new SQLiteConnection(ConnectionString);
             sqlLiteConn.Open();
             var cmd = new SQLiteCommand(sqlLiteConn);
             cmd.CommandText = $@"
                     DELETE FROM history 
-                    WHERE date < '{dateTime}'
+                    WHERE date < '{strDateTime}'
                     AND frequency = {frequency}
                     ";
             _logger.Info(cmd.CommandText);
@@ -509,9 +532,6 @@ namespace dev_web_api
                     sqlLiteConn.Close();
                 }
             }
-
-
-
         }
 
         public void InsertHourlyHistory(MonitorValue monitorValue, DateTime dateTime)
@@ -1281,7 +1301,7 @@ namespace dev_web_api
                         a.agent_id = his.agent_id AND
                         his.monitor_command_id = {monitorCommandId} AND frequency = {frequency}
                     ORDER BY
-                        a.agent_id";
+                        a.agent_id, his.date";
             sqlite_datareader = sqlite_cmd.ExecuteReader();
             var chartLines = new List<ChartLine>();
             while (sqlite_datareader.Read())
@@ -1500,8 +1520,8 @@ namespace dev_web_api
         }
         private int GetRandomNumber()
         {
-            //var ticks =Convert.ToInt32( DateTime.Now.Ticks);
-            var randomNumber = new Random();
+            var ticks = (int) DateTime.Now.Ticks;
+            var randomNumber = new Random(ticks);
             return randomNumber.Next(100, 500);
         }
 
@@ -1511,10 +1531,10 @@ namespace dev_web_api
                             int minutes = 60,
                             int days = 30)
         {
-            CreateDailyData(isrealSimulation, hours);
-            CreateHourlyData(isrealSimulation, minutes);
+            CreateHourData(isrealSimulation, hours);
+            CreateMinuteData(isrealSimulation, minutes);
         }
-        public void CreateDailyData(bool isRealSimulation, int hours)
+        public void CreateHourData(bool isRealSimulation, int hours)
         {
             for (var i = 0; i < hours; i++)
             {
@@ -1528,13 +1548,18 @@ namespace dev_web_api
                 var date = DateTime.UtcNow.AddHours(-i);
                 if (isRealSimulation)
                 {
-                    DeleteHourlyHistory(date);
+                    DeleteHistory(date, 1);
+                    // Add insert code here
                 }
-                InsertMonitorHistory(monitorValue, date);
+                else
+                {
+                    InsertHistory(monitorValue, date, 1);
+                }
+                //InsertMonitorHistory(monitorValue, date);
             }
         }
 
-        public void CreateHourlyData(bool isRealSimulation, int minutes)
+        public void CreateMinuteData(bool isRealSimulation, int minutes)
         {
             for (var i = 0; i < minutes; i++)
             {
@@ -1548,9 +1573,13 @@ namespace dev_web_api
                 var date = DateTime.UtcNow.AddMinutes(-i);
                 if (isRealSimulation)
                 {
-                    DeleteDailyHistory(date);
+                    DeleteHistory(date, 0);
+                    // Add insert code here
                 }
-                InsertMonitorHistory(monitorValue, date);
+                else
+                {
+                    InsertHistory(monitorValue, date, 0);
+                }
             }
         }
 

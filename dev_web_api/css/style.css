@@ -1,0 +1,36 @@
+﻿table.monitor {
+  margin-top: 10px;
+  border: 1px solid #CCC; }
+  table.monitor th, table.monitor td {
+    text-align: center;
+    border: 1px solid #CCC;
+    padding: 5px; }
+  table.monitor th {
+    font-weight: bold;
+    background-color: #EEE; }
+  table.monitor td:nth-child(1) {
+    font-weight: bold;
+    background-color: #EEE; }
+
+.warningLimit {
+  background-color: lightgoldenrodyellow; }
+
+.errorLimit {
+  background-color: lightcoral; }
+
+.systemError {
+  background-color: lightpink; }
+
+.notAvailable {
+  background-color: lightblue; }
+
+.headerTitle {
+  background-color: lightgray; }
+
+li {
+  line-height: 1.5em; }
+
+.lastUpdated {
+  display: inline;
+  margin-left: 20px;
+  font-size: x-small; }

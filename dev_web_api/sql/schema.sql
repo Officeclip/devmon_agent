@@ -72,6 +72,20 @@ CREATE TABLE IF NOT EXISTS "history" (
 	"value"	INTEGER NOT NULL
 );
 
+DROP TABLE IF EXISTS "agent_group_agent";
+CREATE TABLE "agent_group_agent" (
+	"agent_group_id"	INTEGER NOT NULL,
+	"agent_id"	INTEGER NOT NULL
+);
+
+DROP TABLE IF EXISTS "agent_groups";
+CREATE TABLE "agent_groups" (
+	"agent_group_id"	INTEGER NOT NULL UNIQUE,
+	"agent_group_name"	TEXT NOT NULL,
+	"org_id"	INTEGER NOT NULL,
+	PRIMARY KEY("agent_group_id" AUTOINCREMENT)
+);
+
 DROP INDEX IF EXISTS "agent-guid";
 CREATE UNIQUE INDEX IF NOT EXISTS "agent-guid" ON "agents" (
 	"guid"

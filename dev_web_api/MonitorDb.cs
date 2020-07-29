@@ -370,7 +370,7 @@ namespace dev_web_api
 
         public void DeleteOldHistory(DateTime dateTime)
         {
-            // DeleteHourlyHistory(dateTime);
+            DeleteHourlyHistory(dateTime);
             DeleteDailyHistory(dateTime);
         }
 
@@ -431,7 +431,7 @@ namespace dev_web_api
         {
             _logger.Info("Method InsertMonitorHistory(...)");
             _logger.Info(ObjectDumper.Dump(monitorValue));
-            // InsertHistory(monitorValue, dateTime, 0);
+            InsertHistory(monitorValue, dateTime, 0);
             InsertHourlyHistory(monitorValue, dateTime);
             InsertMonthlyHistory(monitorValue, dateTime);
         }
@@ -489,7 +489,7 @@ namespace dev_web_api
 
         }
 
-        private void InsertHourlyHistory(MonitorValue monitorValue, DateTime dateTime)
+        public void InsertHourlyHistory(MonitorValue monitorValue, DateTime dateTime)
         {
             var frequncyOfHour = 1;
             var dateStartOfHour = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, 0, 0);
@@ -503,7 +503,7 @@ namespace dev_web_api
             }
 
         }
-        private void InsertMonthlyHistory(MonitorValue monitorValue, DateTime dateTime)
+        public void InsertMonthlyHistory(MonitorValue monitorValue, DateTime dateTime)
         {
             var frequncyOf24Hrs = 2;
             var dateStartOfHour = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, 0, 0);
@@ -1438,7 +1438,7 @@ namespace dev_web_api
                         AgentGroupId = Convert.ToInt32(sqlite_datareader["agent_group_id"]),
                         OrgId = Convert.ToInt32(sqlite_datareader["org_id"]),
                         AgentGroupName = sqlite_datareader["agent_group_name"].ToString(),
-                    };                
+                    };
                     agentGroups.Add(agentGroup);
                 }
             }
@@ -1473,7 +1473,58 @@ namespace dev_web_api
             cmd.ExecuteNonQuery();
             sqlLiteConn.Close();
         }
+        private int GetRandomNumber()
+        {
+            //var ticks =Convert.ToInt32( DateTime.Now.Ticks);
+            var randomNumber = new Random();
+            return randomNumber.Next(100, 500);
+        }
+
+        public void InsertBulkData(int hours= 48, int minutes = 180, int Days=30)
+        {
+            CreateDailyData(hours);
+            CreateHourlyData(minutes);
+        }
+        public void CreateDailyData(int Hours)
+        {
+            var dateTimeNow = DateTime.UtcNow.AddMinutes(-Hours);
+
+            for (var i = 0; i < 48; i++)
+            {
+                var monitorValue = new MonitorValue
+                {
+                    AgentId = 1,
+                    MonitorCommandId = 1,
+                    Value = GetRandomNumber(),
+                    ErrorMessage = ""
+                };
+                var date = dateTimeNow.AddHours(i);
+                DeleteOldHistory(date);
+                InsertMonitorHistory(monitorValue, date);
+            }
+        }
+
+        public void CreateHourlyData(int minutes)
+        {
+            var dateTimeNow = DateTime.UtcNow.AddMinutes(-minutes);
+
+            for (var i = 0; i < 180; i++)
+            {
+                var monitorValue = new MonitorValue
+                {
+                    AgentId = 1,
+                    MonitorCommandId = 1,
+                    Value = GetRandomNumber(),
+                    ErrorMessage = ""
+                };
+                var date = dateTimeNow.AddMinutes(i);
+                DeleteOldHistory(date);
+                InsertMonitorHistory(monitorValue, date);
+            }
+        }
 
     }
+
+
 
 }

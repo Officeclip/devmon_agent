@@ -97,77 +97,6 @@ namespace dev_web_api
             return randomNumber.Next(100, 500);
         }
 
-        protected void btnTestData_Click(object sender, EventArgs e)
-        {
-            CreateDataForanHour();
-            // InsertDataDirectly();
-        }
-        protected void CreateDataForanHour()
-        {
-            //var dateTimeNow = DateTime.UtcNow.AddHours(-72);
-
-            //MonitorDb monitorDb = new MonitorDb();
-            //var iterationCount = 0;
-            //for (var i = 0; i < 48; i++)
-            //{
-            //    var monitorValue = new MonitorValue
-            //    {
-            //        AgentId = 1,
-            //        MonitorCommandId = 1,
-            //        Value = 246,
-            //        ErrorMessage = ""
-            //    };
-            //    var date = dateTimeNow.AddHours(i);
-            //    monitorDb.DeleteOldHistory(date);
-            //    monitorDb.InsertMonitorHistory(monitorValue, date);
-            //    iterationCount = i;
-
-            //}
-            //var result = iterationCount;
-            InsertDataDirectly();
-        }
-
-
-        protected void InsertDataDirectly()
-        {
-            var dateTimeNow = DateTime.UtcNow;
-            MonitorDb monitorDb = new MonitorDb();
-            agents = monitorDb.GetEnabledAgents();
-            monitorCommand = monitorDb.GetMonitorCommands();
-            foreach (var agent in agents)
-            {
-                var agentId = agent.AgentId;
-                foreach (var command in monitorCommand)
-                {
-                    var monitorCommand =
-                           this.monitorCommand.Find(x => x.MonitorCommandId == command.MonitorCommandId);
-                    var monitorValue = new MonitorValue
-                    {
-                        AgentId = agentId,
-                        MonitorCommandId = monitorCommand.MonitorCommandId,
-                        ErrorMessage = ""
-                    };
-                    for (var i = 0; i < 60; i++)
-                    {
-                        monitorValue.Value = GetRandomNumber();
-                        var date = dateTimeNow.AddMinutes(i);
-                        monitorDb.InsertHistory(monitorValue, date, 0);
-                    }
-                    for (var i = 0; i < 24; i++)
-                    {
-                        monitorValue.Value = GetRandomNumber();
-                        var date = dateTimeNow.AddHours(-i);
-                        monitorDb.InsertHistory(monitorValue, date, 1);
-                    }
-                    for (var i = 0; i < 30; i++)
-                    {
-                        monitorValue.Value = GetRandomNumber();
-                        var date = dateTimeNow.AddDays(-i);
-                        monitorDb.InsertHistory(monitorValue, date, 2);
-                    }
-                }
-            }
-        }
 
         protected void ddlAgentGroups_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -195,5 +124,57 @@ namespace dev_web_api
                             monitorCommandLimits,
                             monitorCommand);
         }
+
+        protected void btnTestData_Click(object sender, EventArgs e)
+        {
+            var monitorDb = new MonitorDb();
+            // monitorDb.InsertBulkData();
+            // InsertDataDirectly();
+            monitorDb.CreateDailyData(48);
+        }
+
+        protected void InsertDataDirectly()
+        {
+            var dateTimeNow = DateTime.UtcNow;
+            MonitorDb monitorDb = new MonitorDb();
+            agents = monitorDb.GetEnabledAgents();
+            monitorCommand = monitorDb.GetMonitorCommands();
+            foreach (var agent in agents)
+            {
+                var agentId = agent.AgentId;
+                foreach (var command in monitorCommand)
+                {
+                    var monitorCommand =
+                           this.monitorCommand.Find(x => x.MonitorCommandId == command.MonitorCommandId);
+                    var monitorValue = new MonitorValue
+                    {
+                        AgentId = agentId,
+                        MonitorCommandId = monitorCommand.MonitorCommandId,
+                        ErrorMessage = ""
+                    };
+                    for (var i = 0; i < 60; i++)
+                    {
+                        monitorValue.Value = GetRandomNumber();
+                        var date = dateTimeNow.AddMinutes(i);
+                        monitorDb.DeleteOldHistory(date);
+                        monitorDb.InsertMonitorHistory(monitorValue, date);
+                    }
+                    for (var i = 0; i < 24; i++)
+                    {
+                        monitorValue.Value = GetRandomNumber();
+                        var date = dateTimeNow.AddHours(-i);
+                        monitorDb.InsertHistory(monitorValue, date, 1);
+                    }
+                    for (var i = 0; i < 30; i++)
+                    {
+                        monitorValue.Value = GetRandomNumber();
+                        var date = dateTimeNow.AddDays(-i);
+                        monitorDb.InsertHistory(monitorValue, date, 2);
+                    }
+                }
+            }
+        }
+
+
     }
 }

@@ -1480,16 +1480,18 @@ namespace dev_web_api
             return randomNumber.Next(100, 500);
         }
 
-        public void InsertBulkData(int hours= 48, int minutes = 180, int Days=30)
+        public void InsertBulkData(
+                            bool isrealSimulation = false, 
+                            int hours= 24, 
+                            int minutes = 60, 
+                            int days=30)
         {
-            CreateDailyData(hours);
-            CreateHourlyData(minutes);
+            CreateDailyData(isrealSimulation, hours);
+            CreateHourlyData(isrealSimulation, minutes);
         }
-        public void CreateDailyData(int Hours)
+        public void CreateDailyData(bool isRealSimulation, int hours)
         {
-            var dateTimeNow = DateTime.UtcNow.AddMinutes(-Hours);
-
-            for (var i = 0; i < 48; i++)
+            for (var i = 0; i < hours; i++)
             {
                 var monitorValue = new MonitorValue
                 {
@@ -1498,17 +1500,18 @@ namespace dev_web_api
                     Value = GetRandomNumber(),
                     ErrorMessage = ""
                 };
-                var date = dateTimeNow.AddHours(i);
-                DeleteOldHistory(date);
+                var date = DateTime.UtcNow.AddHours(-i);
+                if (isRealSimulation)
+                {
+                    DeleteHourlyHistory(date);
+                }
                 InsertMonitorHistory(monitorValue, date);
             }
         }
 
-        public void CreateHourlyData(int minutes)
+        public void CreateHourlyData(bool isRealSimulation, int minutes)
         {
-            var dateTimeNow = DateTime.UtcNow.AddMinutes(-minutes);
-
-            for (var i = 0; i < 180; i++)
+            for (var i = 0; i < minutes; i++)
             {
                 var monitorValue = new MonitorValue
                 {
@@ -1517,8 +1520,11 @@ namespace dev_web_api
                     Value = GetRandomNumber(),
                     ErrorMessage = ""
                 };
-                var date = dateTimeNow.AddMinutes(i);
-                DeleteOldHistory(date);
+                var date = DateTime.UtcNow.AddMinutes(-i);
+                if (isRealSimulation)
+                {
+                    DeleteDailyHistory(date);
+                }
                 InsertMonitorHistory(monitorValue, date);
             }
         }

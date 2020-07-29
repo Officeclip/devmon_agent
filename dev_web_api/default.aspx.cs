@@ -128,9 +128,9 @@ namespace dev_web_api
         protected void btnTestData_Click(object sender, EventArgs e)
         {
             var monitorDb = new MonitorDb();
-            // monitorDb.InsertBulkData();
+            monitorDb.InsertBulkData(false, 24, 2);
             // InsertDataDirectly();
-            monitorDb.CreateDailyData(48);
+            //monitorDb.CreateDailyData(48);
         }
 
         protected void InsertDataDirectly()

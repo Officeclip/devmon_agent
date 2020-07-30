@@ -13,13 +13,14 @@ namespace dev_web_api
     {
         private MonitorDb monitorDb = new MonitorDb();
         private const int orgId = 1;
+        public bool isGroupSaved = false;
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
                 LoadData();
             }
-
+            lblmsg.Visible = false;
         }
         private void LoadData()
         {
@@ -33,13 +34,17 @@ namespace dev_web_api
 
         protected void btnSave_Click(object sender, EventArgs e)
         {
-            if (!IsPostBack)
+
+            if (txtName.Text != string.Empty && !isGroupSaved)
             {
-                if (txtName.Text != string.Empty)
-                {
-                    monitorDb.InsertAgentGroup(txtName.Text);
-                    txtName.Text = "";
-                }
+                monitorDb.InsertAgentGroup(txtName.Text);
+                txtName.Text = "";
+                isGroupSaved = true;
+            }
+            else
+            {
+                lblmsg.Visible = true;
+                lblmsg.Text = "Input can not be empty!";
             }
             LoadData();
         }

@@ -12,32 +12,45 @@ namespace dev_web_api
 {
     public partial class AddAgenstoGroup : System.Web.UI.Page
     {
-        private Agent agent;
+
         private int AgentGroupId = -1;
+        //private List<Agent> selectedAgents= new List<Agent>();
         protected void Page_Load(object sender, EventArgs e)
         {
-            //hypnewGrp.NavigateUrl = string.Format("javascript:openPopUp('{0}')", "addagentgroup.aspx");
-            if (!IsPostBack)
-            {
-                var monitorDb = new MonitorDb();
-                var agentInfo = monitorDb.GetAgents();
-                grdAgents.DataSource = agentInfo;
-                grdAgents.DataBind();
-            }
+            var monitorDb = new MonitorDb();
             if (Request.QueryString["id"] != string.Empty)
             {
                 AgentGroupId = Convert.ToInt32(Request.QueryString["id"]);
             }
+            if (!IsPostBack)
+            {
+                var agentInfo = monitorDb.GetAgents();
+                grdAgents.DataSource = agentInfo;
+                grdAgents.DataBind();
+            }
+
+
         }
         protected void grdAgents_RowDataBound(object sender, GridViewRowEventArgs e)
         {
+            var monitorDb = new MonitorDb();
+            var selectedAgents = monitorDb.GetSelectedAgents(AgentGroupId);
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 var item = e.Row.DataItem as Agent;
                 Label lbl = (Label)e.Row.FindControl("lblAgentName");
+                CheckBox chkAgent = (CheckBox)e.Row.FindControl("chkAgent");
                 var hdnAgentId = (HiddenField)e.Row.FindControl("hdnAgentId");
                 lbl.Text = item.MachineName;
                 hdnAgentId.Value = item.AgentId.ToString();
+                var hdnAgentValue = Convert.ToInt32(hdnAgentId.Value);
+                foreach (var agent in selectedAgents)
+                {
+                    if (hdnAgentValue == agent.AgentId)
+                    {
+                        chkAgent.Checked = true;
+                    }
+                }
             }
         }
 
@@ -49,7 +62,7 @@ namespace dev_web_api
                 var hdnAgentId = Convert.ToInt32(((HiddenField)gvr.FindControl("hdnAgentId")).Value);
                 if (((CheckBox)gvr.FindControl("chkAgent")).Checked == true)
                 {
-                    monitorDb.AddAgentsIntoAgentGroup( AgentGroupId,hdnAgentId);
+                    monitorDb.AddAgentsIntoAgentGroup(AgentGroupId, hdnAgentId);
                 }
             }
             Response.Write("<script>window.close();</" + "script>");

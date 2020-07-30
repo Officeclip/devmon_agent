@@ -31,7 +31,10 @@
                         <tr>
                             <td class="pt">Group name:</td>
                             <td class="pl pt">
-                                <asp:TextBox ID="txtName" runat="server"></asp:TextBox>
+                                <asp:TextBox ID="txtName" runat="server"></asp:TextBox>                               
+                            </td>
+                            <td class="pl pt">
+                                 <asp:Label ID="lblmsg" runat="server" ForeColor="Red" ></asp:Label>
                             </td>
                         </tr>
                     </table>
@@ -44,8 +47,6 @@
                                         Font-Bold="true"
                                         OnClick="btnSave_Click" />
                                 </div>
-                                <asp:Label ID="lblError" runat="server"
-                                    ForeColor="Red" />
                             </td>
                             <td class=" pt pl">
                                 <asp:Button ID="btnBack" runat="server"

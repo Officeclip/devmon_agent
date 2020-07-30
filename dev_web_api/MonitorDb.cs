@@ -57,6 +57,8 @@ namespace dev_web_api
             }
         }
 
+
+
         public List<User> GetUsers()
         {
             _logger.Info("*** GetUsers() ***");
@@ -144,6 +146,42 @@ namespace dev_web_api
             return agents;
         }
 
+        public List<Agent> GetSelectedAgents(int agentGroupId)
+        {
+            SQLiteDataReader sqlite_datareader;
+            SQLiteCommand sqlite_cmd;
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            sqlite_cmd = sqlLiteConn.CreateCommand();
+            if (agentGroupId > 0)
+            {
+                sqlite_cmd.CommandText = $@"select * from agents where agent_id in (select DISTINCT 
+                                            a.agent_id from agents a, agent_group_agent ag 
+                                            where a.agent_id = ag.agent_id 
+                                            and ag.agent_group_id={agentGroupId})";
+            }
+            var agents = new List<Agent>();
+            sqlite_datareader = sqlite_cmd.ExecuteReader();
+            try
+            {
+                agents = ExtractAgents(sqlite_datareader);
+            }
+            catch (SQLiteException ex)
+            {
+                _logger.Error($"Database Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"General Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlite_datareader.Close();
+                sqlLiteConn.Close();
+            }
+            return agents;           
+        }
+
         private List<Agent> ExtractAgents(SQLiteDataReader sqlite_datareader)
         {
             var agents = new List<Agent>();
@@ -170,13 +208,13 @@ namespace dev_web_api
                 Enabled = Convert.ToBoolean(sqlite_datareader["enabled"])
             };
             agent.RegistrationDate =
-                              ConvertToUtcDateTime(
+                              ConvertToDateTime(
                                             sqlite_datareader["registration_date"]);
             agent.LastQueried =
-                              ConvertToUtcDateTime(
+                              ConvertToDateTime(
                                             sqlite_datareader["last_queried"]);
             agent.LastReplyReceived =
-                              ConvertToUtcDateTime(
+                              ConvertToDateTime(
                                             sqlite_datareader["last_reply_received"]);
             return agent;
         }
@@ -400,7 +438,7 @@ namespace dev_web_api
                                     .Subtract(
                                         timespan);
             DeleteHistory(dateCutOff, frequency);
-        }      
+        }
         public void DeleteHistory(DateTime dateTime, int frequency)
         {
             _logger.Info("Method DeleteHistory()");
@@ -956,7 +994,7 @@ namespace dev_web_api
                     StableDeviceJson = sqlite_datareader["stable_device_json"].ToString(),
                 };
                 agentResource.LastUpdatedDate =
-                                        ConvertToUtcDateTime(
+                                        ConvertToDateTime(
                                                     sqlite_datareader["last_updated_date"]);
             }
             sqlite_datareader.Close();
@@ -1062,7 +1100,7 @@ namespace dev_web_api
                     AgentId = agentId,
                     MonitorCommandId = monitorCommandId,
                 };
-                userNotification.LastNotified = ConvertToUtcDateTime(
+                userNotification.LastNotified = ConvertToDateTime(
                                                             sqlite_datareader["last_notified"]);
             }
             sqlite_datareader.Close();
@@ -1070,14 +1108,14 @@ namespace dev_web_api
             return userNotification;
         }
 
-        private DateTime ConvertToUtcDateTime(object dataReaderObject)
+        private DateTime ConvertToDateTime(object dataReaderObject)
         {
             DateTimeOffset result;
             var isValid = DateTimeOffset.TryParse(
                         dataReaderObject.ToString(),
                         out result);
             return (isValid)
-                        ? result.UtcDateTime
+                        ? result.DateTime
                         : DateTime.MinValue;
         }
 
@@ -1280,7 +1318,7 @@ namespace dev_web_api
             {
                 var agentId = Convert.ToInt32(sqlite_datareader["agent_id"]);
                 var agentName = GetAgentName(sqlite_datareader);
-                var date = ConvertToUtcDateTime(sqlite_datareader["date"]);
+                var date = ConvertToDateTime(sqlite_datareader["date"]);
                 //var minutes = Convert.ToInt32(
                 //                        DateTime.UtcNow.Subtract(date).TotalMinutes);
                 var units = GetUnits(frequency, date);
@@ -1474,6 +1512,46 @@ namespace dev_web_api
             }
             return agentGroups;
         }
+
+        public List<AgentGroups> GetSelectedAgentOfGroup(int orgId)
+        {
+            SQLiteDataReader sqlite_datareader;
+            SQLiteCommand sqlite_cmd;
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            sqlite_cmd = sqlLiteConn.CreateCommand();
+            sqlite_cmd.CommandText = $@"select * from agent_groups where org_id = {orgId} ";
+            var agentGroups = new List<AgentGroups>();
+            sqlite_datareader = sqlite_cmd.ExecuteReader();
+            try
+            {
+                while (sqlite_datareader.Read())
+                {
+                    var agentGroup = new AgentGroups()
+                    {
+                        AgentGroupId = Convert.ToInt32(sqlite_datareader["agent_group_id"]),
+                        OrgId = Convert.ToInt32(sqlite_datareader["org_id"]),
+                        AgentGroupName = sqlite_datareader["agent_group_name"].ToString(),
+                    };
+                    agentGroups.Add(agentGroup);
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                _logger.Error($"Database Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"General Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlite_datareader.Close();
+                sqlLiteConn.Close();
+            }
+            return agentGroups;
+        }
+
 
         public void UpdateAgentGroup(AgentGroups agent)
         {

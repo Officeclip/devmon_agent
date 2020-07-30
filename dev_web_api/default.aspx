@@ -12,10 +12,11 @@
 
     <div style="margin: 20px 0">
         <div>
-            <div>
-                <div></div>
-                <div style=" float: right">
-                    Select Agent Group:<asp:DropDownList ID="ddlAgentGroups" 
+           
+            <div id="app" style="float: left"></div>
+            <div style="margin: 5px 0 0 20px; float: left">
+                Last Updated: <%= DateTime.Now %>
+               <span style="padding-left:90px">Select Agent Group:</span> <asp:DropDownList ID="ddlAgentGroups" 
                         runat="server"
                         OnSelectedIndexChanged="ddlAgentGroups_SelectedIndexChanged"
                         AutoPostBack="true"  >
@@ -23,11 +24,6 @@
                             
                         </asp:ListItem>
                                        </asp:DropDownList>
-                </div>
-            </div>
-            <div id="app" style="float: left"></div>
-            <div style="margin: 5px 0 0 20px; float: left">
-                Last Updated: <%= DateTime.Now %>
             </div>
             <div style="clear: both" />
             

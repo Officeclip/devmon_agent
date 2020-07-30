@@ -89,7 +89,7 @@ namespace dev_web_api
         private string GetGridViewText(GridViewUpdateEventArgs e, int position)
         {
             return
-                ((TextBox)GridView1.Rows[e.RowIndex].Cells[position].Controls[0]).Text.Trim();
+                ((System.Web.UI.LiteralControl)GridView1.Rows[e.RowIndex].Cells[position].Controls[0]).Text.Trim();
         }
 
         private bool IsError()

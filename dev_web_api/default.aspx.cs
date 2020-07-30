@@ -75,7 +75,6 @@ namespace dev_web_api
         protected string GetWebUri()
         {
             var absoluteUri = HttpContext.Current.Request.Url.AbsoluteUri;
-            //var rawUrl = Request.RawUrl;
             if (absoluteUri.EndsWith("default.aspx"))
             {
                 absoluteUri = absoluteUri.Substring(0, absoluteUri.Length - 13);
@@ -92,7 +91,6 @@ namespace dev_web_api
         }
         private int GetRandomNumber()
         {
-            //var ticks =Convert.ToInt32( DateTime.Now.Ticks);
             var randomNumber = new Random();
             return randomNumber.Next(100, 500);
         }
@@ -132,48 +130,8 @@ namespace dev_web_api
             monitorDb.InsertBulkData(true, 24, 180);
         }
 
-        //protected void InsertDataDirectly()
-        //{
-        //    var dateTimeNow = DateTime.UtcNow;
-        //    MonitorDb monitorDb = new MonitorDb();
-        //    agents = monitorDb.GetEnabledAgents();
-        //    monitorCommand = monitorDb.GetMonitorCommands();
-        //    foreach (var agent in agents)
-        //    {
-        //        var agentId = agent.AgentId;
-        //        foreach (var command in monitorCommand)
-        //        {
-        //            var monitorCommand =
-        //                   this.monitorCommand.Find(x => x.MonitorCommandId == command.MonitorCommandId);
-        //            var monitorValue = new MonitorValue
-        //            {
-        //                AgentId = agentId,
-        //                MonitorCommandId = monitorCommand.MonitorCommandId,
-        //                ErrorMessage = ""
-        //            };
-        //            for (var i = 0; i < 60; i++)
-        //            {
-        //                monitorValue.Value = GetRandomNumber();
-        //                var date = dateTimeNow.AddMinutes(i);
-        //                monitorDb.DeleteOldHistory(date);
-        //                monitorDb.InsertMonitorHistory(monitorValue, date);
-        //            }
-        //            for (var i = 0; i < 24; i++)
-        //            {
-        //                monitorValue.Value = GetRandomNumber();
-        //                var date = dateTimeNow.AddHours(-i);
-        //                monitorDb.InsertHistory(monitorValue, date, 1);
-        //            }
-        //            for (var i = 0; i < 30; i++)
-        //            {
-        //                monitorValue.Value = GetRandomNumber();
-        //                var date = dateTimeNow.AddDays(-i);
-        //                monitorDb.InsertHistory(monitorValue, date, 2);
-        //            }
-        //        }
-        //    }
-        //}
-
+        
+       
 
     }
 }

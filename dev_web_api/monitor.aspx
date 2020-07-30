@@ -14,11 +14,11 @@
         <div>
             <div>
             </div>
-            <div style="background: burlywood">
-                <table >
+            <div style="background: #ce7e7e; width: 40%">
+                <table>
                     <tr>
                         <td class="pt">Name:</td>
-                        <td class="pl">
+                        <td class="pl pt">
                             <asp:TextBox ID="txtName" runat="server"></asp:TextBox>
                         </td>
                     </tr>
@@ -41,15 +41,21 @@
                     </tr>
                 </table>
                 <table class="pt">
-                    <tr>                   
-                        <td class="pl">
-                            <div class="pl" style="float: left">
-                                <asp:Button ID="Button1" runat="server" Text="save" OnClick="Button1_Click" />
+                    <tr>
+                        <td class="pl pt">
+                            <div class="pl" style="padding-left: 45px">
+                                <asp:Button ID="Button1" runat="server"
+                                    Font-Bold="true" 
+                                    Text="save"
+                                    OnClick="Button1_Click" />
                             </div>
-                            <asp:Label ID="lblError" runat="server"
-                                ForeColor="Red" />
+                            
                         </td>
-                        <td class="pl">
+                        <td  class="pl pt">
+                            <asp:Label ID="lblError" runat="server" 
+                                ForeColor="Black" />
+                        </td>
+                        <td class="pl pt">
                             <asp:Button ID="btnBack" runat="server"
                                 Text="Back to Monitor"
                                 Font-Bold="true"
@@ -57,7 +63,9 @@
                         </td>
                     </tr>
                 </table>
-
+                <div>
+                    <div></div>
+                </div>
             </div>
         </div>
 
@@ -67,6 +75,7 @@
 
         <asp:HiddenField ID="HiddenField1" runat="server" />
         <asp:GridView ID="GridView1" runat="server"
+            AutoGenerateColumns="false"
             DataKeyNames="MonitorCommandId"
             OnRowEditing="GridView1_RowEditing"
             OnRowCancelingEdit="GridView1_RowCancelingEdit"
@@ -79,6 +88,33 @@
             <Columns>
                 <asp:CommandField ShowEditButton="True" />
                 <asp:CommandField ShowDeleteButton="True" />
+                <asp:TemplateField HeaderText="Name">
+                    <ItemTemplate>
+                        <asp:Label ID="lblName" runat="server" Text='<%#Eval("Name")%>' />
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Name">
+                    <ItemTemplate>
+                        <asp:Label ID="lblType" runat="server" Text='<%#Eval("Type")%>' />
+                    </ItemTemplate>
+                </asp:TemplateField>
+
+                <asp:TemplateField HeaderText="Arg1">
+                    <ItemTemplate>
+                        <asp:Label ID="lblArg1" runat="server" Text='<%#Eval("Arg1")%>' />
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Arg2">
+                    <ItemTemplate>
+                        <asp:Label ID="lblArg2" runat="server" Text='<%#Eval("Arg2")%>' />
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Unit">
+                    <ItemTemplate>
+                        <asp:Label ID="lblUnit" runat="server" Text='<%#Eval("Unit")%>' />
+                    </ItemTemplate>
+                </asp:TemplateField>
+
             </Columns>
             <FooterStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
             <HeaderStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />

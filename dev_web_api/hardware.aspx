@@ -14,6 +14,7 @@
                     <asp:DropDownList ID="ddlAgents" runat="server"
                         AutoPostBack="true"
                         OnSelectedIndexChanged="ddlAgents_SelectedIndexChanged" />
+                <asp:Label ID="lblError"  runat="server" ForeColor="Red"></asp:Label>
             </div>
             <div style="display: inline; margin-left: 20px">
                 <asp:Button ID="btnBack" runat="server"

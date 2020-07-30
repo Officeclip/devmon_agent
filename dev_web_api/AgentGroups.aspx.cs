@@ -14,7 +14,6 @@ namespace dev_web_api
     {
 
         private int AgentGroupId = -1;
-        //private List<Agent> selectedAgents= new List<Agent>();
         protected void Page_Load(object sender, EventArgs e)
         {
             var monitorDb = new MonitorDb();

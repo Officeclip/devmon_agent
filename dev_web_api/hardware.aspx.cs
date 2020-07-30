@@ -23,6 +23,7 @@ namespace dev_web_api
         }
         protected void Page_Load(object sender, EventArgs e)
         {
+            lblError.Visible = false;
             if (!Page.IsPostBack)
             {
                 LoadData();
@@ -33,14 +34,24 @@ namespace dev_web_api
         {
             var agentResource = monitorDb.GetAgentResource(
                                                 Convert.ToInt32(ddlAgents.SelectedValue));
-            treeView1.Visible = (agentResource != null);
-            lblEmptyData.Visible = (agentResource == null);
             if (agentResource != null)
             {
-                LoadJsonToTreeView(treeView1, agentResource.StableDeviceJson);
+                treeView1.Visible = (agentResource != null);
+                lblEmptyData.Visible = (agentResource == null);
+                if (agentResource != null)
+                {
+                    LoadJsonToTreeView(treeView1, agentResource.StableDeviceJson);
+                }
+                treeView1.ExpandAll();
+                litDate.Text = $"Last Updated: {agentResource.LastUpdatedDate} UTC";
             }
-            treeView1.ExpandAll();
-            litDate.Text = $"Last Updated: {agentResource.LastUpdatedDate} UTC";
+            else
+            {
+                treeView1.Visible = false;
+                lblError.Visible = true;
+                lblError.Text = "Unable to get the server Data";
+            }
+
         }
 
         /// <summary>

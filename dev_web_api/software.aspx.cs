@@ -24,6 +24,7 @@ namespace dev_web_api
         }
         protected void Page_Load(object sender, EventArgs e)
         {
+
             if (!Page.IsPostBack)
             {
                 LoadData();
@@ -34,14 +35,18 @@ namespace dev_web_api
         {
             var agentResource = monitorDb.GetAgentResource(
                                                 Convert.ToInt32(ddlAgents.SelectedValue));
+
             grdSoftware.Visible = (agentResource != null);
             lblEmptyData.Visible = (agentResource == null);
             if (agentResource != null)
             {
                 grdSoftware.DataSource = Softwares(agentResource.StableDeviceJson);
                 grdSoftware.DataBind();
+                litDate.Text = $"Last Updated: {agentResource.LastUpdatedDate} UTC";
             }
-            litDate.Text = $"Last Updated: {agentResource.LastUpdatedDate} UTC";
+
+
+
         }
 
         /// <summary>

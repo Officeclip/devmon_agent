@@ -556,24 +556,9 @@ namespace dev_web_api
         }
         public void ProcessHistoryByFrequency(MonitorValue monitorValue, DateTime dateTime, int frequency)
         {
-            //var timespan = new TimeSpan(
-            //                             ConvertFrequencyToHour(frequency, true), 0, 0);
-
             DateTime dateStart;
             DateTime dateEnd;
-            switch (frequency)
-            {
-                case 1:
-                    dateStart = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, 0, 0);
-                    dateEnd = dateStart.Subtract(new TimeSpan(1, 0, 0));
-                    break;
-                case 2:
-                    dateStart = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0);
-                    dateEnd = dateStart.Subtract(new TimeSpan(24, 0, 0));
-                    break;
-                default:
-                    throw new Exception("frequency is not supported");
-            }
+            CovertFrequencyToSubtractHrs(dateTime, frequency, out dateStart, out dateEnd);
             bool isEntryPresentinDb = isEntryPresent(monitorValue, dateStart, frequency);
 
 
@@ -597,6 +582,24 @@ namespace dev_web_api
                 InsertHistory(monitorValue, dateStart, frequency);
             }
         }
+
+        private static void CovertFrequencyToSubtractHrs(DateTime dateTime, int frequency, out DateTime dateStart, out DateTime dateEnd)
+        {
+            switch (frequency)
+            {
+                case 1:
+                    dateStart = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, 0, 0);
+                    dateEnd = dateStart.Subtract(new TimeSpan(1, 0, 0));
+                    break;
+                case 2:
+                    dateStart = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0);
+                    dateEnd = dateStart.Subtract(new TimeSpan(24, 0, 0));
+                    break;
+                default:
+                    throw new Exception("frequency is not supported");
+            }
+        }
+
         private int GetAverageValue(MonitorValue monitorValue, DateTime dateStart, DateTime dateEnd, int frequency)
         {
             var averageValue = 0;

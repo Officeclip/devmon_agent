@@ -1,16 +1,27 @@
-﻿table.monitor {
-  margin-top: 10px;
+﻿body {
+  margin: 0;
+  border: 0;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 16px; }
+
+table.monitor {
+  margin-top: 20px;
   border: 1px solid #CCC; }
   table.monitor th, table.monitor td {
     text-align: center;
     border: 1px solid #CCC;
     padding: 5px; }
   table.monitor th {
-    font-weight: bold;
+    font-weight: 500;
     background-color: #EEE; }
   table.monitor td:nth-child(1) {
     font-weight: bold;
     background-color: #EEE; }
+
+.heading {
+  font-weight: 500;
+  font-size: large;
+  margin: 10px 0; }
 
 .warningLimit {
   background-color: lightgoldenrodyellow; }

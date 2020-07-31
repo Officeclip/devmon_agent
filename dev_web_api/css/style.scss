@@ -1,5 +1,12 @@
-﻿table.monitor {
-    margin-top: 10px;
+﻿body {
+    margin: 0;
+    border: 0;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 16px;
+}
+
+table.monitor {
+    margin-top: 20px;
     border: 1px solid #CCC;
 
     th, td {
@@ -9,7 +16,7 @@
     }
 
     th {
-        font-weight: bold;
+        font-weight: 500;
         background-color: #EEE;
     }
 
@@ -20,6 +27,12 @@
             background-color: #EEE;
         }
     }
+}
+
+.heading{
+    font-weight: 500;
+    font-size: large;
+    margin:10px 0;
 }
 
 .warningLimit {

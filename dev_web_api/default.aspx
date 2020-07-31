@@ -15,18 +15,23 @@
 
             <div id="app" style="float: left"></div>
             <div style="margin: 5px 0 0 20px; float: left">
-                Last Updated: <%= DateTime.Now %>
-                <span style="padding-left: 90px">Select Agent Group:</span>
+                <span>Agent Group:</span>
                 <asp:DropDownList ID="ddlAgentGroups"
                     runat="server"
                     OnSelectedIndexChanged="ddlAgentGroups_SelectedIndexChanged"
                     AutoPostBack="true">
-                    <asp:ListItem Value="-1" Text="All groups" Selected="True">
-                            
+                    <asp:ListItem Value="-1" Text="All groups" Selected="True">                            
                     </asp:ListItem>
                 </asp:DropDownList>
-                <span style="padding-left: 90px">Send email when Agent fails</span> &nbsp&nbsp
-                <asp:CheckBox ID="chkEmailOpt" runat="server" OnCheckedChanged="chkEmailOpt_CheckedChanged" AutoPostBack="true"/>
+                <asp:CheckBox ID="chkEmailOpt" runat="server" 
+                    style="padding-left: 40px"
+                    OnCheckedChanged="chkEmailOpt_CheckedChanged" 
+                    AutoPostBack="true" />
+                <span>Send email when Agent fails</span> &nbsp&nbsp
+                <span style="font-size:small;padding-left: 90px">
+                    Last Updated: <%= DateTime.Now %>
+                </span>
+                
             </div>
             <div style="clear: both" />
 
@@ -40,8 +45,8 @@
         </div>
         <table id="tblMonitor" class="monitor" runat="server" />
 
-        <div style="margin-top: 30px">
-            <h3>Agent Installation:</h3>
+        <div style="margin-top: 50px">
+            <span class="heading">Agent Installation:</span>
             <ul>
                 <li>Download and Install:
                              

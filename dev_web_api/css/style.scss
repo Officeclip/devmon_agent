@@ -29,6 +29,10 @@ table.monitor {
     }
 }
 
+.body-content{
+    margin-top: 20px;
+}
+
 .heading{
     font-weight: 500;
     font-size: large;
@@ -63,4 +67,28 @@ li {
     display: inline;
     margin-left: 20px;
     font-size: x-small;
+}
+
+table.profile {
+    border-collapse: collapse;
+
+    tr {
+        border-bottom: 4px solid transparent;
+        border-top: 4px solid transparent;
+
+        td {
+            padding: 8px;
+            vertical-align: baseline;
+
+            .info {
+                opacity: 0.75;
+                font-size: x-small;
+                width: 400px
+            }
+        }
+
+        h3 {
+            border-bottom: 1px solid #CCC;
+        }
+    }
 }

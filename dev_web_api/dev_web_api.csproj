@@ -152,6 +152,12 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Site.css" />
     <Content Include="css\countdown.css" />
+    <Content Include="css\spacings.css">
+      <DependentUpon>spacings.scss</DependentUpon>
+    </Content>
+    <Content Include="css\spacings.min.css">
+      <DependentUpon>spacings.css</DependentUpon>
+    </Content>
     <Content Include="css\style.css">
       <DependentUpon>style.scss</DependentUpon>
     </Content>
@@ -187,6 +193,7 @@
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
+    <Content Include="css\spacings.scss" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />

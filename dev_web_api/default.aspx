@@ -10,9 +10,8 @@
     <link rel="stylesheet" href="css/style.min.css">
     <link rel="stylesheet" href="css/countdown.css" />
 
-    <div style="margin: 20px 0">
+    <div>
         <div>
-
             <div id="app" style="float: left"></div>
             <div style="margin: 5px 0 0 20px; float: left">
                 <span>Agent Group:</span>
@@ -27,8 +26,8 @@
                     style="padding-left: 40px"
                     OnCheckedChanged="chkEmailOpt_CheckedChanged" 
                     AutoPostBack="true" />
-                <span>Send email when Agent fails</span> &nbsp&nbsp
-                <span style="font-size:small;padding-left: 90px">
+                <span>Send Email when Agent fails</span> &nbsp&nbsp
+                <span style="font-size:small;padding-left: 70px">
                     Last Updated: <%= DateTime.Now %>
                 </span>
                 
@@ -36,7 +35,6 @@
             <div style="clear: both" />
 
         </div>
-
 
         <div>
             <div style="float: right">

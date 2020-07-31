@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"user_id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
 	"email_address"	TEXT NOT NULL,
 	"password" TEXT NOT NULL
+	"email_opt" INTEGER 
 );
 DROP TABLE IF EXISTS "userNotifications";
 CREATE TABLE IF NOT EXISTS "userNotifications" (

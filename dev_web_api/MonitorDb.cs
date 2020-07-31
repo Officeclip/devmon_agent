@@ -503,7 +503,7 @@ namespace dev_web_api
         {
             _logger.Info("Method InsertMonitorHistory(...)");
             _logger.Info(ObjectDumper.Dump(monitorValue));
-            InsertHistory(monitorValue, dateTime, 0);
+            //InsertHistory(monitorValue, dateTime, 0);
             ProcessHistoryByFrequency(monitorValue, dateTime, 1);
             ProcessHistoryByFrequency(monitorValue, dateTime, 2);
         }
@@ -579,9 +579,11 @@ namespace dev_web_api
                     default:
                         throw new Exception("frequency is not supported");
                 }
-
-                var averageValue = GetAverageValue(monitorValue, dateStart, dateEnd, frequencyToAvgEntries);
-                monitorValue.Value = averageValue;
+                if (frequency == 2)
+                {
+                    var averageValue = GetAverageValue(monitorValue, dateStart, dateEnd, frequencyToAvgEntries);
+                    monitorValue.Value = averageValue;
+                }
                 InsertHistory(monitorValue, dateStart, frequency);
             }
         }
@@ -613,8 +615,7 @@ namespace dev_web_api
             sqlite_cmd = sqlLiteConn.CreateCommand();
             sqlite_cmd.CommandText = $@"SELECT IFNULL(AVG(value),0.00) as average_value FROM history
                                     WHERE frequency = {frequency} AND agent_id = {monitorValue.AgentId } 
-                                    AND monitor_command_id = { monitorValue.MonitorCommandId } AND
-                                     date BETWEEN '{dateEnd:o}Z' AND '{dateStart:o}Z'";
+                                    AND monitor_command_id = { monitorValue.MonitorCommandId }";
             sqlite_datareader = sqlite_cmd.ExecuteReader();
             while (sqlite_datareader.Read())
             {
@@ -1587,12 +1588,12 @@ namespace dev_web_api
                             int minutes = 60,
                             int days = 30)
         {
-            //  CreateHourData(isrealSimulation, hours);
-            CreateMinuteData(isrealSimulation, minutes);
+            CreateHourData(isrealSimulation, hours);
+            // CreateMinuteData(isrealSimulation, minutes);
         }
         public void CreateHourData(bool isRealSimulation, int hours)
         {
-            for (var i = 0; i < hours; i++)
+            for (var i = hours; i >= 0; i--)
             {
                 var monitorValue = new MonitorValue
                 {
@@ -1604,7 +1605,7 @@ namespace dev_web_api
                 var date = DateTime.UtcNow.AddHours(-i);
                 if (isRealSimulation)
                 {
-                    DeleteHistory(date, 1);
+                    DeleteOldHistory(date, 1);
                     InsertMonitorHistory(monitorValue, date);
                 }
                 else

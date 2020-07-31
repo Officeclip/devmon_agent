@@ -82,6 +82,9 @@ namespace dev_web_api
                     user.Password = (sqlite_datareader["password"] == DBNull.Value)
                                 ? string.Empty
                                 : sqlite_datareader["password"].ToString();
+                    user.EmailOptout = (sqlite_datareader["email_opt"] == DBNull.Value)
+                                ? false
+                                : Convert.ToInt32(sqlite_datareader["email_opt"]) == 1 ? true : false;
                     users.Add(user);
                 }
             }
@@ -179,7 +182,7 @@ namespace dev_web_api
                 sqlite_datareader.Close();
                 sqlLiteConn.Close();
             }
-            return agents;           
+            return agents;
         }
 
         private List<Agent> ExtractAgents(SQLiteDataReader sqlite_datareader)
@@ -1633,6 +1636,16 @@ namespace dev_web_api
                     InsertHistory(monitorValue, date, 0);
                 }
             }
+        }
+
+        public void InsertEmailOpt(int optValue, int userId)
+        {
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn);
+            cmd.CommandText = $@"update users set email_opt= {optValue} where user_id = {userId}";
+            cmd.ExecuteNonQuery();
+            sqlLiteConn.Close();
         }
 
     }

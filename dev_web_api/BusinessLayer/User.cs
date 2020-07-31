@@ -11,5 +11,6 @@ namespace dev_web_api.BusinessLayer
         public string EmailAddress { get; set; }
         //public DateTime LastSent { get; set; }
         public string Password { get; set; }
+        public bool EmailOptout { get; set; }
     }
 }

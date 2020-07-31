@@ -12,21 +12,24 @@
 
     <div style="margin: 20px 0">
         <div>
-           
+
             <div id="app" style="float: left"></div>
             <div style="margin: 5px 0 0 20px; float: left">
                 Last Updated: <%= DateTime.Now %>
-               <span style="padding-left:90px">Select Agent Group:</span> <asp:DropDownList ID="ddlAgentGroups" 
-                        runat="server"
-                        OnSelectedIndexChanged="ddlAgentGroups_SelectedIndexChanged"
-                        AutoPostBack="true"  >
-                        <asp:ListItem Value="-1" Text="All groups" Selected="True">
+                <span style="padding-left: 90px">Select Agent Group:</span>
+                <asp:DropDownList ID="ddlAgentGroups"
+                    runat="server"
+                    OnSelectedIndexChanged="ddlAgentGroups_SelectedIndexChanged"
+                    AutoPostBack="true">
+                    <asp:ListItem Value="-1" Text="All groups" Selected="True">
                             
-                        </asp:ListItem>
-                                       </asp:DropDownList>
+                    </asp:ListItem>
+                </asp:DropDownList>
+                <span style="padding-left: 90px">Send email when Agent fails</span> &nbsp&nbsp
+                <asp:CheckBox ID="chkEmailOpt" runat="server" OnCheckedChanged="chkEmailOpt_CheckedChanged" AutoPostBack="true"/>
             </div>
             <div style="clear: both" />
-            
+
         </div>
 
 

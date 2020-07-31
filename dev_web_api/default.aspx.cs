@@ -1,4 +1,5 @@
 ﻿using dev_web_api.BusinessLayer;
+using Microsoft.Ajax.Utilities;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -24,35 +25,56 @@ namespace dev_web_api
         {
             if (!IsPostBack)
             {
+                LoadUserInfo();
                 LoadAgentGroups();
-                if (ddlAgentGroups.SelectedValue == "-1")
-                {
-                    agents = monitorDb.GetEnabledAgents();
-                }
-                else
-                {
-                    var agentGroupId = Convert.ToInt32(ddlAgentGroups.SelectedValue);
-                    if (agentGroupId > 0)
-                    {
-                        agents = monitorDb.GetAgentsBySelectedGroup(agentGroupId);
-                    }
-                }
-                monitorCommand = monitorDb.GetMonitorCommands();
-                var monitorValues = monitorDb.GetMonitorValues();
-                monitorCommandLimits = monitorDb.GetMonitorCommandLimits();
-                Util.SetupMonitorTable(
-                                tblMonitor,
-                                agents,
-                                monitorCommand,
-                                monitorValues,
-                                monitorCommandLimits);
-                Util.SendMonitorLimitEmail(
-                                agents,
-                                monitorValues,
-                                monitorCommandLimits,
-                                monitorCommand);
-            }
+                ProcessAndLoadAgents();
 
+            }
+        }
+
+        private void ProcessAndLoadAgents()
+        {
+            if (ddlAgentGroups.SelectedValue == "-1")
+            {
+                agents = monitorDb.GetEnabledAgents();
+            }
+            else
+            {
+                var agentGroupId = Convert.ToInt32(ddlAgentGroups.SelectedValue);
+                if (agentGroupId > 0)
+                {
+                    agents = monitorDb.GetAgentsBySelectedGroup(agentGroupId);
+                }
+            }
+            monitorCommand = monitorDb.GetMonitorCommands();
+            var monitorValues = monitorDb.GetMonitorValues();
+            monitorCommandLimits = monitorDb.GetMonitorCommandLimits();
+            Util.SetupMonitorTable(
+                            tblMonitor,
+                            agents,
+                            monitorCommand,
+                            monitorValues,
+                            monitorCommandLimits);
+            if (chkEmailOpt.Checked)
+            {
+                Util.SendMonitorLimitEmail(
+                            agents,
+                            monitorValues,
+                            monitorCommandLimits,
+                            monitorCommand);
+            }
+        }
+
+        private void LoadUserInfo()
+        {
+            var users = (new MonitorDb()).GetUsers();
+            foreach (var uInfo in users)
+            {
+                if (uInfo.UserId == 1)
+                {
+                    chkEmailOpt.Checked = uInfo.EmailOptout;
+                }
+            }
         }
 
         private void LoadAgentGroups()
@@ -130,8 +152,13 @@ namespace dev_web_api
             monitorDb.InsertBulkData(true, 24, 180);
         }
 
-        
-       
-
+        protected void chkEmailOpt_CheckedChanged(object sender, EventArgs e)
+        {
+            var monitorDb = new MonitorDb();
+            var optValue = chkEmailOpt.Checked ? 1 : 0;
+            // userId is hardcoded here
+            monitorDb.InsertEmailOpt(optValue, 1);
+            ProcessAndLoadAgents();
+        }
     }
 }

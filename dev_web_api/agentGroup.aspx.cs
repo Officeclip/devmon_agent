@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 namespace dev_web_api
 {
-    public partial class AddEditAgentGroups : System.Web.UI.Page
+    public partial class agentGroup : System.Web.UI.Page
     {
         private MonitorDb monitorDb = new MonitorDb();
         private const int orgId = 1;

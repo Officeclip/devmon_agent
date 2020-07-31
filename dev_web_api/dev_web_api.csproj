@@ -141,9 +141,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="About.aspx" />
-    <Content Include="AddAgentGroup.aspx" />
-    <Content Include="AddEditAgentGroups.aspx" />
-    <Content Include="AgentGroups.aspx" />
+    <Content Include="_AddAgentGroup.aspx" />
+    <Content Include="agentGroup.aspx" />
+    <Content Include="_AgentGroups.aspx" />
     <Content Include="commandLimits.aspx" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\bootstrap-theme.css" />
@@ -338,26 +338,26 @@
     <Compile Include="About.aspx.designer.cs">
       <DependentUpon>About.aspx</DependentUpon>
     </Compile>
-    <Compile Include="AddAgentGroup.aspx.cs">
-      <DependentUpon>AddAgentGroup.aspx</DependentUpon>
+    <Compile Include="_AddAgentGroup.aspx.cs">
+      <DependentUpon>_AddAgentGroup.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="AddAgentGroup.aspx.designer.cs">
-      <DependentUpon>AddAgentGroup.aspx</DependentUpon>
+    <Compile Include="_AddAgentGroup.aspx.designer.cs">
+      <DependentUpon>_AddAgentGroup.aspx</DependentUpon>
     </Compile>
-    <Compile Include="AddEditAgentGroups.aspx.cs">
-      <DependentUpon>AddEditAgentGroups.aspx</DependentUpon>
+    <Compile Include="agentGroup.aspx.cs">
+      <DependentUpon>agentGroup.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="AddEditAgentGroups.aspx.designer.cs">
-      <DependentUpon>AddEditAgentGroups.aspx</DependentUpon>
+    <Compile Include="agentGroup.aspx.designer.cs">
+      <DependentUpon>agentGroup.aspx</DependentUpon>
     </Compile>
-    <Compile Include="AgentGroups.aspx.cs">
-      <DependentUpon>AgentGroups.aspx</DependentUpon>
+    <Compile Include="_AgentGroups.aspx.cs">
+      <DependentUpon>_AgentGroups.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="AgentGroups.aspx.designer.cs">
-      <DependentUpon>AgentGroups.aspx</DependentUpon>
+    <Compile Include="_AgentGroups.aspx.designer.cs">
+      <DependentUpon>_AgentGroups.aspx</DependentUpon>
     </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />

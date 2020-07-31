@@ -11,7 +11,7 @@ namespace dev_web_api
 {
 
 
-    public partial class AddEditAgentGroups
+    public partial class agentGroup
     {
 
         /// <summary>

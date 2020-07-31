@@ -85,9 +85,9 @@ namespace dev_web_api
             var info = new AgentGroups()
             {
                 AgentGroupId = -1,
-                AgentGroupName = "All groups"
+                AgentGroupName = "- All -"
             };
-            agentGroupInfo.Add(info);
+            agentGroupInfo.Insert(0, info);
             ddlAgentGroups.DataSource = agentGroupInfo;
             ddlAgentGroups.DataValueField = "AgentGroupId";
             ddlAgentGroups.DataTextField = "AgentGroupName";

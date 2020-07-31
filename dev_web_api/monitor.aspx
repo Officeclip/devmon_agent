@@ -111,7 +111,7 @@
     </div>
 
     <div style="margin: 20px 0">
-        <h3>Monitor Command Help</h3>
+        <span class="heading">Monitor Command Help</span>
         <asp:GridView ID="grdMonitorHelp" runat="server" />
     </div>
 

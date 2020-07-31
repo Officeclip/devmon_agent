@@ -19,14 +19,12 @@
                     runat="server"
                     OnSelectedIndexChanged="ddlAgentGroups_SelectedIndexChanged"
                     AutoPostBack="true">
-                    <asp:ListItem Value="-1" Text="All groups" Selected="True">                            
-                    </asp:ListItem>
                 </asp:DropDownList>
                 <asp:CheckBox ID="chkEmailOpt" runat="server" 
                     style="padding-left: 40px"
                     OnCheckedChanged="chkEmailOpt_CheckedChanged" 
                     AutoPostBack="true" />
-                <span>Send Email when Agent fails</span> &nbsp&nbsp
+                <span>Send Email if Agent fails</span> &nbsp&nbsp
                 <span style="font-size:small;padding-left: 70px">
                     Last Updated: <%= DateTime.Now %>
                 </span>

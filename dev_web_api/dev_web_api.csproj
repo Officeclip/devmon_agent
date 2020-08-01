@@ -141,6 +141,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="About.aspx" />
+    <Content Include="images\cancel.png" />
+    <Content Include="images\delete.png" />
+    <Content Include="images\edit.png" />
+    <Content Include="images\save.png" />
     <Content Include="_AddAgentGroup.aspx" />
     <Content Include="agentGroup.aspx" />
     <Content Include="_AgentGroups.aspx" />

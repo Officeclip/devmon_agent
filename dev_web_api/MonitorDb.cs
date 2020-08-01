@@ -413,6 +413,7 @@ namespace dev_web_api
         {
             DeleteOldHistory(dateTime, 0);
             DeleteOldHistory(dateTime, 1);
+            // CR:0801:Dutta - Monthly delete is not implemented!
         }
 
         private int ConvertFrequencyToHour(int frequency)
@@ -442,6 +443,7 @@ namespace dev_web_api
                                         timespan);
             DeleteHistory(dateCutOff, frequency);
         }
+
         public void DeleteHistory(DateTime dateTime, int frequency)
         {
             _logger.Info("Method DeleteHistory()");
@@ -503,7 +505,6 @@ namespace dev_web_api
         {
             _logger.Info("Method InsertMonitorHistory(...)");
             _logger.Info(ObjectDumper.Dump(monitorValue));
-            //InsertHistory(monitorValue, dateTime, 0);
             ProcessHistoryByFrequency(monitorValue, dateTime, 1);
             ProcessHistoryByFrequency(monitorValue, dateTime, 2);
         }
@@ -557,13 +558,14 @@ namespace dev_web_api
                 }
             }
         }
-        public void ProcessHistoryByFrequency(MonitorValue monitorValue, DateTime dateTime, int frequency)
+        public void ProcessHistoryByFrequency(
+                                MonitorValue monitorValue, 
+                                DateTime dateTime, 
+                                int frequency)
         {
             DateTime dateStart;
-            DateTime dateEnd;
-            CovertFrequencyToSubtractHrs(dateTime, frequency, out dateStart, out dateEnd);
+            ConvertFrequencyToSubtractHrs(dateTime, frequency, out dateStart);
             bool isEntryPresentinDb = isEntryPresent(monitorValue, dateStart, frequency);
-
 
             if (!isEntryPresentinDb)
             {
@@ -579,33 +581,31 @@ namespace dev_web_api
                     default:
                         throw new Exception("frequency is not supported");
                 }
-                if (frequency == 2)
-                {
-                    var averageValue = GetAverageValue(monitorValue, dateStart, dateEnd, frequencyToAvgEntries);
-                    monitorValue.Value = averageValue;
-                }
+
+                monitorValue.Value = GetAverageValue(
+                                                monitorValue,
+                                                frequencyToAvgEntries);
+
                 InsertHistory(monitorValue, dateStart, frequency);
             }
         }
 
-        private static void CovertFrequencyToSubtractHrs(DateTime dateTime, int frequency, out DateTime dateStart, out DateTime dateEnd)
+        private static void ConvertFrequencyToSubtractHrs(DateTime dateTime, int frequency, out DateTime dateStart)
         {
             switch (frequency)
             {
                 case 1:
                     dateStart = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, 0, 0);
-                    dateEnd = dateStart.Subtract(new TimeSpan(1, 0, 0));
                     break;
                 case 2:
                     dateStart = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0);
-                    dateEnd = dateStart.Subtract(new TimeSpan(24, 0, 0));
                     break;
                 default:
                     throw new Exception("frequency is not supported");
             }
         }
 
-        private int GetAverageValue(MonitorValue monitorValue, DateTime dateStart, DateTime dateEnd, int frequency)
+        private int GetAverageValue(MonitorValue monitorValue, int frequency)
         {
             var averageValue = 0;
             SQLiteDataReader sqlite_datareader;

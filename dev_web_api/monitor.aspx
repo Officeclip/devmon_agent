@@ -34,7 +34,8 @@
                             ShowDeleteButton="True" />
                     <asp:TemplateField HeaderText="Name">
                         <ItemTemplate>
-                            <asp:Label ID="lblName" runat="server" Text='<%#Eval("Name")%>' />
+                            <asp:Label ID="lblName" runat="server" 
+                                Text='<%#Eval("Name")%>' />
                         </ItemTemplate>
                         <EditItemTemplate>
                             <asp:TextBox ID="txtName" runat="server" 
@@ -44,7 +45,8 @@
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Type">
                         <ItemTemplate>
-                            <asp:Label ID="lblType" runat="server" Text='<%#Eval("Type")%>' />
+                            <asp:Label ID="lblType" runat="server" 
+                                Text='<%#Eval("Type")%>' />
                         </ItemTemplate>
                         <EditItemTemplate>
                             <asp:TextBox ID="txtType" runat="server" 
@@ -55,17 +57,19 @@
 
                     <asp:TemplateField HeaderText="Arg1">
                         <ItemTemplate>
-                            <asp:Label ID="lblArg1" runat="server" Text='<%#Eval("Arg1")%>' />
+                            <asp:Label ID="lblArg1" runat="server" 
+                                Text='<%#Eval("Arg1")%>' />
                         </ItemTemplate>
                         <EditItemTemplate>
                             <asp:TextBox ID="txtArg1" runat="server" 
                                  Width="150"
-                                Text='<%#Eval("Arg1")%>' />
+                                 Text='<%#Eval("Arg1")%>' />
                         </EditItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Arg2">
                         <ItemTemplate>
-                            <asp:Label ID="lblArg2" runat="server" Text='<%#Eval("Arg2")%>' />
+                            <asp:Label ID="lblArg2" runat="server" 
+                                Text='<%#Eval("Arg2")%>' />
                         </ItemTemplate>
                          <EditItemTemplate>
                             <asp:TextBox ID="txtArg2" runat="server" 
@@ -75,7 +79,8 @@
                    </asp:TemplateField>
                     <asp:TemplateField HeaderText="Unit">
                         <ItemTemplate>
-                            <asp:Label ID="lblUnit" runat="server" Text='<%#Eval("Unit")%>' />
+                            <asp:Label ID="lblUnit" runat="server" 
+                                Text='<%#Eval("Unit")%>' />
                         </ItemTemplate>
                     </asp:TemplateField>
 

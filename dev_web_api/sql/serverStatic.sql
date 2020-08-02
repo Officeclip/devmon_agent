@@ -1,5 +1,4 @@
-﻿-- Code to created db in monitor.officeclip.com
-BEGIN TRANSACTION
+﻿BEGIN TRANSACTION;
 
 INSERT INTO 
     "groups" 
@@ -13,4 +12,4 @@ INSERT INTO
 VALUES 
     (1,'skd@officeclip.com', 'abcd1234@A', 1);
 
-COMMIT
+COMMIT;

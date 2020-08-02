@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS "history" (
 	"value"	INTEGER NOT NULL
 );
 
-DROP TABLE IF EXISTS "agent_group_agent";
+DROP TABLE IF EXISTS "agent_group_agent"; 
 CREATE TABLE "agent_group_agent" (
 	"agent_group_id"	INTEGER NOT NULL,
 	"agent_id"	INTEGER NOT NULL

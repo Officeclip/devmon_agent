@@ -145,6 +145,7 @@
     <Content Include="images\delete.png" />
     <Content Include="images\edit.png" />
     <Content Include="images\save.png" />
+    <Content Include="sql\serverStatic.sql" />
     <Content Include="_AddAgentGroup.aspx" />
     <Content Include="agentGroup.aspx" />
     <Content Include="_AgentGroups.aspx" />

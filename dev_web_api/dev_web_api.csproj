@@ -141,9 +141,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="About.aspx" />
-    <Content Include="AddAgentGroup.aspx" />
-    <Content Include="AddEditAgentGroups.aspx" />
-    <Content Include="AgentGroups.aspx" />
+    <Content Include="images\cancel.png" />
+    <Content Include="images\delete.png" />
+    <Content Include="images\edit.png" />
+    <Content Include="images\save.png" />
+    <Content Include="sql\serverStatic.sql" />
+    <Content Include="_AddAgentGroup.aspx" />
+    <Content Include="agentGroup.aspx" />
+    <Content Include="_AgentGroups.aspx" />
     <Content Include="commandLimits.aspx" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\bootstrap-theme.css" />
@@ -152,6 +157,12 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Site.css" />
     <Content Include="css\countdown.css" />
+    <Content Include="css\spacings.css">
+      <DependentUpon>spacings.scss</DependentUpon>
+    </Content>
+    <Content Include="css\spacings.min.css">
+      <DependentUpon>spacings.css</DependentUpon>
+    </Content>
     <Content Include="css\style.css">
       <DependentUpon>style.scss</DependentUpon>
     </Content>
@@ -187,7 +198,9 @@
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
+    <Content Include="css\spacings.scss" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <Content Include="readme.md" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -315,7 +328,7 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <None Include="sql\testData.sql" />
-    <None Include="sql\schema.sql" />
+    <Content Include="sql\schema.sql" />
     <Content Include="software.aspx" />
     <Content Include="hardware.aspx" />
     <Content Include="monitor.aspx" />
@@ -330,26 +343,26 @@
     <Compile Include="About.aspx.designer.cs">
       <DependentUpon>About.aspx</DependentUpon>
     </Compile>
-    <Compile Include="AddAgentGroup.aspx.cs">
-      <DependentUpon>AddAgentGroup.aspx</DependentUpon>
+    <Compile Include="_AddAgentGroup.aspx.cs">
+      <DependentUpon>_AddAgentGroup.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="AddAgentGroup.aspx.designer.cs">
-      <DependentUpon>AddAgentGroup.aspx</DependentUpon>
+    <Compile Include="_AddAgentGroup.aspx.designer.cs">
+      <DependentUpon>_AddAgentGroup.aspx</DependentUpon>
     </Compile>
-    <Compile Include="AddEditAgentGroups.aspx.cs">
-      <DependentUpon>AddEditAgentGroups.aspx</DependentUpon>
+    <Compile Include="agentGroup.aspx.cs">
+      <DependentUpon>agentGroup.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="AddEditAgentGroups.aspx.designer.cs">
-      <DependentUpon>AddEditAgentGroups.aspx</DependentUpon>
+    <Compile Include="agentGroup.aspx.designer.cs">
+      <DependentUpon>agentGroup.aspx</DependentUpon>
     </Compile>
-    <Compile Include="AgentGroups.aspx.cs">
-      <DependentUpon>AgentGroups.aspx</DependentUpon>
+    <Compile Include="_AgentGroups.aspx.cs">
+      <DependentUpon>_AgentGroups.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="AgentGroups.aspx.designer.cs">
-      <DependentUpon>AgentGroups.aspx</DependentUpon>
+    <Compile Include="_AgentGroups.aspx.designer.cs">
+      <DependentUpon>_AgentGroups.aspx</DependentUpon>
     </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -497,6 +510,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="web.config.build" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

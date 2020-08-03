@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="AddEditAgentGroups.aspx.cs" Inherits="dev_web_api.AddEditAgentGroups"
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="agentGroup.aspx.cs" Inherits="dev_web_api.agentGroup"
     MasterPageFile="~/Site.Master" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">

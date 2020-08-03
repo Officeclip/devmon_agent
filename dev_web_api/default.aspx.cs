@@ -3,6 +3,7 @@ using Microsoft.Ajax.Utilities;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
@@ -84,9 +85,9 @@ namespace dev_web_api
             var info = new AgentGroups()
             {
                 AgentGroupId = -1,
-                AgentGroupName = "All groups"
+                AgentGroupName = "- All -"
             };
-            agentGroupInfo.Add(info);
+            agentGroupInfo.Insert(0, info);
             ddlAgentGroups.DataSource = agentGroupInfo;
             ddlAgentGroups.DataValueField = "AgentGroupId";
             ddlAgentGroups.DataTextField = "AgentGroupName";
@@ -108,7 +109,7 @@ namespace dev_web_api
         {
             HtmlGenericControl ctrl = new HtmlGenericControl("meta");
             ctrl.Attributes["http-equiv"] = "refresh";
-            ctrl.Attributes["content"] = "30";
+            ctrl.Attributes["content"] = ConfigurationManager.AppSettings["RefreshFrequency"];
             this.Page.Header.Controls.Add(ctrl);
         }
         private int GetRandomNumber()

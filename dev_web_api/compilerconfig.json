@@ -2,5 +2,9 @@
   {
     "outputFile": "css/style.css",
     "inputFile": "css/style.scss"
+  },
+  {
+    "outputFile": "css/spacings.css",
+    "inputFile": "css/spacings.scss"
   }
 ]

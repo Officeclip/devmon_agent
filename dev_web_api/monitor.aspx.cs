@@ -89,7 +89,7 @@ namespace dev_web_api
         private string GetGridViewText(GridViewUpdateEventArgs e, int position)
         {
             return
-                ((System.Web.UI.LiteralControl)GridView1.Rows[e.RowIndex].Cells[position].Controls[0]).Text.Trim();
+                ((System.Web.UI.WebControls.TextBox)GridView1.Rows[e.RowIndex].Cells[position].Controls[1]).Text.Trim();
         }
 
         private bool IsError()
@@ -139,10 +139,10 @@ namespace dev_web_api
             var monitorCommand = new MonitorCommand()
             {
                 MonitorCommandId = id,
-                Name = GetGridViewText(e, 3),
-                Type = GetGridViewText(e, 4),
-                Arg1 = GetGridViewText(e, 5),
-                Arg2 = GetGridViewText(e, 6)
+                Name = GetGridViewText(e, 2),
+                Type = GetGridViewText(e, 3),
+                Arg1 = GetGridViewText(e, 4),
+                Arg2 = GetGridViewText(e, 5)
             };
             var monitorCommandHelp =
                    monitorCommandHelps.Find

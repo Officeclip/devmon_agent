@@ -386,6 +386,7 @@
     <Compile Include="DailyHistory.aspx.designer.cs">
       <DependentUpon>DailyHistory.aspx</DependentUpon>
     </Compile>
+    <Compile Include="frequencyEnum.cs" />
     <Compile Include="Graphcontrol.ascx.cs">
       <DependentUpon>Graphcontrol.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

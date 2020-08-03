@@ -588,7 +588,7 @@ namespace dev_web_api
             }
         }
 
-        private static void CovertFrequencyToSubtractHrs(DateTime dateTime, int frequency, out DateTime dateStart, out DateTime dateEnd)
+        public  void CovertFrequencyToSubtractHrs(DateTime dateTime, int frequency, out DateTime dateStart, out DateTime dateEnd)
         {
             switch (frequency)
             {
@@ -605,7 +605,7 @@ namespace dev_web_api
             }
         }
 
-        private int GetAverageValue(MonitorValue monitorValue, DateTime dateStart, DateTime dateEnd, int frequency)
+        public int GetAverageValue(MonitorValue monitorValue, DateTime dateStart, DateTime dateEnd, int frequency)
         {
             var averageValue = 0;
             SQLiteDataReader sqlite_datareader;
@@ -625,7 +625,7 @@ namespace dev_web_api
             sqlLiteConn.Close();
             return averageValue;
         }
-        private bool isEntryPresent(MonitorValue monitorValue, DateTime dateStartOfHour, int frequency)
+        public bool isEntryPresent(MonitorValue monitorValue, DateTime dateStartOfHour, int frequency)
         {
             var existingEntriesCount = -1;
             SQLiteDataReader sqlite_datareader;
@@ -637,7 +637,7 @@ namespace dev_web_api
                                     WHERE frequency = {frequency} AND agent_id = {monitorValue.AgentId } 
                                     AND monitor_command_id = { monitorValue.MonitorCommandId } AND
                                     date = '{ dateStartOfHour:o}'";
-            _logger.Debug("--------Sql COmmand-------");
+            _logger.Debug("--------Sql Command-------");
             _logger.Debug(sqlite_cmd.CommandText);
             sqlite_datareader = sqlite_cmd.ExecuteReader();
             while (sqlite_datareader.Read())
@@ -1581,64 +1581,7 @@ namespace dev_web_api
             var randomNumber = new Random(ticks);
             return randomNumber.Next(250, 300);
         }
-
-        public void InsertBulkData(
-                            bool isrealSimulation = false,
-                            int hours = 24,
-                            int minutes = 60,
-                            int days = 30)
-        {
-            CreateHourData(isrealSimulation, hours);
-            // CreateMinuteData(isrealSimulation, minutes);
-        }
-        public void CreateHourData(bool isRealSimulation, int hours)
-        {
-            for (var i = hours; i >= 0; i--)
-            {
-                var monitorValue = new MonitorValue
-                {
-                    AgentId = 1,
-                    MonitorCommandId = 1,
-                    Value = GetRandomNumber(),
-                    ErrorMessage = ""
-                };
-                var date = DateTime.UtcNow.AddHours(-i);
-                if (isRealSimulation)
-                {
-                    DeleteOldHistory(date, 1);
-                    InsertMonitorHistory(monitorValue, date);
-                }
-                else
-                {
-                    InsertHistory(monitorValue, date, 1);
-                }
-            }
-        }
-
-        public void CreateMinuteData(bool isRealSimulation, int minutes)
-        {
-            for (var i = minutes - 1; i >= 0; i--)
-            {
-                var monitorValue = new MonitorValue
-                {
-                    AgentId = 1,
-                    MonitorCommandId = 1,
-                    Value = GetRandomNumber(),
-                    ErrorMessage = ""
-                };
-                var date = DateTime.UtcNow.AddMinutes(-i);
-                if (isRealSimulation)
-                {
-                    DeleteOldHistory(date, 0);
-                    InsertMonitorHistory(monitorValue, date);
-                }
-                else
-                {
-                    InsertHistory(monitorValue, date, 0);
-                }
-            }
-        }
-
+        
         public void InsertEmailOpt(int optValue, int userId)
         {
             var sqlLiteConn = new SQLiteConnection(ConnectionString);

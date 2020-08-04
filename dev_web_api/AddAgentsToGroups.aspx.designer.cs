@@ -11,7 +11,7 @@ namespace dev_web_api
 {
 
 
-    public partial class AddAgentGroup
+    public partial class AddAgensToGroup
     {
 
         /// <summary>
@@ -24,13 +24,13 @@ namespace dev_web_api
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// txtgrpName control.
+        /// grdAgents control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtgrpName;
+        protected global::System.Web.UI.WebControls.GridView grdAgents;
 
         /// <summary>
         /// btnSave control.

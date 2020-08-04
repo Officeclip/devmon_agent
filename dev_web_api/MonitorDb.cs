@@ -1578,7 +1578,7 @@ namespace dev_web_api
             cmd.CommandText = $@"
                     UPDATE agent_groups
                     SET 
-					agent_group_name = {agent.AgentGroupName}                         
+					agent_group_name = '{agent.AgentGroupName}'                         
                     WHERE
                       agent_group_id   = {agent.AgentGroupId}";
             cmd.ExecuteNonQuery();

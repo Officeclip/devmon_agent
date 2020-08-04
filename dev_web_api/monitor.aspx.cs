@@ -47,7 +47,7 @@ namespace dev_web_api
         private void LoadData()
         {
             HiddenField1.Value = "View";
-            GridView1.DataSource = monitorDb.GetMonitorCommands();        
+            GridView1.DataSource = monitorDb.GetMonitorCommands();
             GridView1.DataBind();
             grdMonitorHelp.DataSource = monitorCommandHelps;
             grdMonitorHelp.DataBind();
@@ -191,9 +191,27 @@ namespace dev_web_api
             LoadData();
         }
 
+
+
         protected void btnBack_Click(object sender, EventArgs e)
         {
             Response.Redirect("default.aspx");
+        }
+
+        protected void GridView1_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                if (e.Row.RowState == DataControlRowState.Edit)
+                {
+                    var commandHelps = GetCommandHelp();
+                    DropDownList dropDownList = e.Row.FindControl("ddlTypes") as DropDownList;
+                    dropDownList.DataSource = commandHelps;
+                    dropDownList.DataValueField = "Type";
+                    dropDownList.DataTextField = "Type";
+                    dropDownList.DataBind();
+                }
+            }
         }
     }
 }

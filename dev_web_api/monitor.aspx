@@ -16,6 +16,7 @@
                 OnRowCancelingEdit="GridView1_RowCancelingEdit"
                 OnRowDeleting="GridView1_RowDeleting"
                 OnRowUpdating="GridView1_RowUpdating"
+                OnRowDataBound="GridView1_RowDataBound"
                 CellPadding="4"
                 ForeColor="#333333"
                 GridLines="None"
@@ -49,9 +50,10 @@
                                 Text='<%#Eval("Type")%>' />
                         </ItemTemplate>
                         <EditItemTemplate>
-                            <asp:TextBox ID="txtType" runat="server"
+                            <%--<asp:TextBox ID="txtType" runat="server"
                                 Width="100"
-                                Text='<%#Eval("Type")%>' />
+                                Text='<%#Eval("Type")%>' />--%>
+                            <asp:DropDownList ID="ddlTypes" runat="server" AutoPostBack="true"></asp:DropDownList>
                         </EditItemTemplate>
                     </asp:TemplateField>
 

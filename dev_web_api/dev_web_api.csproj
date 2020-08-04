@@ -147,9 +147,8 @@
     <Content Include="images\save.png" />
     <Content Include="ProtoTest.aspx" />
     <Content Include="sql\serverStatic.sql" />
-    <Content Include="_AddAgentGroup.aspx" />
     <Content Include="agentGroup.aspx" />
-    <Content Include="_AgentGroups.aspx" />
+    <Content Include="AddAgentsToGroups.aspx" />
     <Content Include="commandLimits.aspx" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\bootstrap-theme.css" />
@@ -352,13 +351,6 @@
     <Compile Include="ProtoTest.aspx.designer.cs">
       <DependentUpon>ProtoTest.aspx</DependentUpon>
     </Compile>
-    <Compile Include="_AddAgentGroup.aspx.cs">
-      <DependentUpon>_AddAgentGroup.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="_AddAgentGroup.aspx.designer.cs">
-      <DependentUpon>_AddAgentGroup.aspx</DependentUpon>
-    </Compile>
     <Compile Include="agentGroup.aspx.cs">
       <DependentUpon>agentGroup.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -366,12 +358,12 @@
     <Compile Include="agentGroup.aspx.designer.cs">
       <DependentUpon>agentGroup.aspx</DependentUpon>
     </Compile>
-    <Compile Include="_AgentGroups.aspx.cs">
-      <DependentUpon>_AgentGroups.aspx</DependentUpon>
+    <Compile Include="AddAgentsToGroups.aspx.cs">
+      <DependentUpon>AddAgentsToGroups.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="_AgentGroups.aspx.designer.cs">
-      <DependentUpon>_AgentGroups.aspx</DependentUpon>
+    <Compile Include="AddAgentsToGroups.aspx.designer.cs">
+      <DependentUpon>AddAgentsToGroups.aspx</DependentUpon>
     </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />

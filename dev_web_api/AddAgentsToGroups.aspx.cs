@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 namespace dev_web_api
 {
-    public partial class AddAgenstoGroup : System.Web.UI.Page
+    public partial class AddAgensToGroup : System.Web.UI.Page
     {
 
         private int AgentGroupId = -1;

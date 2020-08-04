@@ -8,7 +8,7 @@
                     OnSelectedIndexChanged="ddlMonitorCommands_SelectedIndexChanged" />
         </div>
         <div style="display: inline">
-            View History for:
+             History for:
             <asp:DropDownList ID="ddlFrequancy" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlFrequancy_SelectedIndexChanged">             
                 <asp:ListItem Text="Last hour" Value="0" Selected="True"></asp:ListItem>
                   <asp:ListItem Text="Last 24hrs" Value="1"></asp:ListItem> 

@@ -83,7 +83,7 @@ namespace dev_web_api
             var agentGroup = new AgentGroups()
             {
                 AgentGroupId = id,
-                AgentGroupName = GetGridViewText(e, 1)
+                AgentGroupName = GetGridViewText(e, 2)
             };
             monitorDb.UpdateAgentGroup(agentGroup);
             grdGroups.EditIndex = -1;
@@ -92,7 +92,7 @@ namespace dev_web_api
         private string GetGridViewText(GridViewUpdateEventArgs e, int position)
         {
             return
-                ((TextBox)grdGroups.Rows[e.RowIndex].Cells[position].Controls[0]).Text.Trim();
+                ((TextBox)grdGroups.Rows[e.RowIndex].Cells[position].Controls[1]).Text.Trim();
         }
 
         protected void grdGroups_DataBound(object sender, GridViewRowEventArgs e)
@@ -104,11 +104,12 @@ namespace dev_web_api
                 lnkAgents.NavigateUrl = GetAgentScreenWindow(item.AgentGroupId);
             }
         }
+       // txtGrps
 
         private string GetAgentScreenWindow(int agentGroupId)
         {
             return
-                     $"javascript:openPopUp('agentgroups.aspx?id={agentGroupId}')";
+                     $"javascript:openPopUp('AddAgentsToGroups.aspx?id={agentGroupId}')";
         }
     }
 }

@@ -16,7 +16,7 @@
         
     </style>
 
-    <div style="width:85%">
+    <div style="width: 85%">
         <div class="p-t-12">
             <div>
                 <div>
@@ -25,15 +25,14 @@
             </div>
 
         </div>
-        <div class="m-t-24 p-l-12" style="float:right; border:1px solid gray">
+        <div class="m-t-24 p-l-12" style="float: right; border: 1px solid gray">
 
-            <table class="profile" >
+            <table class="profile">
                 <tr>
-                    <th>
-                        Add new Group
+                    <th>Add new Group
                     </th>
-                </tr>               
-                <tr>                  
+                </tr>
+                <tr>
                     <td class="p-t-12">Group name:</td>
                     <td class="p-t-12">
                         <asp:TextBox ID="txtName" runat="server"></asp:TextBox>
@@ -59,9 +58,11 @@
                 </tr>
             </table>
 
-        </div>                    
+        </div>
         <div class="p-t-12">
-            <span><h5>Agent Groups</h5></span>
+            <span>
+                <h5>Agent Groups</h5>
+            </span>
             <asp:HiddenField ID="HiddenField1" runat="server" />
             <asp:GridView ID="grdGroups" runat="server" AutoGenerateColumns="false"
                 DataKeyNames="AgentGroupId"
@@ -75,12 +76,23 @@
                 GridLines="None" Width="40%">
                 <AlternatingRowStyle BackColor="White" />
                 <Columns>
-                    <asp:CommandField ShowEditButton="True" />
-                    <asp:CommandField ShowDeleteButton="True" />
+                    <asp:CommandField
+                        ButtonType="Image"
+                        CancelImageUrl="~/images/delete.png"
+                        EditImageUrl="~/images/edit.png"
+                        ShowEditButton="True"
+                        UpdateImageUrl="~/Images/save.png" />
+                    <asp:CommandField
+                        ButtonType="Image"
+                        DeleteImageUrl="~/Images/delete.png"
+                        ShowDeleteButton="True" />
                     <asp:TemplateField HeaderText="Group name">
                         <ItemTemplate>
                             <asp:Label ID="lblGrpName" runat="server" Text='<%#Eval("AgentGroupName")%>'></asp:Label>
                         </ItemTemplate>
+                        <EditItemTemplate>
+                            <asp:TextBox ID="txtGrpName" runat="server" Text='<%#Eval("AgentGroupName")%>'></asp:TextBox>
+                        </EditItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Actions">
                         <ItemTemplate>

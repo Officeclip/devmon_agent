@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="_AgentGroups.aspx.cs" Inherits="dev_web_api.AddAgenstoGroup" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="AddAgentsToGroups.aspx.cs" Inherits="dev_web_api.AddAgensToGroup" %>
 
 <!DOCTYPE html>
 
@@ -22,14 +22,15 @@
             padding-left: 15px
         }
     </style>
+    <link rel="stylesheet" href="css/style.min.css" />
+    <link rel="stylesheet" href="css/spacings.min.css" />
 </head>
 
 <body>
     <form id="form1" runat="server">
         <div>
-           
         </div>
-        <table class="pt pl">
+        <table class="p-t-12 p-l-12 body-content">
             <tr>
                 <td>
                     <div>
@@ -53,13 +54,19 @@
                 </td>
             </tr>
         </table>
-        <table class="pt pl">
+        <table class="p-t-12 p-l-12">
             <tr>
                 <td>
-                    <asp:Button ID="btnSave" runat="server" Text="Save" OnClick="btnSave_Click" />
+                    <asp:Button ID="btnSave" runat="server"
+                        Text="Save"
+                        Font-Bold="true"
+                        OnClick="btnSave_Click" />
                 </td>
                 <td>
-                    <asp:Button ID="btnCancel" runat="server" Text="Cancel" OnClick="btnCancel_Click" />
+                    <asp:Button ID="btnCancel" runat="server"
+                        Text="Cancel"
+                        Font-Bold="true"
+                        OnClick="btnCancel_Click" />
                 </td>
             </tr>
         </table>

@@ -7,7 +7,7 @@
         Text="Back to Monitor"
         Font-Bold="true"
         OnClick="btnBack_Click" />
-    <div style="margin: 20px; border: 1px solid gray; width:60%">
+    <div style="margin: 20px; padding:10px; border: 1px solid gray; width:60%">
         <table class="profile" cellspacing="5" cellpadding="5" >
             <tr>
 

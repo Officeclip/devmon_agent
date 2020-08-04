@@ -16,7 +16,7 @@
         
     </style>
 
-    <div style="width:55px">
+    <div style="width:85%">
         <div class="p-t-12">
             <div>
                 <div>
@@ -25,7 +25,7 @@
             </div>
 
         </div>
-        <div style="float:right; border:1px solid gray">
+        <div class="m-t-24 p-l-12" style="float:right; border:1px solid gray">
 
             <table class="profile" >
                 <tr>
@@ -61,7 +61,7 @@
 
         </div>                    
         <div class="p-t-12">
-            <span><h5>Groups</h5></span>
+            <span><h5>Agent Groups</h5></span>
             <asp:HiddenField ID="HiddenField1" runat="server" />
             <asp:GridView ID="grdGroups" runat="server" AutoGenerateColumns="false"
                 DataKeyNames="AgentGroupId"

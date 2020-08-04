@@ -205,13 +205,46 @@ namespace dev_web_api
                 if (e.Row.RowState == DataControlRowState.Edit)
                 {
                     var commandHelps = GetCommandHelp();
+                    FillDropDownList(e, commandHelps);
+                    TextBox txtArg1 = e.Row.FindControl("txtArg1") as TextBox;
+                    TextBox txtArg2 = e.Row.FindControl("txtArg2") as TextBox;
                     DropDownList dropDownList = e.Row.FindControl("ddlTypes") as DropDownList;
-                    dropDownList.DataSource = commandHelps;
-                    dropDownList.DataValueField = "Type";
-                    dropDownList.DataTextField = "Type";
-                    dropDownList.DataBind();
                 }
             }
+        }
+        private static void FillDropDownList(GridViewRowEventArgs e, List<MonitorCommandHelp> commandHelps)
+        {
+            DropDownList dropDownList = e.Row.FindControl("ddlTypes") as DropDownList;
+            dropDownList.DataSource = commandHelps;
+            dropDownList.DataValueField = "Type";
+            dropDownList.DataTextField = "Type";
+            dropDownList.DataBind();
+        }
+
+        /// <summary>
+        /// https://stackoverflow.com/questions/23720343/asp-net-change-value-of-textbox-in-grid-on-selected-index-changed
+        /// Followed this article to done this
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void ddlTypes_SelectedIndexChanged(object sender, EventArgs e)
+        {           
+            DropDownList ddl = (DropDownList)sender;
+            GridViewRow row = (GridViewRow)ddl.NamingContainer;
+            TextBox txtArg1 = (TextBox)row.FindControl("txtArg1");
+            TextBox txtArg2 = (TextBox)row.FindControl("txtArg2");
+
+            var commands = GetCommandHelp();
+            foreach (var command in commands)
+            {
+                if (ddl.SelectedValue == command.Type)
+                {
+                    txtArg1.ToolTip = command.Arg1;
+                    txtArg2.ToolTip = command.Arg2;
+                }
+            }
+
+
         }
     }
 }

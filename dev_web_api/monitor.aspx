@@ -53,7 +53,10 @@
                             <%--<asp:TextBox ID="txtType" runat="server"
                                 Width="100"
                                 Text='<%#Eval("Type")%>' />--%>
-                            <asp:DropDownList ID="ddlTypes" runat="server" AutoPostBack="true"></asp:DropDownList>
+                            <asp:DropDownList ID="ddlTypes" runat="server"
+                                AutoPostBack="true"
+                                OnSelectedIndexChanged="ddlTypes_SelectedIndexChanged"
+                                ></asp:DropDownList>
                         </EditItemTemplate>
                     </asp:TemplateField>
 

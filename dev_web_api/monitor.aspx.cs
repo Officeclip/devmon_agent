@@ -23,8 +23,16 @@ namespace dev_web_api
         {
             if (!Page.IsPostBack)
             {
-                LoadData();             
+                LoadData();
+                LoadTypes(monitorCommandHelps);
             }
+        }
+        private void LoadTypes(List<MonitorCommandHelp> monitorCommandHelps)
+        {
+            ddlType.DataSource = monitorCommandHelps;
+            ddlType.DataValueField = "Type";
+            ddlType.DataTextField = "Type";
+            ddlType.DataBind();
         }
 
         private List<MonitorCommandHelp> GetCommandHelp()
@@ -44,6 +52,32 @@ namespace dev_web_api
             grdMonitorHelp.DataSource = monitorCommandHelps;
             grdMonitorHelp.DataBind();
         }
+        protected void ddlType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            FillToolTipInfo(ddlType.SelectedValue);
+        }
+        private void FillToolTipInfo(string selectedValue)
+        {
+            foreach (var command in monitorCommandHelps)
+            {
+
+                if (command.Type == selectedValue)
+                {
+                    ValidateCommandArguments(command);
+                }
+            }
+
+        }
+
+        private void ValidateCommandArguments(MonitorCommandHelp command)
+        {
+            txtArg1.Enabled = command.Arg1 != string.Empty;
+            txtArg2.Enabled = command.Arg2 != string.Empty;
+            lblType.Text = command.Description;
+            lblArg1.Text = command.Arg1;
+            lblArg2.Text = command.Arg2;
+            lblUnit.Text = command.Unit;
+        }
 
         protected void Button1_Click(object sender, EventArgs e)
         {
@@ -55,7 +89,7 @@ namespace dev_web_api
             var monitorCommand = new MonitorCommand()
             {
                 Name = txtName.Text.Trim(),
-                Type = txtType.Text.Trim(),
+                Type = ddlType.SelectedValue.Trim(),
                 Arg1 = txtArg1.Text.Trim(),
                 Arg2 = txtArg2.Text.Trim()
             };
@@ -103,7 +137,7 @@ namespace dev_web_api
             }
 
             var monitorCommandHelp = monitorCommandHelps.Find
-                                                            (x => x.Type == txtType.Text.Trim());
+                                                            (x => x.Type == ddlType.SelectedValue.Trim());
             if (monitorCommandHelp == null)
             {
                 lblError.Text += "<br/>Type is incorrect";

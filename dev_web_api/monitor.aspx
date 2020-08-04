@@ -7,7 +7,7 @@
         Monitors
     </div>
     <div>
-        <div style="float:left; width: 700px">
+        <div style="float: left; width: 700px">
             <asp:HiddenField ID="HiddenField1" runat="server" />
             <asp:GridView ID="GridView1" runat="server"
                 AutoGenerateColumns="false"
@@ -18,68 +18,68 @@
                 OnRowUpdating="GridView1_RowUpdating"
                 CellPadding="4"
                 ForeColor="#333333"
-                GridLines="None" 
+                GridLines="None"
                 Width="100%">
                 <AlternatingRowStyle BackColor="White" />
                 <Columns>
-                    <asp:CommandField 
-                            ButtonType="Image" 
-                            CancelImageUrl="~/images/delete.png" 
-                            EditImageUrl="~/images/edit.png"
-                            ShowEditButton="True" 
-                            UpdateImageUrl="~/Images/save.png" />
-                    <asp:CommandField 
-                            ButtonType="Image" 
-                            DeleteImageUrl="~/Images/delete.png" 
-                            ShowDeleteButton="True" />
+                    <asp:CommandField
+                        ButtonType="Image"
+                        CancelImageUrl="~/images/delete.png"
+                        EditImageUrl="~/images/edit.png"
+                        ShowEditButton="True"
+                        UpdateImageUrl="~/Images/save.png" />
+                    <asp:CommandField
+                        ButtonType="Image"
+                        DeleteImageUrl="~/Images/delete.png"
+                        ShowDeleteButton="True" />
                     <asp:TemplateField HeaderText="Name">
                         <ItemTemplate>
-                            <asp:Label ID="lblName" runat="server" 
+                            <asp:Label ID="lblName" runat="server"
                                 Text='<%#Eval("Name")%>' />
                         </ItemTemplate>
                         <EditItemTemplate>
-                            <asp:TextBox ID="txtName" runat="server" 
-                                 Width="100"
+                            <asp:TextBox ID="txtName" runat="server"
+                                Width="100"
                                 Text='<%#Eval("Name")%>' />
                         </EditItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Type">
                         <ItemTemplate>
-                            <asp:Label ID="lblType" runat="server" 
+                            <asp:Label ID="lblType" runat="server"
                                 Text='<%#Eval("Type")%>' />
                         </ItemTemplate>
                         <EditItemTemplate>
-                            <asp:TextBox ID="txtType" runat="server" 
-                                 Width="100"
+                            <asp:TextBox ID="txtType" runat="server"
+                                Width="100"
                                 Text='<%#Eval("Type")%>' />
                         </EditItemTemplate>
                     </asp:TemplateField>
 
                     <asp:TemplateField HeaderText="Arg1">
                         <ItemTemplate>
-                            <asp:Label ID="lblArg1" runat="server" 
+                            <asp:Label ID="lblArg1" runat="server"
                                 Text='<%#Eval("Arg1")%>' />
                         </ItemTemplate>
                         <EditItemTemplate>
-                            <asp:TextBox ID="txtArg1" runat="server" 
-                                 Width="150"
-                                 Text='<%#Eval("Arg1")%>' />
+                            <asp:TextBox ID="txtArg1" runat="server"
+                                Width="150"
+                                Text='<%#Eval("Arg1")%>' />
                         </EditItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Arg2">
                         <ItemTemplate>
-                            <asp:Label ID="lblArg2" runat="server" 
+                            <asp:Label ID="lblArg2" runat="server"
                                 Text='<%#Eval("Arg2")%>' />
                         </ItemTemplate>
-                         <EditItemTemplate>
-                            <asp:TextBox ID="txtArg2" runat="server" 
-                                 Width="150"
+                        <EditItemTemplate>
+                            <asp:TextBox ID="txtArg2" runat="server"
+                                Width="150"
                                 Text='<%#Eval("Arg2")%>' />
                         </EditItemTemplate>
-                   </asp:TemplateField>
+                    </asp:TemplateField>
                     <asp:TemplateField HeaderText="Unit">
                         <ItemTemplate>
-                            <asp:Label ID="lblUnit" runat="server" 
+                            <asp:Label ID="lblUnit" runat="server"
                                 Text='<%#Eval("Unit")%>' />
                         </ItemTemplate>
                     </asp:TemplateField>
@@ -96,7 +96,7 @@
                 <SortedDescendingHeaderStyle BackColor="#820000" />
             </asp:GridView>
         </div>
-        <div style="float:left; margin-left: 48px; border: 1px solid #eee; padding: 8px">
+        <div style="float: left; margin-left: 48px; border: 1px solid #eee; padding: 8px">
             <table class="profile">
                 <tr>
                     <td>Name:</td>
@@ -107,19 +107,38 @@
                 <tr>
                     <td>Type:</td>
                     <td>
-                        <asp:TextBox ID="txtType" runat="server"></asp:TextBox>
+                        <asp:DropDownList ID="ddlType" runat="server"
+                            OnSelectedIndexChanged="ddlType_SelectedIndexChanged"
+                            AutoPostBack="true">
+                        </asp:DropDownList>
+                        <asp:Label ID="lblType" runat="server"></asp:Label>
+
                     </td>
                 </tr>
                 <tr>
                     <td>Arg1:</td>
                     <td>
-                        <asp:TextBox ID="txtArg1" runat="server"></asp:TextBox></td>
+                        <asp:TextBox ID="txtArg1" runat="server"></asp:TextBox>
+                        <asp:Label ID="lblArg1" runat="server"></asp:Label>
+
+                    </td>
                 </tr>
                 <tr>
                     <td>Arg2:</td>
 
                     <td>
-                        <asp:TextBox ID="txtArg2" runat="server"></asp:TextBox></td>
+                        <asp:TextBox ID="txtArg2" runat="server"></asp:TextBox>
+                        <asp:Label ID="lblArg2" runat="server"></asp:Label>
+
+                    </td>
+                </tr>
+                 <tr>
+                    <td>Units:</td>
+
+                    <td>                      
+                        <asp:Label ID="lblUnit" runat="server"></asp:Label>
+
+                    </td>
                 </tr>
             </table>
             <div style="padding: 16px">
@@ -141,10 +160,10 @@
             </div>
 
         </div>
-        <div style="clear:both" />
+        <div style="clear: both" />
     </div>
 
-    <div style="margin: 20px 0">
+    <div style="margin: 20px 0; display:none">
         <span class="heading">Monitor Command Help</span>
         <asp:GridView ID="grdMonitorHelp" runat="server" />
     </div>

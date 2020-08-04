@@ -150,7 +150,7 @@ namespace dev_web_api
         {
             var monitorDb = new MonitorDb();
             monitorDb.DeleteAllHistory();
-            monitorDb.InsertBulkData(true, 72, 180);
+           // monitorDb.InsertBulkData(true, 72, 180);
         }
 
         protected void chkEmailOpt_CheckedChanged(object sender, EventArgs e)

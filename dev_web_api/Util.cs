@@ -1,5 +1,6 @@
 ﻿using dev_web_api.BusinessLayer;
 using dev_web_api.Controllers;
+using FriendlyTime;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -240,7 +241,7 @@ namespace dev_web_api
             for (int i = 0; i < agents.Count; i++)
             {
                 monitorTable.Rows[i + 1].Cells[0].InnerHtml = $@"<span style=""border-bottom: 1px dashed black"">{ agents[i].ScreenName}</span>";
-                var title = $"Last Response {agents[i].LastReplyReceived}(utc)";
+                var title = $"Last Response {agents[i].LastReplyReceived.ToFriendlyDateTime()}";
                 monitorTable.Rows[i + 1].Cells[0].Attributes.Add("title", title);
                 monitorTable.Rows[i + 1].Cells[0].Attributes.Add("class", "headerTitle");
             }

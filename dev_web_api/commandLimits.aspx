@@ -1,6 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="commandLimits.aspx.cs" Inherits="dev_web_api.commandLimits" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+     <link rel="stylesheet" href="css/style.min.css">
+    <link rel="stylesheet" href="css/spacings.min.css">
     <div>
         <div style="float: left">
             <h3>Monitor Command Limits</h3>
@@ -13,8 +15,8 @@
         </div>
         <div style="clear: both" />
     </div>
-    <div>
-        <table>
+    <div style="border:1px solid gray; width:55%">
+        <table class="profile" style="margin-left: 15px;">
             <tr>
                 <th>Type</th>
                 <th>Warning Limit</th>
@@ -41,11 +43,12 @@
                 </ItemTemplate>
             </asp:Repeater>
         </table>
-    </div>
-    <div>
+            <div style="margin-left: 15px; margin-bottom: 15px">
         <asp:Button ID="btnSave" runat="server"
-            Text="Submit"
+            Text="Submit" Font-Bold="true"
             OnClick="btnSave_Click" />
     </div>
+    </div>
+
 
 </asp:Content>

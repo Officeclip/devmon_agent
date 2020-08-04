@@ -7,7 +7,7 @@ namespace dev_web_api
 {
     public class frequencyEnum
     {
-        public enum FreequecyTppes
+        public enum FreequecyTypes
         {
             Minutes = 0,
             Hours = 1,

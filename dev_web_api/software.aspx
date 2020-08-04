@@ -6,6 +6,8 @@
     Inherits="dev_web_api.software" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <link rel="stylesheet" href="css/style.min.css">
+    <link rel="stylesheet" href="css/spacings.min.css">
     <div style="margin: 20px">
         <div>
             <div style="display: inline">
@@ -13,7 +15,7 @@
                 <asp:DropDownList ID="ddlAgents" runat="server"
                     AutoPostBack="true"
                     OnSelectedIndexChanged="ddlAgents_SelectedIndexChanged" />
-                  <asp:Label ID="lblError"  runat="server" ForeColor="Red"></asp:Label>
+                <asp:Label ID="lblError" runat="server" ForeColor="Red"></asp:Label>
             </div>
             <div style="display: inline; margin-left: 20px">
                 <asp:Literal ID="litDate" runat="server" />
@@ -29,7 +31,7 @@
             <asp:Label ID="lblEmptyData" runat="server"
                 Text="Data for this agent is not available"
                 ForeColor="Red" />
-            <asp:GridView ID="grdSoftware" runat="server" />
+            <asp:GridView ID="grdSoftware" runat="server" CssClass="body-content" />
         </div>
     </div>
 </asp:Content>

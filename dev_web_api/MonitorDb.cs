@@ -7,6 +7,7 @@ using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Web;
+using static dev_web_api.frequencyEnum;
 
 namespace dev_web_api
 {
@@ -413,21 +414,25 @@ namespace dev_web_api
         {
             DeleteOldHistory(dateTime, 0);
             DeleteOldHistory(dateTime, 1);
-            // CR:0801:Dutta - Monthly delete is not implemented!
+            DeleteOldHistory(dateTime, 2);
         }
 
-        private int ConvertFrequencyToHour(int frequency)
+        private int ConvertFrequencyToHour(FreequecyTypes frequency)
         {
             int hours;
-
             switch (frequency)
             {
-                case 0:
+                case FreequecyTypes.Minutes:
                     hours = 1;
                     break;
-                case 1:
+                case FreequecyTypes.Hours:
                     hours = 24;
                     break;
+                case FreequecyTypes.Days:
+                    //here it is not hours actually it returns the Date
+                    hours = 720;
+                    break;
+
                 default:
                     throw new Exception("Frequency not supported");
             }
@@ -435,9 +440,10 @@ namespace dev_web_api
             return hours;
         }
         public void DeleteOldHistory(DateTime dateTime, int frequency)
+
         {
             TimeSpan timespan = new TimeSpan(
-                                          ConvertFrequencyToHour(frequency), 0, 0);
+                                          ConvertFrequencyToHour((FreequecyTypes)frequency), 0, 0);
             var dateCutOff = dateTime
                                     .Subtract(
                                         timespan);
@@ -505,13 +511,14 @@ namespace dev_web_api
         {
             _logger.Info("Method InsertMonitorHistory(...)");
             _logger.Info(ObjectDumper.Dump(monitorValue));
-            ProcessHistoryByFrequency(monitorValue, dateTime, 1);
-            ProcessHistoryByFrequency(monitorValue, dateTime, 2);
+            InsertHistory(monitorValue, dateTime, FreequecyTypes.Minutes);
+            ProcessHistoryByFrequency(monitorValue, dateTime, FreequecyTypes.Hours);
+            ProcessHistoryByFrequency(monitorValue, dateTime, FreequecyTypes.Days);
         }
 
 
 
-        public void InsertHistory(MonitorValue monitorValue, DateTime dateTime, int frequency)
+        public void InsertHistory(MonitorValue monitorValue, DateTime dateTime, FreequecyTypes frequency)
         {
             using (var sqlLiteConn = new SQLiteConnection(ConnectionString))
             {
@@ -530,7 +537,7 @@ namespace dev_web_api
                     )
                     VALUES
                     (
-                        {frequency},
+                        {(int)frequency},
                         {monitorValue.AgentId},
                         {monitorValue.MonitorCommandId},
                         '{dateTime:o}',
@@ -559,9 +566,9 @@ namespace dev_web_api
             }
         }
         public void ProcessHistoryByFrequency(
-                                MonitorValue monitorValue, 
-                                DateTime dateTime, 
-                                int frequency)
+                                MonitorValue monitorValue,
+                                DateTime dateTime,
+                                FreequecyTypes frequency)
         {
             DateTime dateStart;
             ConvertFrequencyToSubtractHrs(dateTime, frequency, out dateStart);
@@ -572,32 +579,34 @@ namespace dev_web_api
                 int frequencyToAvgEntries;
                 switch (frequency)
                 {
-                    case 1:
+                    case FreequecyTypes.Hours:
                         frequencyToAvgEntries = 0;
+                        monitorValue.Value = GetAverageValue(
+                                           monitorValue,
+                                           frequencyToAvgEntries);
                         break;
-                    case 2:
+                    case FreequecyTypes.Days
+                    :
                         frequencyToAvgEntries = 1;
+                        monitorValue.Value = GetAverageValue(
+                                           monitorValue,
+                                           frequencyToAvgEntries);
                         break;
                     default:
                         throw new Exception("frequency is not supported");
                 }
-
-                monitorValue.Value = GetAverageValue(
-                                                monitorValue,
-                                                frequencyToAvgEntries);
-
                 InsertHistory(monitorValue, dateStart, frequency);
             }
         }
 
-        private static void ConvertFrequencyToSubtractHrs(DateTime dateTime, int frequency, out DateTime dateStart)
+        private static void ConvertFrequencyToSubtractHrs(DateTime dateTime, FreequecyTypes frequency, out DateTime dateStart)
         {
             switch (frequency)
             {
-                case 1:
+                case FreequecyTypes.Hours:
                     dateStart = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, 0, 0);
                     break;
-                case 2:
+                case FreequecyTypes.Days:
                     dateStart = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0);
                     break;
                 default:
@@ -625,7 +634,7 @@ namespace dev_web_api
             sqlLiteConn.Close();
             return averageValue;
         }
-        public bool isEntryPresent(MonitorValue monitorValue, DateTime dateStartOfHour, int frequency)
+        public bool isEntryPresent(MonitorValue monitorValue, DateTime dateStartOfHour, FreequecyTypes frequency)
         {
             var existingEntriesCount = -1;
             SQLiteDataReader sqlite_datareader;
@@ -634,7 +643,7 @@ namespace dev_web_api
             sqlLiteConn.Open();
             sqlite_cmd = sqlLiteConn.CreateCommand();
             sqlite_cmd.CommandText = $@"SELECT count(*) as entries_count FROM history
-                                    WHERE frequency = {frequency} AND agent_id = {monitorValue.AgentId } 
+                                    WHERE frequency = {(int)frequency} AND agent_id = {monitorValue.AgentId } 
                                     AND monitor_command_id = { monitorValue.MonitorCommandId } AND
                                     date = '{ dateStartOfHour:o}'";
             _logger.Debug("--------Sql Command-------");
@@ -1581,7 +1590,7 @@ namespace dev_web_api
             var randomNumber = new Random(ticks);
             return randomNumber.Next(250, 300);
         }
-        
+
         public void InsertEmailOpt(int optValue, int userId)
         {
             var sqlLiteConn = new SQLiteConnection(ConnectionString);

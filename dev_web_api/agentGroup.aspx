@@ -2,7 +2,8 @@
     MasterPageFile="~/Site.Master" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-
+    <link rel="stylesheet" href="css/style.min.css">
+    <link rel="stylesheet" href="css/spacings.min.css">
     <script type="text/javascript">
         function openPopUp(str) {
             prop = 'toolbar=0,location=0,scrollbars=1,height=400';
@@ -12,57 +13,55 @@
         }
     </script>
     <style type="text/css">
-        .pl {
-            padding-left: 10px
-        }
-
-        .pt {
-            padding-top: 10px
-        }
+        
     </style>
 
-    <div>
-        <div class="pt">
+    <div style="width:55px">
+        <div class="p-t-12">
             <div>
                 <div>
                 </div>
-                <div>
-                    <table>
-                        <tr>
-                            <td class="pt">Group name:</td>
-                            <td class="pl pt">
-                                <asp:TextBox ID="txtName" runat="server"></asp:TextBox>                               
-                            </td>
-                            <td class="pl pt">
-                                 <asp:Label ID="lblmsg" runat="server" ForeColor="Red" ></asp:Label>
-                            </td>
-                        </tr>
-                    </table>
-                    <table class="pt">
-                        <tr>
-                            <td class=" pt pl">
-                                <div class="pl" style="float: left">
-                                    <asp:Button ID="btnSave" runat="server"
-                                        Text="save"
-                                        Font-Bold="true"
-                                        OnClick="btnSave_Click" />
-                                </div>
-                            </td>
-                            <td class=" pt pl">
-                                <asp:Button ID="btnBack" runat="server"
-                                    Text="Back to Monitor"
-                                    Font-Bold="true"  OnClick="btnBack_Click"
-                                     />
-                            </td>
-                        </tr>
-                    </table>
 
-                </div>
             </div>
 
         </div>
-        <div class="pt">
+        <div style="float:right; border:1px solid gray">
 
+            <table class="profile" >
+                <tr>
+                    <th>
+                        Add new Group
+                    </th>
+                </tr>               
+                <tr>                  
+                    <td class="p-t-12">Group name:</td>
+                    <td class="p-t-12">
+                        <asp:TextBox ID="txtName" runat="server"></asp:TextBox>
+                    </td>
+                    <td class="p-t-12">
+                        <asp:Label ID="lblmsg" runat="server" ForeColor="Red"></asp:Label>
+                    </td>
+                </tr>
+            </table>
+            <table class="profile m-l-72">
+                <tr>
+                    <td>
+                        <asp:Button ID="btnSave" runat="server"
+                            Text="save"
+                            Font-Bold="true"
+                            OnClick="btnSave_Click" />
+                    </td>
+                    <td>
+                        <asp:Button ID="btnBack" runat="server"
+                            Text="Back to Monitor"
+                            Font-Bold="true" OnClick="btnBack_Click" />
+                    </td>
+                </tr>
+            </table>
+
+        </div>                    
+        <div class="p-t-12">
+            <span><h5>Groups</h5></span>
             <asp:HiddenField ID="HiddenField1" runat="server" />
             <asp:GridView ID="grdGroups" runat="server" AutoGenerateColumns="false"
                 DataKeyNames="AgentGroupId"
@@ -99,6 +98,7 @@
                 <SortedDescendingCellStyle BackColor="#FCF6C0" />
                 <SortedDescendingHeaderStyle BackColor="#820000" />
             </asp:GridView>
+
         </div>
 
     </div>

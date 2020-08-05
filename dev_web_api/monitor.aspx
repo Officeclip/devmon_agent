@@ -7,7 +7,7 @@
         Monitors
     </div>
     <div>
-        <div class="inputForm">
+        <div style="float:left" class="inputForm">
             <table>
                 <tr>
                     <td style="color:red">* Name:</td>

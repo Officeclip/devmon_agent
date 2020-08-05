@@ -34,11 +34,6 @@
 
         </div>
 
-        <div>
-            <div style="float: right">
-                <asp:Button ID="btnTestData" runat="server" Text="Test" ToolTip="Click to generate test Data" OnClick="btnTestData_Click" />
-            </div>
-        </div>
         <table id="tblMonitor" class="monitor" runat="server" />
 
         <div style="margin-top: 50px">

@@ -21,6 +21,7 @@ namespace dev_web_api
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            AddToolTip();
             if (!Page.IsPostBack)
             {
                 LoadData();
@@ -40,7 +41,12 @@ namespace dev_web_api
             var json = Util.ReadFile(
                                     Server.MapPath(
                                         @"~/App_Data/monitorCommands.json"));
+            var command = new MonitorCommandHelp()
+            {
+                Type = "-- select --"
+            };
             var commandHelp = JsonConvert.DeserializeObject<List<MonitorCommandHelp>>(json);
+            commandHelp.Insert(0, command);
             return commandHelp;
         }
 
@@ -52,15 +58,35 @@ namespace dev_web_api
             grdMonitorHelp.DataSource = monitorCommandHelps;
             grdMonitorHelp.DataBind();
         }
+
+        private void AddToolTip()
+        {
+
+            foreach (ListItem item in ddlType.Items)
+            {
+                foreach (var command in monitorCommandHelps)
+                {
+                    if (command.Type == item.Value)
+                    {
+                        item.Attributes.Add("title", command.Description);
+                    }
+                }
+
+            }
+        }
         protected void ddlType_SelectedIndexChanged(object sender, EventArgs e)
         {
             FillToolTipInfo(ddlType.SelectedValue);
         }
+
         private void FillToolTipInfo(string selectedValue)
         {
             foreach (var command in monitorCommandHelps)
             {
-
+                //foreach (ListItem item in ddlType.Items)
+                //{
+                //    item.Attributes.Add("title", command.Description);
+                //}
                 if (command.Type == selectedValue)
                 {
                     ValidateCommandArguments(command);
@@ -122,8 +148,16 @@ namespace dev_web_api
 
         private string GetGridViewText(GridViewUpdateEventArgs e, int position)
         {
-            return
-                ((System.Web.UI.WebControls.TextBox)GridView1.Rows[e.RowIndex].Cells[position].Controls[1]).Text.Trim();
+            if (position == 3)
+            {
+                return ((System.Web.UI.WebControls.DropDownList)GridView1.Rows[e.RowIndex].Cells[position].Controls[1]).SelectedValue.Trim();
+            }
+            else
+            {
+                return
+               ((System.Web.UI.WebControls.TextBox)GridView1.Rows[e.RowIndex].Cells[position].Controls[1]).Text.Trim();
+            }
+
         }
 
         private bool IsError()
@@ -202,7 +236,8 @@ namespace dev_web_api
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                if (e.Row.RowState == DataControlRowState.Edit)
+               
+                if ((e.Row.RowState & DataControlRowState.Edit) > 0)
                 {
                     var commandHelps = GetCommandHelp();
                     FillDropDownList(e, commandHelps);
@@ -219,6 +254,18 @@ namespace dev_web_api
             dropDownList.DataValueField = "Type";
             dropDownList.DataTextField = "Type";
             dropDownList.DataBind();
+
+            foreach (ListItem item in dropDownList.Items)
+            {
+                foreach (var command in commandHelps)
+                {
+                    if (command.Type == item.Value)
+                    {
+                        item.Attributes.Add("title", command.Description);
+                    }
+                }
+
+            }
         }
 
         /// <summary>
@@ -228,7 +275,7 @@ namespace dev_web_api
         /// <param name="sender"></param>
         /// <param name="e"></param>
         protected void ddlTypes_SelectedIndexChanged(object sender, EventArgs e)
-        {           
+        {
             DropDownList ddl = (DropDownList)sender;
             GridViewRow row = (GridViewRow)ddl.NamingContainer;
             TextBox txtArg1 = (TextBox)row.FindControl("txtArg1");

@@ -599,7 +599,7 @@ namespace dev_web_api
             }
         }
 
-        private static void ConvertFrequencyToSubtractHrs(DateTime dateTime, FreequecyTypes frequency, out DateTime dateStart)
+        public  void ConvertFrequencyToSubtractHrs(DateTime dateTime, FreequecyTypes frequency, out DateTime dateStart)
         {
             switch (frequency)
             {
@@ -614,7 +614,7 @@ namespace dev_web_api
             }
         }
 
-        private int GetAverageValue(MonitorValue monitorValue, int frequency)
+        public int GetAverageValue(MonitorValue monitorValue, int frequency)
         {
             var averageValue = 0;
             SQLiteDataReader sqlite_datareader;

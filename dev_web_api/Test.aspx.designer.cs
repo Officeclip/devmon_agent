@@ -11,34 +11,25 @@ namespace dev_web_api
 {
 
 
-    public partial class _default
+    public partial class Test
     {
 
         /// <summary>
-        /// ddlAgentGroups control.
+        /// form1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlAgentGroups;
+        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// chkEmailOpt control.
+        /// txtData control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkEmailOpt;
-
-        /// <summary>
-        /// tblMonitor control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTable tblMonitor;
+        protected global::System.Web.UI.WebControls.Button txtData;
     }
 }

@@ -145,7 +145,7 @@
     <Content Include="images\delete.png" />
     <Content Include="images\edit.png" />
     <Content Include="images\save.png" />
-    <Content Include="ProtoTest.aspx" />
+    <Content Include="Test.aspx" />
     <Content Include="sql\serverStatic.sql" />
     <Content Include="agentGroup.aspx" />
     <Content Include="AddAgentsToGroups.aspx" />
@@ -344,12 +344,12 @@
       <DependentUpon>About.aspx</DependentUpon>
     </Compile>
     <Compile Include="FriendlyTime.cs" />
-    <Compile Include="ProtoTest.aspx.cs">
-      <DependentUpon>ProtoTest.aspx</DependentUpon>
+    <Compile Include="Test.aspx.cs">
+      <DependentUpon>Test.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="ProtoTest.aspx.designer.cs">
-      <DependentUpon>ProtoTest.aspx</DependentUpon>
+    <Compile Include="Test.aspx.designer.cs">
+      <DependentUpon>Test.aspx</DependentUpon>
     </Compile>
     <Compile Include="agentGroup.aspx.cs">
       <DependentUpon>agentGroup.aspx</DependentUpon>

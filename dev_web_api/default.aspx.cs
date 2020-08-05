@@ -81,12 +81,12 @@ namespace dev_web_api
         private void LoadAgentGroups()
         {
             ddlAgentGroups.Items.Clear();
-            var agentGroupInfo = monitorDb.GetAgentGroups(OrgId);
             var info = new AgentGroups()
             {
                 AgentGroupId = -1,
                 AgentGroupName = "- All -"
             };
+            var agentGroupInfo = monitorDb.GetAgentGroups(OrgId);
             agentGroupInfo.Insert(0, info);
             ddlAgentGroups.DataSource = agentGroupInfo;
             ddlAgentGroups.DataValueField = "AgentGroupId";
@@ -144,13 +144,6 @@ namespace dev_web_api
                             monitorValues,
                             monitorCommandLimits,
                             monitorCommand);
-        }
-
-        protected void btnTestData_Click(object sender, EventArgs e)
-        {
-            var monitorDb = new MonitorDb();
-            monitorDb.DeleteAllHistory();
-           // monitorDb.InsertBulkData(true, 72, 180);
         }
 
         protected void chkEmailOpt_CheckedChanged(object sender, EventArgs e)

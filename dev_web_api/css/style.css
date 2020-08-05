@@ -49,17 +49,23 @@ li {
   margin-left: 20px;
   font-size: x-small; }
 
-table.profile {
-  border-collapse: collapse; }
-  table.profile tr {
-    border-bottom: 4px solid transparent;
-    border-top: 4px solid transparent; }
-    table.profile tr td {
-      padding: 8px;
-      vertical-align: baseline; }
-      table.profile tr td .info {
-        opacity: 0.75;
-        font-size: x-small;
-        width: 400px; }
-    table.profile tr h3 {
-      border-bottom: 1px solid #CCC; }
+div.inputForm {
+  float: left;
+  margin-right: 48px;
+  padding: 16px;
+  background-color: #e6e6e6;
+  box-shadow: 2px 2px #DDD; }
+  div.inputForm table {
+    border-collapse: collapse; }
+    div.inputForm table tr {
+      border-bottom: 4px solid transparent;
+      border-top: 4px solid transparent; }
+      div.inputForm table tr td {
+        padding: 8px;
+        vertical-align: baseline; }
+        div.inputForm table tr td .info {
+          opacity: 0.8;
+          font-size: small;
+          width: 200px; }
+      div.inputForm table tr h3 {
+        border-bottom: 1px solid #CCC; }

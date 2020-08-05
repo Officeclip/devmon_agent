@@ -7,6 +7,77 @@
         Monitors
     </div>
     <div>
+        <div class="inputForm">
+            <table>
+                <tr>
+                    <td style="color:red">* Name:</td>
+                    <td>
+                        <asp:TextBox ID="txtName" runat="server"></asp:TextBox>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Type:</td>
+                    <td>
+                        <div>
+                        <asp:DropDownList ID="ddlType" runat="server"
+                            OnSelectedIndexChanged="ddlType_SelectedIndexChanged"
+                            AutoPostBack="true">
+                        </asp:DropDownList>
+                            </div>
+                        <div class="info">
+                        <asp:Label ID="lblType" runat="server"></asp:Label>
+                            </div>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>Arg1:</td>
+                    <td>
+                        <asp:TextBox ID="txtArg1" runat="server"></asp:TextBox>
+                        <div class="info">
+                        <asp:Label ID="lblArg1" runat="server"></asp:Label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Arg2:</td>
+
+                    <td>
+                        <asp:TextBox ID="txtArg2" runat="server"></asp:TextBox>
+                        <div class="info">
+                        <asp:Label ID="lblArg2" runat="server"></asp:Label>
+                            </div>
+
+                    </td>
+                </tr>
+                 <tr>
+                    <td>Units:</td>
+
+                    <td>                      
+                        <asp:Label ID="lblUnit" runat="server"></asp:Label>
+
+                    </td>
+                </tr>
+            </table>
+            <div style="padding: 16px">
+                <div>
+                    <asp:Button ID="Button1" runat="server"
+                        Font-Bold="true"
+                        Text="Add New"
+                        OnClick="Button1_Click" />
+                    <asp:Button ID="btnBack" runat="server"
+                        class="m-l-16"
+                        Text="Back to Monitor"
+                        Font-Bold="true"
+                        OnClick="btnBack_Click" />
+                </div>
+                <div>
+                    <asp:Label ID="lblError" runat="server"
+                        ForeColor="Black" />
+                </div>
+            </div>
+
+        </div>
         <div style="float: left; width: 700px">
             <asp:HiddenField ID="HiddenField1" runat="server" />
             <asp:GridView ID="GridView1" runat="server"
@@ -50,13 +121,11 @@
                                 Text='<%#Eval("Type")%>' />
                         </ItemTemplate>
                         <EditItemTemplate>
-                            <%--<asp:TextBox ID="txtType" runat="server"
-                                Width="100"
-                                Text='<%#Eval("Type")%>' />--%>
                             <asp:DropDownList ID="ddlTypes" runat="server"
                                 AutoPostBack="true"
-                                OnSelectedIndexChanged="ddlTypes_SelectedIndexChanged"
-                                ></asp:DropDownList>
+                                OnSelectedIndexChanged="ddlTypes_SelectedIndexChanged">
+
+                            </asp:DropDownList>
                         </EditItemTemplate>
                     </asp:TemplateField>
 
@@ -100,70 +169,6 @@
                 <SortedDescendingCellStyle BackColor="#FCF6C0" />
                 <SortedDescendingHeaderStyle BackColor="#820000" />
             </asp:GridView>
-        </div>
-        <div style="float: left; margin-left: 48px; border: 1px solid #eee; padding: 8px">
-            <table class="profile">
-                <tr>
-                    <td>Name:</td>
-                    <td>
-                        <asp:TextBox ID="txtName" runat="server"></asp:TextBox>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Type:</td>
-                    <td>
-                        <asp:DropDownList ID="ddlType" runat="server"
-                            OnSelectedIndexChanged="ddlType_SelectedIndexChanged"
-                            AutoPostBack="true">
-                        </asp:DropDownList>
-                        <asp:Label ID="lblType" runat="server"></asp:Label>
-
-                    </td>
-                </tr>
-                <tr>
-                    <td>Arg1:</td>
-                    <td>
-                        <asp:TextBox ID="txtArg1" runat="server"></asp:TextBox>
-                        <asp:Label ID="lblArg1" runat="server"></asp:Label>
-
-                    </td>
-                </tr>
-                <tr>
-                    <td>Arg2:</td>
-
-                    <td>
-                        <asp:TextBox ID="txtArg2" runat="server"></asp:TextBox>
-                        <asp:Label ID="lblArg2" runat="server"></asp:Label>
-
-                    </td>
-                </tr>
-                 <tr>
-                    <td>Units:</td>
-
-                    <td>                      
-                        <asp:Label ID="lblUnit" runat="server"></asp:Label>
-
-                    </td>
-                </tr>
-            </table>
-            <div style="padding: 16px">
-                <div>
-                    <asp:Button ID="Button1" runat="server"
-                        Font-Bold="true"
-                        Text="Add New"
-                        OnClick="Button1_Click" />
-                    <asp:Button ID="btnBack" runat="server"
-                        class="m-l-16"
-                        Text="Back to Monitor"
-                        Font-Bold="true"
-                        OnClick="btnBack_Click" />
-                </div>
-                <div>
-                    <asp:Label ID="lblError" runat="server"
-                        ForeColor="Black" />
-                </div>
-            </div>
-
         </div>
         <div style="clear: both" />
     </div>

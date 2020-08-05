@@ -236,7 +236,7 @@ namespace dev_web_api
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-               
+
                 if ((e.Row.RowState & DataControlRowState.Edit) > 0)
                 {
                     var commandHelps = GetCommandHelp();
@@ -286,8 +286,12 @@ namespace dev_web_api
             {
                 if (ddl.SelectedValue == command.Type)
                 {
+                    txtArg1.Text = txtArg2.Text = string.Empty;
                     txtArg1.ToolTip = command.Arg1;
                     txtArg2.ToolTip = command.Arg2;
+                    txtArg1.Enabled = command.Arg1 != string.Empty;
+                    txtArg2.Enabled = command.Arg2 != string.Empty;
+
                 }
             }
 

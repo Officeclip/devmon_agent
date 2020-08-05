@@ -25,9 +25,9 @@
             </div>
 
         </div>
-        <div class="m-t-24 p-l-12" style="float: right; border: 1px solid gray">
+        <div class=" p-l-12 inputForm" style="float: right; border: 1px solid gray">
 
-            <table class="profile">
+            <table >
                 <tr>
                     <th>Add new Group
                     </th>
@@ -73,7 +73,7 @@
                 OnRowDataBound="grdGroups_DataBound"
                 CellPadding="4"
                 ForeColor="#333333"
-                GridLines="None" Width="40%">
+                GridLines="None" Width="50%">
                 <AlternatingRowStyle BackColor="White" />
                 <Columns>
                     <asp:CommandField

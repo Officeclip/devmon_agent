@@ -15,8 +15,8 @@
         </div>
         <div style="clear: both" />
     </div>
-    <div style="border:1px solid gray; padding:10px; width:55%">
-        <table class="profile" style="margin-left: 15px;">
+    <div class="inputForm" style="border:1px solid gray; padding:10px; width:55%">
+        <table  style="margin-left: 15px;">
             <tr>
                 <th>Type</th>
                 <th>Warning Limit</th>

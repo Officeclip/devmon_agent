@@ -19,7 +19,7 @@
                     <td style="color:red">* Type:</td>
                     <td>
                         <div>
-                        <asp:DropDownList ID="ddlType" runat="server" Width="100"
+                        <asp:DropDownList ID="ddlType" runat="server" Width="93%"
                             OnSelectedIndexChanged="ddlType_SelectedIndexChanged"
                             AutoPostBack="true">
                         </asp:DropDownList>

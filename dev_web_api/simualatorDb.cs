@@ -51,88 +51,131 @@ namespace dev_web_api
 
         public void InsertBulkData(
                            bool isrealSimulation = false,
-                           int minutes = 60,
-                           int hours = 24,
-                           int days = 30)
+                           int minutes = 0,
+                           int hours = 0,
+                           int days = 0)
         {
             CreateHourData(isrealSimulation, hours);
             CreateMinuteData(isrealSimulation, minutes);
             CreateDaysData(isrealSimulation, days);
         }
 
-        private void CreateDaysData(bool isrealSimulation, int days)
+        private void CreateDaysData(bool isRealSimulation, int days)
         {
             var monitorDb = new MonitorDb();
-
-            for (var i = days; i >= 0; i--)
+            if (days > 0)
             {
-                var monitorValue = new MonitorValue
+                for (var i = days; i >= 0; i--)
                 {
-                    AgentId = 1,
-                    MonitorCommandId = 1,
-                    Value = GetRandomNumber(),
-                    ErrorMessage = ""
-                };
-                var date = DateTime.UtcNow.AddDays(-i);
-                if (isrealSimulation)
-                {
-                    monitorDb.DeleteOldHistory(date, 1);
-                    monitorDb.InsertMonitorHistory(monitorValue, date);
-                }
-                else
-                {
-                    monitorDb.InsertHistory(monitorValue, date, FreequecyTypes.Hours);
+                    var date = DateTime.UtcNow.AddDays(-i);
+                    if (isRealSimulation)
+                    {
+                        var realData = GenerateRandomMonitorValues();
+                        foreach (var monitorValue in realData)
+                        {
+                            monitorDb.DeleteOldHistory(date, (int)FreequecyTypes.Minutes);                           
+                            ProcessHistoryByFrequency(monitorValue, date, FreequecyTypes.Days);
+                        }
+                    }
+                    else
+                    {
+                        var monitorValue = new MonitorValue
+                        {
+                            AgentId = 1,
+                            MonitorCommandId = 1,
+                            Value = GetRandomNumber(),
+                            ErrorMessage = ""
+                        };
+                        monitorDb.InsertHistory(monitorValue, date, FreequecyTypes.Days);
+                    }
                 }
             }
+        }
+        public List<MonitorValue> GenerateRandomMonitorValues()
+        {
+            var moniorValues = new List<MonitorValue>();
+            for (var i = 0; i < 4; i++)
+            {
+                if (i > 0)
+                {
+                    var monitorValue = new MonitorValue
+                    {
+                        AgentId = i,
+                        MonitorCommandId = i,
+                        Value = GetRandomNumber(),
+                        ErrorMessage = ""
+                    };
+                    moniorValues.Add(monitorValue);
+
+                }
+            }
+
+            return moniorValues;
         }
 
         public void CreateHourData(bool isRealSimulation, int hours)
         {
             var monitorDb = new MonitorDb();
-
-            for (var i = hours; i >= 0; i--)
+            if (hours > 0)
             {
-                var monitorValue = new MonitorValue
+                for (var i = hours; i >= 0; i--)
                 {
-                    AgentId = 1,
-                    MonitorCommandId = 1,
-                    Value = GetRandomNumber(),
-                    ErrorMessage = ""
-                };
-                var date = DateTime.UtcNow.AddHours(-i);
-                if (isRealSimulation)
-                {
-                    monitorDb.DeleteOldHistory(date, 1);
-                    monitorDb.InsertMonitorHistory(monitorValue, date);
-                }
-                else
-                {
-                    monitorDb.InsertHistory(monitorValue, date, FreequecyTypes.Hours);
+                    var date = DateTime.UtcNow.AddHours(-i);
+                    if (isRealSimulation)
+                    {
+                        var realData = GenerateRandomMonitorValues();
+                        foreach (var monitorValue in realData)
+                        {
+                            monitorDb.DeleteOldHistory(date, (int)FreequecyTypes.Hours);
+                            ProcessHistoryByFrequency(monitorValue, date, FreequecyTypes.Hours);
+                            ProcessHistoryByFrequency(monitorValue, date, FreequecyTypes.Days);
+                        }
+                    }
+                    else
+                    {
+                        var monitorValue = new MonitorValue
+                        {
+                            AgentId = 1,
+                            MonitorCommandId = 1,
+                            Value = GetRandomNumber(),
+                            ErrorMessage = ""
+                        };
+                        monitorDb.InsertHistory(monitorValue, date, FreequecyTypes.Hours);
+                    }
                 }
             }
+
         }
 
         public void CreateMinuteData(bool isRealSimulation, int minutes)
         {
             var monitorDb = new MonitorDb();
-            for (var i = minutes - 1; i >= 0; i--)
+            if (minutes > 0)
             {
-                var monitorValue = new MonitorValue
+                for (var i = minutes; i >= 0; i--)
                 {
-                    AgentId = 1,
-                    MonitorCommandId = 1,
-                    Value = GetRandomNumber(),
-                    ErrorMessage = ""
-                };
-                var date = DateTime.UtcNow.AddMinutes(-i);
-                if (isRealSimulation)
-                {
-                    monitorDb.DeleteOldHistory(date, 1);
-                    InsertMonitorHistory(monitorValue, date);
-                }
-                else
-                {
-                    monitorDb.InsertHistory(monitorValue, date, FreequecyTypes.Hours);
+                    var date = DateTime.UtcNow.AddMinutes(-i);
+                    if (isRealSimulation)
+                    {
+                        var realData = GenerateRandomMonitorValues();
+                        foreach (var monitorValue in realData)
+                        {
+                            monitorDb.DeleteOldHistory(date, (int)FreequecyTypes.Minutes);
+                            ProcessHistoryByFrequency(monitorValue, date, FreequecyTypes.Hours);
+                            ProcessHistoryByFrequency(monitorValue, date, FreequecyTypes.Days);
+                        }
+                    }
+                    else
+                    {
+                        var monitorValue = new MonitorValue
+                        {
+                            AgentId = 1,
+                            MonitorCommandId = 1,
+                            Value = GetRandomNumber(),
+                            ErrorMessage = ""
+                        };
+                        monitorDb.InsertHistory(monitorValue, date, FreequecyTypes.Minutes);
+                    }
                 }
             }
         }

@@ -16,10 +16,10 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Type:</td>
+                    <td style="color:red">* Type:</td>
                     <td>
                         <div>
-                        <asp:DropDownList ID="ddlType" runat="server"
+                        <asp:DropDownList ID="ddlType" runat="server" Width="100"
                             OnSelectedIndexChanged="ddlType_SelectedIndexChanged"
                             AutoPostBack="true">
                         </asp:DropDownList>
@@ -63,7 +63,7 @@
                 <div>
                     <asp:Button ID="Button1" runat="server"
                         Font-Bold="true"
-                        Text="Add New"
+                        Text="Add"
                         OnClick="Button1_Click" />
                     <asp:Button ID="btnBack" runat="server"
                         class="m-l-16"
@@ -73,12 +73,15 @@
                 </div>
                 <div>
                     <asp:Label ID="lblError" runat="server"
-                        ForeColor="Black" />
+                        ForeColor="RED" />
                 </div>
             </div>
 
         </div>
         <div style="float: left; width: 700px">
+            <div>
+                <asp:Label ID="lblGrdError" runat="server" ForeColor="red"  ></asp:Label>
+            </div>
             <asp:HiddenField ID="HiddenField1" runat="server" />
             <asp:GridView ID="GridView1" runat="server"
                 AutoGenerateColumns="false"

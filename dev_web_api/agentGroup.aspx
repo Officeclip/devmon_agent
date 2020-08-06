@@ -46,7 +46,7 @@
                 <tr>
                     <td>
                         <asp:Button ID="btnSave" runat="server"
-                            Text="save"
+                            Text="Add"
                             Font-Bold="true"
                             OnClick="btnSave_Click" />
                     </td>

@@ -27,11 +27,26 @@ namespace dev_web_api
 
         protected void txtData_Click(object sender, EventArgs e)
         {
+            var mins = txtMin.Text != string.Empty ? Convert.ToInt32(txtMin.Text) : 0;
+            var hrs = txtHrs.Text != string.Empty ? Convert.ToInt32(txtHrs.Text) : 0;
+            var days = txtDays.Text != string.Empty ? Convert.ToInt32(txtDays.Text) : 0;
 
-            var simulatorDb = new simualatorDb();
-            simulatorDb.DeleteAllHistory();
-            simulatorDb.InsertBulkData(true, 72, 180);
-
+            if (txtMin.Text == string.Empty && txtHrs.Text == string.Empty && txtDays.Text == string.Empty)
+            {
+                lblError.Visible = true;
+                lblError.Text = "Please select the input from above text boxes";
+                return;
+            }
+            else
+            {
+                var simulatorDb = new simualatorDb();
+                simulatorDb.DeleteAllHistory();
+                simulatorDb.InsertBulkData
+                                        (ckhSimualator.Checked,
+                                            mins,
+                                           hrs,
+                                            days);
+            }
         }
     }
 

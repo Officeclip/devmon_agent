@@ -8,8 +8,44 @@
 </head>
 <body>
     <form id="form1" runat="server">
-       <div>
-           <asp:Button ID="txtData" runat="server" Text="Generate Test Data"  OnClick="txtData_Click"/>
+        <div>
+            <div>
+                <span><b>1. Select the checkbox to generate the  real data with the agents and commands<br />
+                    2. Other wise it will generates random data</b></span>
+            </div>
+            <div style="padding-top: 10px">
+                <asp:Label ID="lblError" runat="server"></asp:Label>
+            </div>
+            <table>
+                <tr>
+                    <td>Minutes
+                    </td>
+                    <td>
+                        <asp:TextBox ID="txtMin" runat="server" Width="50"></asp:TextBox>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Hours
+                    </td>
+                    <td>
+                        <asp:TextBox ID="txtHrs" runat="server" Width="50"></asp:TextBox>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Days
+                    </td>
+                    <td>
+                        <asp:TextBox ID="txtDays" runat="server" Width="50"></asp:TextBox>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div>
+            <asp:CheckBox ID="ckhSimualator" runat="server" Text="Generate orginal data" AutoPostBack="false" />
+        </div>
+        <div style="padding-top: 10px">
+
+            <asp:Button ID="txtData" runat="server" Text="Generate Test Data" OnClick="txtData_Click" />
         </div>
     </form>
 </body>

@@ -183,14 +183,14 @@ namespace dev_web_api
                 var arg1Length = txtArg1.Text.Trim().Length;
                 var arg2Length = txtArg2.Text.Trim().Length;
                 if (
-                    (arg1Length == 0 && monitorCommandHelp.Arg1.Length > 0) ||
+                    (arg1Length == 0 && monitorCommandHelp.Arg1 != string.Empty) ||
                     (arg1Length > 0 && monitorCommandHelp.Arg1.Length == 0))
                 {
                     lblError.Text += "<br/>Arg1 is incorrect";
                     returnValue = true;
                 }
                 if (
-                   (arg2Length == 0 && monitorCommandHelp.Arg2.Length > 0) ||
+                   (arg2Length == 0 && monitorCommandHelp.Arg1 != string.Empty) ||
                    (arg2Length > 0 && monitorCommandHelp.Arg2.Length == 0))
                 {
                     lblError.Text += "<br/>Arg2 is incorrect";
@@ -200,8 +200,42 @@ namespace dev_web_api
             return returnValue;
         }
 
+        private bool IsGrdInputValid(MonitorCommandHelp monitorCommandHelp, MonitorCommand monitorCommand)
+        {
+            var returnValue = false;
+            lblGrdError.Text = "";
+            if (monitorCommand.Name == string.Empty)
+            {
+                lblGrdError.Text += "<br/>Name is required";
+                returnValue = true;
+            }
+
+            if (monitorCommand.Type == string.Empty)
+            {
+                lblGrdError.Text += "<br/>Type is incorrect";
+                returnValue = true;
+            }
+            else
+            {
+
+
+                if ((monitorCommand.Arg1 != string.Empty) || (monitorCommand.Arg1.Length == 0))
+                {
+                    lblGrdError.Text += "<br/>Arg1 is incorrect";
+                    returnValue = true;
+                }
+                if ((monitorCommandHelp.Arg1 != string.Empty) || (monitorCommand.Arg2.Length == 0))
+                {
+                    lblGrdError.Text += "<br/>Arg2 is incorrect";
+                    returnValue = true;
+                }
+            }
+            return returnValue;
+        }
+
         protected void GridView1_RowUpdating(object sender, GridViewUpdateEventArgs e)
         {
+            var isInputValid = false;
             int id = int.Parse(GridView1.DataKeys[e.RowIndex].Value.ToString());
             HiddenField1.Value = "update";
             var monitorCommand = new MonitorCommand()
@@ -215,14 +249,24 @@ namespace dev_web_api
             var monitorCommandHelp =
                    monitorCommandHelps.Find
                                         (x => x.Type == monitorCommand.Type);
-            if (monitorCommandHelp == null)
+            if (monitorCommandHelp != null)
+            {
+                isInputValid = IsGrdInputValid(monitorCommandHelp, monitorCommand);
+            }
+            else
             {
                 return;
             }
-            monitorCommand.Unit = monitorCommandHelp.Unit;
-            monitorDb.UpsertMonitorCommand(monitorCommand);
-            GridView1.EditIndex = -1;
-            LoadData();
+
+            if (isInputValid)
+            {
+                monitorCommand.Unit = monitorCommandHelp.Unit;
+                monitorDb.UpsertMonitorCommand(monitorCommand);
+                GridView1.EditIndex = -1;
+                LoadData();
+            }
+
+
         }
 
 

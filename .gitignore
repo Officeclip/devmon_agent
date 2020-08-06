@@ -336,3 +336,4 @@ tools/
 /dev_web_api/monitor.sqlite
 /dev_web_api/App_Data/*.sqlite
 /dev_web_api/Web.config
+/dev_web_api/test.html

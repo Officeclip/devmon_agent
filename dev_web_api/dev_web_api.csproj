@@ -333,6 +333,7 @@
     <Content Include="software.aspx" />
     <Content Include="hardware.aspx" />
     <Content Include="monitor.aspx" />
+    <Content Include="test.html" />
     <Content Include="ViewSwitcher.ascx" />
     <Content Include="Web.config" />
   </ItemGroup>

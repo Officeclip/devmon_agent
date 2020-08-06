@@ -2,6 +2,7 @@
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SQLite;
 using System.IO;
@@ -20,12 +21,13 @@ namespace dev_web_api
         public MonitorDb()
         {
             _logger.Info("*** Monitordb() ***");
-            var dbPath = Path.Combine(HttpRuntime.AppDomainAppPath, "monitor.sqlite");
-            ConnectionString = $"Data Source={dbPath}";
-            if (!File.Exists(dbPath))
-            {
-                CreateNewDatabase(dbPath);
-            }
+            //var dbPath = Path.Combine(HttpRuntime.AppDomainAppPath, "monitor.sqlite");
+            //ConnectionString = $"Data Source={dbPath}";
+            ConnectionString = ConfigurationManager.ConnectionStrings["dbString"].ConnectionString;
+            //if (!File.Exists(dbPath))
+            //{
+            //    CreateNewDatabase(dbPath);
+            //}
         }
 
         private void CreateNewDatabase(string dbPath)

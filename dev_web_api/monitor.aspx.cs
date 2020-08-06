@@ -200,17 +200,14 @@ namespace dev_web_api
             return returnValue;
         }
 
-        private bool IsGrdInputValid(MonitorCommandHelp monitorCommandHelp, MonitorCommand monitorCommand)
+        private bool IsGrdInputValid(MonitorCommand monitorCommand)
         {
             var returnValue = false;
-            lblGrdError.Text = "";
-            if (monitorCommand.Name == string.Empty)
-            {
-                lblGrdError.Text += "<br/>Name is required";
-                returnValue = true;
-            }
+            
 
-            if (monitorCommand.Type == string.Empty)
+            var monitorCommandHelp = monitorCommandHelps.Find
+                                                            (x => x.Type == monitorCommand.Type.Trim());
+            if (monitorCommandHelp == null)
             {
                 lblGrdError.Text += "<br/>Type is incorrect";
                 returnValue = true;
@@ -218,13 +215,21 @@ namespace dev_web_api
             else
             {
 
-
-                if ((monitorCommand.Arg1 != string.Empty) || (monitorCommand.Arg1.Length == 0))
+                if (monitorCommand.Name.Length == 0)
+                {
+                    lblGrdError.Text += "Name is required";
+                    returnValue = true;
+                }
+                if (
+                    (monitorCommand.Arg1.Length == 0 && monitorCommandHelp.Arg1 != string.Empty) ||
+                    (monitorCommand.Arg2.Length > 0 && monitorCommandHelp.Arg1.Length == 0))
                 {
                     lblGrdError.Text += "<br/>Arg1 is incorrect";
                     returnValue = true;
                 }
-                if ((monitorCommandHelp.Arg1 != string.Empty) || (monitorCommand.Arg2.Length == 0))
+                if (
+                   (monitorCommand.Arg1.Length == 0 && monitorCommandHelp.Arg1 != string.Empty) ||
+                   (monitorCommand.Arg2.Length > 0 && monitorCommandHelp.Arg2.Length == 0))
                 {
                     lblGrdError.Text += "<br/>Arg2 is incorrect";
                     returnValue = true;
@@ -249,22 +254,16 @@ namespace dev_web_api
             var monitorCommandHelp =
                    monitorCommandHelps.Find
                                         (x => x.Type == monitorCommand.Type);
-            if (monitorCommandHelp != null)
-            {
-                isInputValid = IsGrdInputValid(monitorCommandHelp, monitorCommand);
-            }
-            else
+
+            if (IsGrdInputValid(monitorCommand))
             {
                 return;
             }
+            monitorCommand.Unit = monitorCommandHelp.Unit;
+            monitorDb.UpsertMonitorCommand(monitorCommand);
+            GridView1.EditIndex = -1;
+            LoadData();
 
-            if (isInputValid)
-            {
-                monitorCommand.Unit = monitorCommandHelp.Unit;
-                monitorDb.UpsertMonitorCommand(monitorCommand);
-                GridView1.EditIndex = -1;
-                LoadData();
-            }
 
 
         }

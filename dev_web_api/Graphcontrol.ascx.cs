@@ -31,7 +31,7 @@ namespace dev_web_api
         {
             if (!Page.IsPostBack)
             {
-                ddlMonitorCommands.SelectedIndex = ddlFrequancy.SelectedIndex = 1;
+                ddlMonitorCommands.SelectedIndex = ddlFrequancy.SelectedIndex = 0;
                 LoadGraph(Convert.ToInt32(ddlMonitorCommands.SelectedValue), Convert.ToInt32(ddlFrequancy.SelectedValue));
             }
         }

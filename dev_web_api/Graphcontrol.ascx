@@ -10,7 +10,7 @@
         <div style="display: inline">
              History for:
             <asp:DropDownList ID="ddlFrequancy" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlFrequancy_SelectedIndexChanged">             
-                <asp:ListItem Text="Last hour" Value="0" Selected="True"></asp:ListItem>
+                <asp:ListItem Text="Last hour" Value="0" ></asp:ListItem>
                   <asp:ListItem Text="Last 24hrs" Value="1"></asp:ListItem> 
                 <asp:ListItem Text="Last month" Value="2"></asp:ListItem>
             </asp:DropDownList>

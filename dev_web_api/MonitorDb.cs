@@ -1349,9 +1349,10 @@ namespace dev_web_api
                     chartLine = new ChartLine(agentId, agentName, maxValue);
                     chartLines.Add(chartLine);
                 }
-                if (timeUnits <= maxValue)
+                if (timeUnits < maxValue)
                 {
                     chartLine.ChartPoints[timeUnits].Value = value;
+                    
                 }
             }
             foreach (var chart in chartLines)

@@ -1314,7 +1314,7 @@ namespace dev_web_api
             }
         }
 
-        public List<ChartLine> GetChart(int monitorCommandId, int frequency)
+        public List<ChartNew> GetChart(int monitorCommandId, int frequency)
         {
             SQLiteDataReader sqlite_datareader;
             SQLiteCommand sqlite_cmd;
@@ -1332,7 +1332,9 @@ namespace dev_web_api
                     ORDER BY
                         a.agent_id, his.date";
             sqlite_datareader = sqlite_cmd.ExecuteReader();
-            var chartLines = new List<ChartLine>();
+            var chartLines = new List<ChartNew>();
+            //var previousAgentId = -1;
+            ChartNew chartNew = null;
             while (sqlite_datareader.Read())
             {
                 var agentId = Convert.ToInt32(sqlite_datareader["agent_id"]);
@@ -1341,16 +1343,33 @@ namespace dev_web_api
                 var timeUnits = GetTimeUnits(frequency, date);
                 var value = Convert.ToInt32(sqlite_datareader["value"]);
                 int maxValue = GetMaxValue(frequency);
+
+                chartNew = chartLines.Find(x => x.AgentId == agentId);
+                if (chartNew == null)
+                {
+                    chartNew = new ChartNew(agentId, agentName, maxValue);
+                    chartLines.Add(chartNew);
+                }
+                //previousAgentId = agentId;
                 if (timeUnits <= maxValue)
                 {
-                    Util.AddChartItem(
-                                chartLines,
-                                agentId,
-                                agentName,
-                                timeUnits,
-                                value
-                    );
+                    chartNew.Values[timeUnits] = value;
                 }
+
+                //if (timeUnits <= maxValue)
+                //{
+                //    Util.AddChartItem(
+                //                chartLines,
+                //                agentId,
+                //                agentName,
+                //                timeUnits,
+                //                value
+                //    );
+                //}
+            }
+            foreach (var chartNew1 in chartLines)
+            {
+                chartNew1.FixChart();
             }
             sqlite_datareader.Close();
             sqlLiteConn.Close();

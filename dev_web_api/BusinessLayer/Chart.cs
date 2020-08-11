@@ -11,7 +11,7 @@ namespace dev_web_api.BusinessLayer
         /// Minutes before the current time
         /// </summary>
         public int Unit { get; set; }
-        public int Value { get; set; }
+        public int? Value { get; set; }
     }
 
     public class ChartLine
@@ -30,7 +30,7 @@ namespace dev_web_api.BusinessLayer
                 var chartPoint = new ChartPoint()
                 {
                     Unit = i,
-                    Value = -1
+                    Value = null
                 };
                 ChartPoints.Add(chartPoint);
             }
@@ -41,25 +41,32 @@ namespace dev_web_api.BusinessLayer
         /// </summary>
         public void FixChart()
         {
-            for (int i = 1; i < ChartPoints.Count - 1; i++)
-            {
-                var currentValue = ChartPoints[i].Value;
-                var previousValue = ChartPoints[i-1].Value;
-                var nextValue = ChartPoints[i+1].Value;
-                if (
-                    (currentValue == -1) && 
-                    (previousValue > 0) && 
-                    (nextValue > 0))
-                {
-                    ChartPoints[i].Value = (int)(previousValue + nextValue) / 2;
-                }
-            }
+            //for (int i = 1; i < ChartPoints.Count - 1; i++)
+            //{
+            //    var currentValue = ChartPoints[i].Value;
+            //    var previousValue = ChartPoints[i-1].Value??0;
+            //    var nextValue = ChartPoints[i+1].Value??0;
+            //    if (
+            //        (currentValue == null) && 
+            //        (previousValue > 0) && 
+            //        (nextValue > 0))
+            //    {
+            //        ChartPoints[i].Value = (int)(previousValue + nextValue) / 2;
+            //    }
+            //}
         }
-        public List<int> ChartPointValues
+        public List<int?> ChartPointValues
         {
             get
             {
                 return ChartPoints.Select(x => x.Value).ToList();
+            }
+        }
+        public List<int?> ReverseChartPointValues
+        {
+            get
+            {
+                return  ChartPoints.Select(x => x.Value).Reverse().ToList();
             }
         }
         public List<int> ChartPointMinutes
@@ -67,6 +74,13 @@ namespace dev_web_api.BusinessLayer
             get
             {
                 return ChartPoints.Select(x => x.Unit).ToList();
+            }
+        }
+        public List<int> ReverseChartPointMinutes
+        {
+            get
+            {
+                return ChartPoints.Select(x => x.Unit).Reverse().ToList();
             }
         }
     }

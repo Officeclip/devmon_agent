@@ -47,6 +47,14 @@
 
             <asp:Button ID="txtData" runat="server" Text="Generate Test Data" OnClick="txtData_Click" />
         </div>
+        <hr />
+        <div>
+            Fix the history table with the current time so that the charts can be tested!
+        </div>
+        <div>
+            <asp:Button id="fixHistoryData" runat="server" 
+                Text="Fix History Data" OnClick="fixHistoryData_Click" />
+        </div>
     </form>
 </body>
 </html>

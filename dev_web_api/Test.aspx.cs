@@ -39,7 +39,7 @@ namespace dev_web_api
             }
             else
             {
-                var simulatorDb = new simualatorDb();
+                var simulatorDb = new simulatorDb();
                 simulatorDb.DeleteAllHistory();
                 simulatorDb.InsertBulkData
                                         (ckhSimualator.Checked,
@@ -47,6 +47,15 @@ namespace dev_web_api
                                            hrs,
                                             days);
             }
+        }
+
+        protected void fixHistoryData_Click(object sender, EventArgs e)
+        {
+            // 1. Find the most current time in the history chart
+            // 2. Get timespan by subtracting it from the actual current time
+            // 3. Add difference to all the times...
+            var db = new simulatorDb();
+            db.UpdateHistoryWithCurrentTime();
         }
     }
 

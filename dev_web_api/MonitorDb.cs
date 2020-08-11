@@ -419,18 +419,18 @@ namespace dev_web_api
             DeleteOldHistory(dateTime, 2);
         }
 
-        private int ConvertFrequencyToHour(FreequecyTypes frequency)
+        private int ConvertFrequencyToHour(FrequencyTypes frequency)
         {
             int hours;
             switch (frequency)
             {
-                case FreequecyTypes.Minutes:
+                case FrequencyTypes.Minutes:
                     hours = 1;
                     break;
-                case FreequecyTypes.Hours:
+                case FrequencyTypes.Hours:
                     hours = 24;
                     break;
-                case FreequecyTypes.Days:
+                case FrequencyTypes.Days:
                     //here it is not hours actually it returns the Date
                     hours = 720;
                     break;
@@ -445,7 +445,7 @@ namespace dev_web_api
 
         {
             TimeSpan timespan = new TimeSpan(
-                                          ConvertFrequencyToHour((FreequecyTypes)frequency), 0, 0);
+                                          ConvertFrequencyToHour((FrequencyTypes)frequency), 0, 0);
             var dateCutOff = dateTime
                                     .Subtract(
                                         timespan);
@@ -513,14 +513,14 @@ namespace dev_web_api
         {
             _logger.Info("Method InsertMonitorHistory(...)");
             _logger.Info(ObjectDumper.Dump(monitorValue));
-            InsertHistory(monitorValue, dateTime, FreequecyTypes.Minutes);
-            ProcessHistoryByFrequency(monitorValue, dateTime, FreequecyTypes.Hours);
-            ProcessHistoryByFrequency(monitorValue, dateTime, FreequecyTypes.Days);
+            InsertHistory(monitorValue, dateTime, FrequencyTypes.Minutes);
+            ProcessHistoryByFrequency(monitorValue, dateTime, FrequencyTypes.Hours);
+            ProcessHistoryByFrequency(monitorValue, dateTime, FrequencyTypes.Days);
         }
 
 
 
-        public void InsertHistory(MonitorValue monitorValue, DateTime dateTime, FreequecyTypes frequency)
+        public void InsertHistory(MonitorValue monitorValue, DateTime dateTime, FrequencyTypes frequency)
         {
             using (var sqlLiteConn = new SQLiteConnection(ConnectionString))
             {
@@ -570,7 +570,7 @@ namespace dev_web_api
         public void ProcessHistoryByFrequency(
                                 MonitorValue monitorValue,
                                 DateTime dateTime,
-                                FreequecyTypes frequency)
+                                FrequencyTypes frequency)
         {
             DateTime dateStart;
             ConvertFrequencyToSubtractHrs(dateTime, frequency, out dateStart);
@@ -581,13 +581,13 @@ namespace dev_web_api
                 int frequencyToAvgEntries;
                 switch (frequency)
                 {
-                    case FreequecyTypes.Hours:
+                    case FrequencyTypes.Hours:
                         frequencyToAvgEntries = 0;
                         monitorValue.Value = GetAverageValue(
                                            monitorValue,
                                            frequencyToAvgEntries);
                         break;
-                    case FreequecyTypes.Days
+                    case FrequencyTypes.Days
                     :
                         frequencyToAvgEntries = 1;
                         monitorValue.Value = GetAverageValue(
@@ -601,14 +601,14 @@ namespace dev_web_api
             }
         }
 
-        public  void ConvertFrequencyToSubtractHrs(DateTime dateTime, FreequecyTypes frequency, out DateTime dateStart)
+        public  void ConvertFrequencyToSubtractHrs(DateTime dateTime, FrequencyTypes frequency, out DateTime dateStart)
         {
             switch (frequency)
             {
-                case FreequecyTypes.Hours:
+                case FrequencyTypes.Hours:
                     dateStart = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, 0, 0);
                     break;
-                case FreequecyTypes.Days:
+                case FrequencyTypes.Days:
                     dateStart = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0);
                     break;
                 default:
@@ -636,7 +636,7 @@ namespace dev_web_api
             sqlLiteConn.Close();
             return averageValue;
         }
-        public bool isEntryPresent(MonitorValue monitorValue, DateTime dateStartOfHour, FreequecyTypes frequency)
+        public bool isEntryPresent(MonitorValue monitorValue, DateTime dateStartOfHour, FrequencyTypes frequency)
         {
             var existingEntriesCount = -1;
             SQLiteDataReader sqlite_datareader;
@@ -1327,7 +1327,8 @@ namespace dev_web_api
                         agents a, history his
                     WHERE
                         a.agent_id = his.agent_id AND
-                        his.monitor_command_id = {monitorCommandId} AND frequency = {frequency}
+                        his.monitor_command_id = {monitorCommandId} AND 
+                        frequency = {frequency}
                     ORDER BY
                         a.agent_id, his.date";
             sqlite_datareader = sqlite_cmd.ExecuteReader();
@@ -1337,19 +1338,19 @@ namespace dev_web_api
                 var agentId = Convert.ToInt32(sqlite_datareader["agent_id"]);
                 var agentName = GetAgentName(sqlite_datareader);
                 var date = ConvertToDateTime(sqlite_datareader["date"]);
-                //var minutes = Convert.ToInt32(
-                //                        DateTime.UtcNow.Subtract(date).TotalMinutes);
-                var units = GetUnits(frequency, date);
+                var timeUnits = GetTimeUnits(frequency, date);
                 var value = Convert.ToInt32(sqlite_datareader["value"]);
                 int maxValue = GetMaxValue(frequency);
-                Util.AddChartItem(
-                            chartLines,
-                            agentId,
-                            agentName,
-                            units,
-                            value,
-                            maxValue
-                );
+                if (timeUnits <= maxValue)
+                {
+                    Util.AddChartItem(
+                                chartLines,
+                                agentId,
+                                agentName,
+                                timeUnits,
+                                value
+                    );
+                }
             }
             sqlite_datareader.Close();
             sqlLiteConn.Close();
@@ -1374,23 +1375,24 @@ namespace dev_web_api
             return maxValue;
         }
 
-        private int GetUnits(int frequency, DateTime date)
+        private int GetTimeUnits(int frequency, DateTime date)
         {
-            var units = 0;
+            var timeUnits = 0;
+            var timeSpan = DateTime.UtcNow.Subtract(date);
             switch (frequency)
             {
                 case 0:
-                    units = Convert.ToInt32(DateTime.UtcNow.Subtract(date).TotalMinutes);
+                    timeUnits = Convert.ToInt32(timeSpan.TotalMinutes);
                     break;
                 case 1:
-                    units = Convert.ToInt32(DateTime.UtcNow.Subtract(date).TotalHours);
+                    timeUnits = Convert.ToInt32(timeSpan.TotalHours);
                     break;
                 case 2:
-                    units = Convert.ToInt32(DateTime.UtcNow.Subtract(date).TotalDays);
+                    timeUnits = Convert.ToInt32(timeSpan.TotalDays);
                     break;
             }
 
-            return units;
+            return timeUnits;
         }
 
         private static string GetAgentName(SQLiteDataReader sqlite_datareader)

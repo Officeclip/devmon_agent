@@ -390,64 +390,64 @@ namespace dev_web_api
             return File.ReadAllText(path, Encoding.UTF8);
         }
 
-        public static void AddChartItem(
-                    List<ChartLine> chartLines,
-                    int agentId,
-                    string agentName,
-                    int timeUnits,
-                    int value)
-        {
-            ChartLine chartLine = null;
-            chartLine = chartLines.Find(x => x.AgentId == agentId);
-            if (chartLine == null)
-            {
-                chartLine = new ChartLine()
-                {
-                    AgentId = agentId,
-                    AgentName = agentName
-                };
-                chartLines.Add(chartLine);
-            }
-            var chartPoint = new ChartPoint()
-            {
-                Minutes = timeUnits,
-                Value = value
-            };
-            if (chartLine.ChartPoints == null)
-            {
-                chartLine.ChartPoints = new List<ChartPoint>();
-            }
-            chartLine.ChartPoints.Add(chartPoint);
-        }
+        //public static void AddChartItem(
+        //            List<ChartLine> chartLines,
+        //            int agentId,
+        //            string agentName,
+        //            int timeUnits,
+        //            int value)
+        //{
+        //    ChartLine chartLine = null;
+        //    chartLine = chartLines.Find(x => x.AgentId == agentId);
+        //    if (chartLine == null)
+        //    {
+        //        chartLine = new ChartLine()
+        //        {
+        //            AgentId = agentId,
+        //            AgentName = agentName
+        //        };
+        //        chartLines.Add(chartLine);
+        //    }
+        //    var chartPoint = new ChartPoint()
+        //    {
+        //        Unit = timeUnits,
+        //        Value = value
+        //    };
+        //    if (chartLine.ChartPoints == null)
+        //    {
+        //        chartLine.ChartPoints = new List<ChartPoint>();
+        //    }
+        //    chartLine.ChartPoints.Add(chartPoint);
+        //}
 
-        public static ChartLine FixChart(
-                                ChartLine chartLine,
-                                int chartRange)
-        {
-            chartLine.ChartPoints.RemoveAll(x => x.Minutes > chartRange);
-            var maxMinutes = chartLine.ChartPoints.Max(x => x.Minutes);
-            var newChartPoints = new List<ChartPoint>();
-            for (int mins = 0; mins <= maxMinutes; mins++)
-            {
-                var chartPoint = chartLine.ChartPoints.Find(x => x.Minutes == mins);
-                if (chartPoint == null)
-                {
-                    chartPoint = new ChartPoint()
-                    {
-                        Minutes = mins,
-                        Value = -50
-                    };
-                }
-                newChartPoints.Add(chartPoint);
-            }
-            var newChartLine = new ChartLine()
-            {
-                AgentId = chartLine.AgentId,
-                AgentName = chartLine.AgentName,
-                ChartPoints = newChartPoints
-            };
-            return newChartLine;
-        }
+        //public static ChartLine FixChart(
+        //                        ChartLine chartLine,
+        //                        int chartRange)
+        //{
+        //    chartLine.ChartPoints.RemoveAll(x => x.Unit > chartRange);
+        //    var maxMinutes = chartLine.ChartPoints.Max(x => x.Unit);
+        //    var newChartPoints = new List<ChartPoint>();
+        //    for (int mins = 0; mins <= maxMinutes; mins++)
+        //    {
+        //        var chartPoint = chartLine.ChartPoints.Find(x => x.Unit == mins);
+        //        if (chartPoint == null)
+        //        {
+        //            chartPoint = new ChartPoint()
+        //            {
+        //                Unit = mins,
+        //                Value = -50
+        //            };
+        //        }
+        //        newChartPoints.Add(chartPoint);
+        //    }
+        //    var newChartLine = new ChartLine()
+        //    {
+        //        AgentId = chartLine.AgentId,
+        //        AgentName = chartLine.AgentName,
+        //        ChartPoints = newChartPoints
+        //    };
+        //    return newChartLine;
+        //}
 
     }
 }

@@ -2,22 +2,29 @@
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity.Migrations.Model;
+using System.Data.SQLite;
 using System.Linq;
 using System.Web;
 using static dev_web_api.frequencyEnum;
 
 namespace dev_web_api
 {
-    public class simualatorDb
+    public class simulatorDb
     {
 
+        private readonly string ConnectionString;
         static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
+        public simulatorDb()
+        {
+            ConnectionString = ConfigurationManager.ConnectionStrings["dbString"].ConnectionString;
+        }
         public void ProcessHistoryByFrequency(
                                 MonitorValue monitorValue,
                                 DateTime dateTime,
-                                FreequecyTypes frequency)
+                                FrequencyTypes frequency)
         {
             DateTime dateStart;
             var monitorDb = new MonitorDb();
@@ -29,13 +36,13 @@ namespace dev_web_api
                 int frequencyToAvgEntries;
                 switch (frequency)
                 {
-                    case FreequecyTypes.Hours:
+                    case FrequencyTypes.Hours:
                         frequencyToAvgEntries = 0;
                         monitorValue.Value = monitorDb.GetAverageValue(
                                            monitorValue,
                                            frequencyToAvgEntries);
                         break;
-                    case FreequecyTypes.Days
+                    case FrequencyTypes.Days
                     :
                         frequencyToAvgEntries = 1;
                         monitorValue.Value = monitorDb.GetAverageValue(
@@ -73,8 +80,8 @@ namespace dev_web_api
                         var realData = GenerateRandomMonitorValues();
                         foreach (var monitorValue in realData)
                         {
-                            monitorDb.DeleteOldHistory(date, (int)FreequecyTypes.Minutes);                           
-                            ProcessHistoryByFrequency(monitorValue, date, FreequecyTypes.Days);
+                            monitorDb.DeleteOldHistory(date, (int)FrequencyTypes.Minutes);
+                            ProcessHistoryByFrequency(monitorValue, date, FrequencyTypes.Days);
                         }
                     }
                     else
@@ -86,7 +93,7 @@ namespace dev_web_api
                             Value = GetRandomNumber(),
                             ErrorMessage = ""
                         };
-                        monitorDb.InsertHistory(monitorValue, date, FreequecyTypes.Days);
+                        monitorDb.InsertHistory(monitorValue, date, FrequencyTypes.Days);
                     }
                 }
             }
@@ -126,9 +133,9 @@ namespace dev_web_api
                         var realData = GenerateRandomMonitorValues();
                         foreach (var monitorValue in realData)
                         {
-                            monitorDb.DeleteOldHistory(date, (int)FreequecyTypes.Hours);
-                            ProcessHistoryByFrequency(monitorValue, date, FreequecyTypes.Hours);
-                            ProcessHistoryByFrequency(monitorValue, date, FreequecyTypes.Days);
+                            monitorDb.DeleteOldHistory(date, (int)FrequencyTypes.Hours);
+                            ProcessHistoryByFrequency(monitorValue, date, FrequencyTypes.Hours);
+                            ProcessHistoryByFrequency(monitorValue, date, FrequencyTypes.Days);
                         }
                     }
                     else
@@ -140,7 +147,7 @@ namespace dev_web_api
                             Value = GetRandomNumber(),
                             ErrorMessage = ""
                         };
-                        monitorDb.InsertHistory(monitorValue, date, FreequecyTypes.Hours);
+                        monitorDb.InsertHistory(monitorValue, date, FrequencyTypes.Hours);
                     }
                 }
             }
@@ -160,9 +167,9 @@ namespace dev_web_api
                         var realData = GenerateRandomMonitorValues();
                         foreach (var monitorValue in realData)
                         {
-                            monitorDb.DeleteOldHistory(date, (int)FreequecyTypes.Minutes);
-                            ProcessHistoryByFrequency(monitorValue, date, FreequecyTypes.Hours);
-                            ProcessHistoryByFrequency(monitorValue, date, FreequecyTypes.Days);
+                            monitorDb.DeleteOldHistory(date, (int)FrequencyTypes.Minutes);
+                            ProcessHistoryByFrequency(monitorValue, date, FrequencyTypes.Hours);
+                            ProcessHistoryByFrequency(monitorValue, date, FrequencyTypes.Days);
                         }
                     }
                     else
@@ -174,7 +181,7 @@ namespace dev_web_api
                             Value = GetRandomNumber(),
                             ErrorMessage = ""
                         };
-                        monitorDb.InsertHistory(monitorValue, date, FreequecyTypes.Minutes);
+                        monitorDb.InsertHistory(monitorValue, date, FrequencyTypes.Minutes);
                     }
                 }
             }
@@ -184,8 +191,8 @@ namespace dev_web_api
             _logger.Info("Method InsertMonitorHistory(...)");
             _logger.Info(ObjectDumper.Dump(monitorValue));
             //InsertHistory(monitorValue, dateTime, 0);
-            ProcessHistoryByFrequency(monitorValue, dateTime, FreequecyTypes.Hours);
-            ProcessHistoryByFrequency(monitorValue, dateTime, FreequecyTypes.Days);
+            ProcessHistoryByFrequency(monitorValue, dateTime, FrequencyTypes.Hours);
+            ProcessHistoryByFrequency(monitorValue, dateTime, FrequencyTypes.Days);
         }
         private int GetRandomNumber()
         {
@@ -198,6 +205,41 @@ namespace dev_web_api
         {
             var monitorDb = new MonitorDb();
             monitorDb.DeleteAllHistory();
+        }
+
+        public void UpdateHistoryWithCurrentTime()
+        {
+            var maxDateTime = GetMaximumDateFromHistory();
+            var seconds = DateTime.UtcNow.Subtract(maxDateTime).TotalSeconds;
+            UpdateHistoryDate((int)Math.Round(seconds));
+        }
+
+        private void UpdateHistoryDate(int seconds)
+        {
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn)
+            {
+                CommandText = $@"
+                    UPDATE history SET date = DATETIME(date, '{seconds} Seconds')"
+            };
+            cmd.ExecuteNonQuery();
+            sqlLiteConn.Close();
+        }
+
+        private DateTime GetMaximumDateFromHistory()
+        {
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn);
+            cmd.CommandText = $@"
+                    SELECT MAX(date) FROM history";
+            var dbOutput = cmd.ExecuteScalar();
+            var maxDateString = (dbOutput ?? string.Empty).ToString();
+            var isValid = DateTimeOffset.TryParse(
+                        maxDateString,
+                        out DateTimeOffset result);
+            return result.DateTime;
         }
     }
 }

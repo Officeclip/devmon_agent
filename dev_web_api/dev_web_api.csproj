@@ -449,7 +449,7 @@
     <Compile Include="alias.aspx.designer.cs">
       <DependentUpon>alias.aspx</DependentUpon>
     </Compile>
-    <Compile Include="simualatorDb.cs" />
+    <Compile Include="simulatorDb.cs" />
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

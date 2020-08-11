@@ -394,11 +394,9 @@ namespace dev_web_api
                     List<ChartLine> chartLines,
                     int agentId,
                     string agentName,
-                    int minutes,
-                    int value,
-                    int maxValue)
+                    int timeUnits,
+                    int value)
         {
-            if (minutes > maxValue) return;
             ChartLine chartLine = null;
             chartLine = chartLines.Find(x => x.AgentId == agentId);
             if (chartLine == null)
@@ -412,7 +410,7 @@ namespace dev_web_api
             }
             var chartPoint = new ChartPoint()
             {
-                Minutes = minutes,
+                Minutes = timeUnits,
                 Value = value
             };
             if (chartLine.ChartPoints == null)

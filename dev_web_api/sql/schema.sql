@@ -35,8 +35,8 @@ CREATE TABLE IF NOT EXISTS "monitorValues" (
 );
 
 DROP TABLE IF EXISTS "agents";
-CREATE TABLE IF NOT EXISTS "agents" (
-	"agent_id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+CREATE TABLE "agents" (
+	"agent_id"	INTEGER NOT NULL UNIQUE,
 	"guid"	TEXT NOT NULL UNIQUE,
 	"machine_name"	TEXT NOT NULL,
 	"org_id"	INTEGER NOT NULL,
@@ -44,7 +44,9 @@ CREATE TABLE IF NOT EXISTS "agents" (
 	"last_queried"	TEXT,
 	"last_reply_received"	TEXT,
 	"alias"	TEXT,
-	"enabled"	INTEGER NOT NULL DEFAULT 1
+	"enabled"	INTEGER NOT NULL DEFAULT 1,
+	"ip_address"	TEXT,
+	PRIMARY KEY("agent_id" AUTOINCREMENT)
 );
 
 DROP TABLE IF EXISTS "groups";

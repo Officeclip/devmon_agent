@@ -25,7 +25,7 @@ namespace dev_web_api.Controllers
                 throw new HttpResponseException(HttpStatusCode.Unauthorized);
             }
             var guid = headers.GetValues("agent_guid").First();
-            var agent = monitorDb.GetAgentByGuid(guid);
+            var agent = monitorDb.GetAgentByGuid(guid); 
             
             monitorDb.DeleteOldHistory( DateTime.UtcNow);
             foreach (var commandValue in commandValues)

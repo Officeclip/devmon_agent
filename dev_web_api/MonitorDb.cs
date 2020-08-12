@@ -1032,7 +1032,8 @@ namespace dev_web_api
                         machine_name,
                         org_id,
                         registration_date,
-                        last_queried
+                        last_queried,
+                        ip_address
                     )
                     VALUES
                     (
@@ -1040,12 +1041,14 @@ namespace dev_web_api
                         '{agent.MachineName}',
                          {agent.OrgId},
                         '{agent.RegistrationDate:o}',
-                        '{agent.LastQueried:o}'
+                        '{agent.LastQueried:o}',
+                        '{agent.ClientIpAddress}'
                     )
                     ON CONFLICT (guid)
                     DO update SET 
                             machine_name = '{agent.MachineName}',
-                            last_queried = '{agent.LastQueried:o}'";
+                            last_queried = '{agent.LastQueried:o}',
+                             ip_address = '{agent.ClientIpAddress}'";
             _logger.Info($"sqlQuery = {sqlQuery}");
             var cmd = new SQLiteCommand(sqlLiteConn)
             {

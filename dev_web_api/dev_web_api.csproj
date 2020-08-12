@@ -141,6 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="About.aspx" />
+    <Content Include="history.html" />
     <Content Include="images\cancel.png" />
     <Content Include="images\delete.png" />
     <Content Include="images\edit.png" />

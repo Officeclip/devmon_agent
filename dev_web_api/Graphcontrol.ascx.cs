@@ -72,7 +72,7 @@ namespace dev_web_api
                 var dataSetItem = new DataSetItem()
                 {
                     Label = chart.AgentName,
-                    Data = chart.ChartPointValues,
+                    Data = chart.ReverseChartPointValues,
                     BorderWidth = 1,
                     BackgroundColor = LibChart.Util.GetColors(i % colorCount),
                     BorderColor = LibChart.Util.GetColors()[i % colorCount],
@@ -112,12 +112,13 @@ namespace dev_web_api
                 Data =
                 {
                     Labels = charts[0]
-                                    .ChartPointMinutes
+                                    .ReverseChartPointMinutes
                                     .ConvertAll<string>(x => x.ToString()),
                     Datasets = dataSets
                 },
                 Options =
                 {
+                    SpanGaps = true,
                     Title =
                     {
                         Text = ddlMonitorCommands.SelectedItem.Text
@@ -140,8 +141,9 @@ namespace dev_web_api
 
         private string GetxAxesCallback(int frequency)
         {
-            var sb = new StringBuilder(@"function (value, index, values)");
-            sb.Append ("{ if (value > 0) { value = -1 * value;}") ;
+            //var maxIndex = GetMaxUnits(frequency) - 1;
+            var sb = new StringBuilder("function (value, index, values)");
+            sb.Append ("{if (value == 0) { return 'Now'; } if (value > 0) {value = -1 * value;}") ;
             sb.Append($" return value + ' {GetUnitString(frequency)}';");
             sb.Append('}');
             return sb.ToString();

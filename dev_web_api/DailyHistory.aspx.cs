@@ -58,7 +58,7 @@ namespace dev_web_api
                 var dataSetItem = new DataSetItem()
                 {
                     Label = chart.AgentName,
-                    Data = chart.ChartPointValues,
+                    Data = chart.ReverseChartPointValues,
                     BorderWidth = 1,
                     BackgroundColor = LibChart.Util.GetColors(i % colorCount),
                     BorderColor = LibChart.Util.GetColors()[i % colorCount],

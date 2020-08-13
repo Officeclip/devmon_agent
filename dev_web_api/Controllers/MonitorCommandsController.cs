@@ -47,8 +47,9 @@ namespace dev_web_api.Controllers
                 RegistrationDate = DateTime.UtcNow,
                 LastQueried = DateTime.UtcNow,
                 ClientIpAddress = new WebClient().DownloadString("https://checkip.amazonaws.com/").Trim()
-
             };
+            agent.ClientCity = Util.GetIpInfo(agent.ClientIpAddress, false);
+            agent.ClientCountry = Util.GetIpInfo(agent.ClientIpAddress, true);
             _logger.Info($"Client Ip address:--{agent.ClientIpAddress}--");
 
             monitorDb.UpsertAgent(agent);

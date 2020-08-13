@@ -17,6 +17,8 @@ namespace dev_web_api.BusinessLayer
         public DateTime LastReplyReceived { get; set; }
         public bool Enabled { get; set; }
         public string ClientIpAddress { get; set; }
+        public string ClientCity { get; set; }
+        public string ClientCountry { get; set; }
 
         public string ScreenName
         {
@@ -27,7 +29,9 @@ namespace dev_web_api.BusinessLayer
                     ? Alias
                     : MachineName;
             }
+
         }
-        
+
+
     }
 }

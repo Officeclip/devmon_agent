@@ -1,6 +1,7 @@
 ﻿using dev_web_api.BusinessLayer;
 using dev_web_api.Controllers;
 using FriendlyTime;
+using IP2Location;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -240,7 +241,18 @@ namespace dev_web_api
             }
             for (int i = 0; i < agents.Count; i++)
             {
-                monitorTable.Rows[i + 1].Cells[0].InnerHtml = $@"<span style=""border-bottom: 1px dashed black"">{ agents[i].ScreenName}</span>";
+                var str = $@"<div>   
+                                    {agents[i].ScreenName} 
+                                        
+                                                <div style='font-size:small;font-weight:normal'>IP:{agents[i].ClientIpAddress}
+                                            <span style='border-bottom: 1px dashed black'>
+                                                </br>{agents[i].ClientCity}
+                                                       {agents[i].ClientCountry}
+                                                </div>
+                                       </span>
+                                </div>";
+                monitorTable.Rows[i + 1].Cells[0].InnerHtml =  str;
+
                 var title = $"Last Response {agents[i].LastReplyReceived.ToFriendlyDateTime()}";
                 monitorTable.Rows[i + 1].Cells[0].Attributes.Add("title", title);
                 monitorTable.Rows[i + 1].Cells[0].Attributes.Add("class", "headerTitle");
@@ -388,6 +400,47 @@ namespace dev_web_api
         public static string ReadFile(string path)
         {
             return File.ReadAllText(path, Encoding.UTF8);
+        }
+
+        public static string GetIpInfo(string ipAddress, bool isCountry)
+        {
+            var cityName = string.Empty;
+            var countryName = string.Empty;
+            IPResult ipResult = new IP2Location.IPResult();
+            try
+            {
+                if (ipAddress != "" && ipAddress != null)
+                {
+                    var ip2Component = new IP2Location.Component();
+                    ip2Component.IPDatabasePath = "C:\\officeclipnew\\opensource\\devmon_agent\\dev_web_api\\App_Data\\IP2LOCATION-LITE-DB3.BIN";
+                    ipResult = ip2Component.IPQuery(ipAddress);
+                    switch (ipResult.Status.ToString())
+                    {
+                        case "OK":
+                            cityName = ipResult.City;
+                            countryName = ipResult.CountryLong;
+                            break;
+                        case "EMPTY_IP_ADDRESS":
+                            throw new Exception("IP Address cannot be blank.");
+
+                        case "INVALID_IP_ADDRESS":
+                            throw new Exception("Invalid IP Address.");
+
+                        case "MISSING_FILE":
+                            throw new Exception("Invalid Database Path.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                ipResult = null;
+            }
+
+            return isCountry == true ? countryName : cityName;
         }
 
         //public static void AddChartItem(

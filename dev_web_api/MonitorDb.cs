@@ -222,6 +222,15 @@ namespace dev_web_api
             agent.LastReplyReceived =
                               ConvertToDateTime(
                                             sqlite_datareader["last_reply_received"]);
+            agent.ClientIpAddress =
+                            Convert.ToString(
+                                                sqlite_datareader["ip_address"]);
+            agent.ClientCity =
+                            Convert.ToString(
+                                                sqlite_datareader["city"]);
+            agent.ClientCountry =
+                            Convert.ToString(
+                                                sqlite_datareader["country"]);
             return agent;
         }
 
@@ -601,7 +610,7 @@ namespace dev_web_api
             }
         }
 
-        public  void ConvertFrequencyToSubtractHrs(DateTime dateTime, FrequencyTypes frequency, out DateTime dateStart)
+        public void ConvertFrequencyToSubtractHrs(DateTime dateTime, FrequencyTypes frequency, out DateTime dateStart)
         {
             switch (frequency)
             {
@@ -1033,7 +1042,9 @@ namespace dev_web_api
                         org_id,
                         registration_date,
                         last_queried,
-                        ip_address
+                        ip_address,
+                        city,
+                        country
                     )
                     VALUES
                     (
@@ -1042,13 +1053,18 @@ namespace dev_web_api
                          {agent.OrgId},
                         '{agent.RegistrationDate:o}',
                         '{agent.LastQueried:o}',
-                        '{agent.ClientIpAddress}'
+                        '{agent.ClientIpAddress}',
+                         '{agent.ClientCity}',
+                        '{agent.ClientCountry}'       
+
                     )
                     ON CONFLICT (guid)
                     DO update SET 
                             machine_name = '{agent.MachineName}',
                             last_queried = '{agent.LastQueried:o}',
-                             ip_address = '{agent.ClientIpAddress}'";
+                             ip_address =  '{agent.ClientIpAddress}',
+                              city=        '{agent.ClientCity}',
+                             country=      '{agent.ClientCountry}'";
             _logger.Info($"sqlQuery = {sqlQuery}");
             var cmd = new SQLiteCommand(sqlLiteConn)
             {
@@ -1355,7 +1371,7 @@ namespace dev_web_api
                 if (timeUnits < maxValue)
                 {
                     chartLine.ChartPoints[timeUnits].Value = value;
-                    
+
                 }
             }
             foreach (var chart in chartLines)

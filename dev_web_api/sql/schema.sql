@@ -46,6 +46,8 @@ CREATE TABLE "agents" (
 	"alias"	TEXT,
 	"enabled"	INTEGER NOT NULL DEFAULT 1,
 	"ip_address"	TEXT,
+	"city"	TEXT,
+	"country"	TEXT,
 	PRIMARY KEY("agent_id" AUTOINCREMENT)
 );
 

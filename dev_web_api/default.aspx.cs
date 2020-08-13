@@ -28,8 +28,7 @@ namespace dev_web_api
             {
                 LoadUserInfo();
                 LoadAgentGroups();
-                ProcessAndLoadAgents();
-
+                ProcessAndLoadAgents();               
             }
         }
 
@@ -153,6 +152,6 @@ namespace dev_web_api
             // userId is hardcoded here
             monitorDb.InsertEmailOpt(optValue, 1);
             ProcessAndLoadAgents();
-        }
+        }    
     }
 }

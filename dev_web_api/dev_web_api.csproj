@@ -144,6 +144,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="About.aspx" />
+    <Content Include="default.html" />
     <Content Include="history.html" />
     <Content Include="images\cancel.png" />
     <Content Include="images\delete.png" />
@@ -198,7 +199,7 @@
     <Content Include="Content\bootstrap.min.css.map" />
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="css\style.scss" />
-    <Content Include="App_Data\monitor.sqlite" />
+    <Content Include="App_Data\IP2LOCATION-LITE-DB3.BIN" />
     <None Include="compilerconfig.json" />
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>

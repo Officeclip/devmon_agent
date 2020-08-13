@@ -249,10 +249,10 @@ namespace dev_web_api
                     clientCity = $"{agents[i].ClientCity},";
                 }
                 var str = $@"    <div class='tblcell'>
-                                <div style='float:right'>
+                                <!-- div style='float:right'>
                                 <a class='menu' href='hardware.aspx'  onClick='return popup(this, 'Title', '400', '500')'></a>
                                 
-                                </div>
+                                </div -->
                                 <div style='white-space:nowrap'>   
                                     {agents[i].ScreenName} 
                                         

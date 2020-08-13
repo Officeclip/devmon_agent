@@ -120,16 +120,16 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl08', 'ctl01', [], [], [], 
                     display: block;
                 }*/
                 .dots {
-                    background-color: #3498DB;
+                    /*background-color: #3498DB;
                     color: white;
-                    padding: 16px;
+                    padding: 16px;*/
                     font-size: 16px;
                     border: none;
                     cursor: pointer;
                 }
 
                     .dots:hover, .dots:focus {
-                        background-color: #2980B9;
+                        /*background-color: #2980B9;*/
                     }
 
                 .dropdown {
@@ -188,8 +188,8 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl08', 'ctl01', [], [], [], 
             <script>
                 /* When the user clicks on the button,
                 toggle between hiding and showing the dropdown content */
-                function myFunction() {
-                    document.getElementById("myDropdown").classList.toggle("show");
+                function myFunction(id) {
+                    document.getElementById(id).classList.toggle("show");
                 }
 
                 // Close the dropdown if the user clicks outside of it
@@ -242,7 +242,7 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl08', 'ctl01', [], [], [], 
                     <tr>
                         <td title="Last Response Just now" class="headerTitle">
                             <div class="outer">
-                                <div style="display:inline-block">
+                                <div style="display:inline-block; width: 90%">
                                     <div style='white-space:nowrap'>
                                         SKD-SURFACE-LAP
                                     </div>
@@ -255,12 +255,46 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl08', 'ctl01', [], [], [], 
                                         </span>
                                     </div>
                                 </div>
-                                <div id="inner" style="display:inline-block; vertical-align:top">
+                                <div style="display:inline-block; vertical-align:top">
                                     <div class="dropdown">
-                                        <div class='dots' style="visibility:hidden" onclick="myFunction()">
-                                            <div id="myDropdown" class="dropdown-content">
+                                        <div class='dots'
+                                             style="visibility:hidden"
+                                             onclick="myFunction('myDropdown-1')">
+                                            <div id="myDropdown-1" class="dropdown-content">
                                                 <a href="#home">Hardware</a>
                                                 <a href="#about">Software</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td colspan="5">Agent Not Available</td>
+                    </tr>
+                    <tr>
+                        <td title="Last Response Just now" class="headerTitle">
+                            <div class="outer">
+                                <div style="display:inline-block; width: 90%">
+                                    <div style='white-space:nowrap'>
+                                        Bhanu Laptop
+                                    </div>
+
+                                    <div style='font-size:small;font-weight:normal'>
+                                        IP: 71.59.15.127
+                                        <span style='border-bottom: 1px dashed black'>
+                                            <br />Hyderabad,
+                                            India
+                                        </span>
+                                    </div>
+                                </div>
+                                <div style="display:inline-block; vertical-align:top">
+                                    <div class="dropdown">
+                                        <div class='dots'
+                                             style="visibility:hidden"
+                                             onclick="myFunction('myDropdown-2')">
+                                            <div id="myDropdown-2" class="dropdown-content">
+                                                <a href="#home">Hardware-2</a>
+                                                <a href="#about">Software-2</a>
                                             </div>
                                         </div>
                                     </div>

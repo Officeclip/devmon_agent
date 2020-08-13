@@ -9,7 +9,34 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <link rel="stylesheet" href="css/style.min.css">
     <link rel="stylesheet" href="css/countdown.css" />
+    <style type="text/css">
+        .menu:after {
+            content: '\2807';
+            font-size: 20px;
+            float: right
+        }
 
+        .menu { 
+            display: none;
+        }
+
+        .tblcell:hover .menu {
+            display: block;
+        }
+    </style>
+    <script type="text/javascript">
+        function popup(mylink, windowname, w, h) {
+            if (!window.focus) return true;
+            var href;
+            if (typeof (mylink) == 'string')
+                href = mylink;
+            else
+                href = mylink.href;
+            window.open(href, windowname, "width=" + w + ",height=" + h + ",scrollbars=yes,toolbar=no");
+            return false;
+        }
+
+    </script>
     <div>
         <div>
             <div id="app" style="float: left"></div>
@@ -20,15 +47,14 @@
                     OnSelectedIndexChanged="ddlAgentGroups_SelectedIndexChanged"
                     AutoPostBack="true">
                 </asp:DropDownList>
-                <asp:CheckBox ID="chkEmailOpt" runat="server" 
-                    style="padding-left: 40px"
-                    OnCheckedChanged="chkEmailOpt_CheckedChanged" 
+                <asp:CheckBox ID="chkEmailOpt" runat="server"
+                    Style="padding-left: 40px"
+                    OnCheckedChanged="chkEmailOpt_CheckedChanged"
                     AutoPostBack="true" />
                 <span>Send Email if Agent fails</span> &nbsp&nbsp
-                <span style="font-size:small;padding-left: 70px">
-                    Last Updated: <%= DateTime.Now %>
+                <span style="font-size: small; padding-left: 70px">Last Updated: <%= DateTime.Now %>
                 </span>
-                
+
             </div>
             <div style="clear: both" />
 

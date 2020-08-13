@@ -241,17 +241,30 @@ namespace dev_web_api
             }
             for (int i = 0; i < agents.Count; i++)
             {
-                var str = $@"<div>   
+                var ipAddress = string.Empty;
+                var clientCity = string.Empty;
+                if (agents[i].ClientIpAddress != string.Empty && agents[i].ClientCity != string.Empty)
+                {
+                    ipAddress = $"IP: {agents[i].ClientIpAddress}";
+                    clientCity = $"{agents[i].ClientCity},";
+                }
+                var str = $@"    <div class='tblcell'>
+                                <div style='float:right'>
+                                <a class='menu' href='hardware.aspx'  onClick='return popup(this, 'Title', '400', '500')'></a>
+                                
+                                </div>
+                                <div style='white-space:nowrap'>   
                                     {agents[i].ScreenName} 
                                         
-                                                <div style='font-size:small;font-weight:normal'>IP:{agents[i].ClientIpAddress}
+                                                <div style='font-size:small;font-weight:normal'>{ipAddress}
                                             <span style='border-bottom: 1px dashed black'>
-                                                </br>{agents[i].ClientCity}
+                                                </br>{clientCity}
                                                        {agents[i].ClientCountry}
                                                 </div>
-                                       </span>
-                                </div>";
-                monitorTable.Rows[i + 1].Cells[0].InnerHtml =  str;
+                                      </span>                               
+                                
+                                </div></div>";
+                monitorTable.Rows[i + 1].Cells[0].InnerHtml = str;
 
                 var title = $"Last Response {agents[i].LastReplyReceived.ToFriendlyDateTime()}";
                 monitorTable.Rows[i + 1].Cells[0].Attributes.Add("title", title);

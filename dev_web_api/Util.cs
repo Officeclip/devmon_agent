@@ -248,28 +248,109 @@ namespace dev_web_api
                     ipAddress = $"IP: {agents[i].ClientIpAddress}";
                     clientCity = $"{agents[i].ClientCity},";
                 }
-                var str = $@"   <div class='tblcell'>
-                                <!-- div style='float:right'>
-                                <a class='menu' href='hardware.aspx'  onClick='return popup(this, 'Title', '400', '500')'></a>
-                                
-                                </div -->
-                                <div style='white-space:nowrap'>   
-                                    {agents[i].ScreenName} 
-                                        
-                                                <div style='font-size:small;font-weight:normal'>{ipAddress}
-                                            <span style='border-bottom: 1px dashed black'>
-                                                </br>{clientCity}
-                                                       {agents[i].ClientCountry}
-                                                </div>
-                                      </span>                               
-                                
-                                </div></div>";
+                var str = GenerateHtmlString(agents, i, ipAddress, clientCity);
+                //   PlaceHolder placeHolder = GenerateHtml(agents, i, ipAddress, clientCity);
+                //  monitorTable.Rows[i + 1].Cells[0].Controls.Add(placeHolder);
                 monitorTable.Rows[i + 1].Cells[0].InnerHtml = str;
-
                 var title = $"Last Response {agents[i].LastReplyReceived.ToFriendlyDateTime()}";
                 monitorTable.Rows[i + 1].Cells[0].Attributes.Add("title", title);
                 monitorTable.Rows[i + 1].Cells[0].Attributes.Add("class", "headerTitle");
             }
+        }
+
+        private static PlaceHolder GenerateHtml(List<Agent> agents, int i, string ipAddress, string clientCity)
+        {
+            PlaceHolder ph = new PlaceHolder();
+            HtmlGenericControl divItem = new HtmlGenericControl("div");
+            divItem.Attributes.Add("class", "outer");
+
+            HtmlGenericControl innerDivItem = new HtmlGenericControl("div");
+            innerDivItem.Style.Add("display", "inline-block");
+            innerDivItem.Style.Add("width", "90%");
+
+
+            HtmlGenericControl innerChildDivItem1 = new HtmlGenericControl("div");
+            innerChildDivItem1.Style.Add("white-space", "nowrap");
+            innerChildDivItem1.InnerHtml = agents[i].ScreenName;
+            innerDivItem.Controls.Add(innerChildDivItem1);
+
+            HtmlGenericControl innerChildDivItem2 = new HtmlGenericControl("div");
+            innerChildDivItem2.Style.Add("font-size", "small");
+            innerChildDivItem2.Style.Add("font-weight", "normal");
+            innerChildDivItem2.InnerHtml = $"{ipAddress}</br>{clientCity}";
+            innerDivItem.Controls.Add(innerChildDivItem2);
+            divItem.Controls.Add(innerDivItem);
+
+
+            HtmlGenericControl innerDivItem2 = new HtmlGenericControl("div");
+            innerDivItem2.Style.Add("display", "inline-block");
+            innerDivItem2.Style.Add("vertical-align", "top");
+
+            innerChildDivItem1 = new HtmlGenericControl("div");
+            innerChildDivItem1.Attributes.Add("class", "dropdown");
+            innerChildDivItem2.Attributes.Add("class", "dots");
+            innerChildDivItem2.Attributes.Add("onclick", $"myFunction('myDropdown-{agents[i].AgentId}')");
+            innerChildDivItem2.Style.Add("visibility", "hidden");
+            HtmlGenericControl innerChildDivItem3 = new HtmlGenericControl("div");
+            innerChildDivItem3.ID = $"myDropdown-{agents[i].AgentId}";
+            innerChildDivItem3.Attributes.Add("class", $"myDdl-{agents[i].AgentId}");
+            innerChildDivItem3.Attributes.Add("class", "dropdown-content");
+            HtmlGenericControl hwSpan = new HtmlGenericControl("span");
+            HtmlGenericControl swSpan = new HtmlGenericControl("span");
+            hwSpan.InnerHtml = "Hardware";
+            swSpan.InnerHtml = "Software";
+            hwSpan.Attributes.Add("onclick", $"window.open('hardware.aspx?id={agents[i].AgentId}','name','width=600,height=600')");
+            swSpan.Attributes.Add("onclick", $"window.open('software.aspx?id={agents[i].AgentId}','name','width=600,height=600')");
+            innerChildDivItem3.Controls.Add(hwSpan);
+            innerChildDivItem3.Controls.Add(swSpan);
+            innerChildDivItem2.Controls.Add(innerChildDivItem3);
+            innerChildDivItem1.Controls.Add(innerChildDivItem2);
+            innerDivItem2.Controls.Add(innerChildDivItem1);
+            divItem.Controls.Add(innerDivItem2);
+            ph.Controls.Add(divItem);
+            return ph;
+        }
+
+        public static string GenerateHtmlString(List<Agent> agents, int i, string ipAddress, string clientCity)
+        {
+            var str = $@"   
+       <div class='outer'>
+                                <div style='display:inline-block; width: 90%'>
+ 
+                                     <div style = 'white-space:nowrap'>
+                                         {agents[i].MachineName}
+                                      </div>
+  
+
+                                      <div style='font-size:small;font-weight:normal'>
+                                          {ipAddress}
+                                           <span style = 'border-bottom: 1px dashed black'>
+    
+                                                <br/>{clientCity}
+                                           {agents[i].ClientCountry}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div style ='display:inline-block; vertical-align:top'>
+ 
+                                     <div class='dropdown'>
+                                        <div class='dots'
+                                             style='visibility:hidden'
+                                             onclick=""myFunction('myDropdown_{agents[i].AgentId}')"">
+                                            <div id ='myDropdown_{agents[i].AgentId}' class='dropdown-content'>
+                                                <a href=""hardware.aspx?id={agents[i].AgentId}"">Hardware</a>
+                                                <a href=""software.aspx?id={agents[i].AgentId}"">Software</a> 
+                                              </div>
+  
+                                          </div>
+  
+                                      </div>
+  
+                                  </div>
+  
+                              </div>";
+  
+            return str;
         }
 
         public static bool IsServerGuidValid(string guid)

@@ -172,16 +172,7 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl08', 'ctl01', [], [], [], 
                     });
                 });
 
-                function popup(mylink, windowname, w, h) {
-                    if (!window.focus) return true;
-                    var href;
-                    if (typeof (mylink) == 'string')
-                        href = mylink;
-                    else
-                        href = mylink.href;
-                    window.open(href, windowname, "width=" + w + ",height=" + h + ",scrollbars=yes,toolbar=no");
-                    return false;
-                }
+                
 
             </script>
 
@@ -261,7 +252,8 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl08', 'ctl01', [], [], [], 
                                              style="visibility:hidden"
                                              onclick="myFunction('myDropdown-23')">
                                             <div id="myDropdown-23" class="dropdown-content">
-                                                <a href="hardware.aspx?aid=23">Hardware</a>
+                                                <a href="hardware.aspx">Hardware</a>
+                                                <!--<span class="nav-link" onclick="window.open('hardware.aspx','name','width=600,height=600')">Some Text</span>-->
                                                 <a href="software.aspx?aid=23">Software</a>
                                             </div>
                                         </div>

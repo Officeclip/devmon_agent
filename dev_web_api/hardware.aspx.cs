@@ -14,12 +14,30 @@ namespace dev_web_api
     public partial class hardware : System.Web.UI.Page
     {
         MonitorDb monitorDb = new MonitorDb();
+        private int AgentId = -1;
         protected void Page_Init(object sender, EventArgs e)
         {
-            ddlAgents.DataSource = monitorDb.GetEnabledAgents();
-            ddlAgents.DataValueField = "AgentId";
-            ddlAgents.DataTextField = "ScreenName";
-            ddlAgents.DataBind();
+            if (Request.QueryString["id"] != string.Empty)
+            {
+                AgentId = Convert.ToInt32(Request.QueryString["id"]);
+            }
+
+            if (AgentId > 0)
+            {
+                ddlAgents.DataSource = monitorDb.GetEnabledAgents();
+                ddlAgents.DataValueField = "AgentId";
+                ddlAgents.DataTextField = "ScreenName";
+                ddlAgents.SelectedValue = AgentId.ToString();
+                ddlAgents.DataBind();
+            }
+            else
+            {
+                ddlAgents.DataSource = monitorDb.GetEnabledAgents();
+                ddlAgents.DataValueField = "AgentId";
+                ddlAgents.DataTextField = "ScreenName";
+                // ddlAgents.SelectedValue = AgentId.ToString();
+                ddlAgents.DataBind();
+            }
         }
         protected void Page_Load(object sender, EventArgs e)
         {

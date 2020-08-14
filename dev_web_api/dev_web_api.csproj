@@ -150,6 +150,7 @@
     <Content Include="images\delete.png" />
     <Content Include="images\edit.png" />
     <Content Include="images\save.png" />
+    <Content Include="ShowMachineInfo.aspx" />
     <Content Include="Test.aspx" />
     <Content Include="sql\serverStatic.sql" />
     <Content Include="agentGroup.aspx" />
@@ -351,6 +352,13 @@
       <DependentUpon>About.aspx</DependentUpon>
     </Compile>
     <Compile Include="FriendlyTime.cs" />
+    <Compile Include="ShowMachineInfo.aspx.cs">
+      <DependentUpon>ShowMachineInfo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ShowMachineInfo.aspx.designer.cs">
+      <DependentUpon>ShowMachineInfo.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Test.aspx.cs">
       <DependentUpon>Test.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

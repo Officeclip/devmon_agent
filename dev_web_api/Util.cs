@@ -248,7 +248,7 @@ namespace dev_web_api
                     ipAddress = $"IP: {agents[i].ClientIpAddress}";
                     clientCity = $"{agents[i].ClientCity},";
                 }
-                var str = $@"    <div class='tblcell'>
+                var str = $@"   <div class='tblcell'>
                                 <!-- div style='float:right'>
                                 <a class='menu' href='hardware.aspx'  onClick='return popup(this, 'Title', '400', '500')'></a>
                                 

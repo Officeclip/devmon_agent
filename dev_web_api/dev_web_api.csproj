@@ -145,6 +145,7 @@
   <ItemGroup>
     <Content Include="About.aspx" />
     <Content Include="default.html" />
+    <Content Include="default1.html" />
     <Content Include="history.html" />
     <Content Include="images\cancel.png" />
     <Content Include="images\delete.png" />

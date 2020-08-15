@@ -38,9 +38,6 @@ table.monitor {
 .notAvailable {
   background-color: lightblue; }
 
-.headerTitle {
-  background-color: lightgray; }
-
 li {
   line-height: 1.5em; }
 
@@ -68,3 +65,48 @@ div.inputForm {
           width: 200px; }
       div.inputForm table tr h3 {
         border-bottom: 1px solid #CCC; }
+
+td.headerTitle {
+  background-color: lightgray; }
+  td.headerTitle div.outer {
+    white-space: nowrap; }
+    td.headerTitle div.outer .outer-div {
+      display: inline-block;
+      width: 90%; }
+      td.headerTitle div.outer .outer-div .outer-div-div {
+        border-bottom: 1px dashed black; }
+        td.headerTitle div.outer .outer-div .outer-div-div div {
+          white-space: nowrap; }
+      td.headerTitle div.outer .outer-div .more-info {
+        font-size: small;
+        font-weight: normal; }
+    td.headerTitle div.outer .inner-div {
+      display: inline-block;
+      vertical-align: top; }
+      td.headerTitle div.outer .inner-div .dropdown {
+        position: relative;
+        display: inline-block; }
+        td.headerTitle div.outer .inner-div .dropdown .dots {
+          font-size: 16px;
+          border: none;
+          cursor: pointer;
+          visibility: hidden;
+          white-space: normal; }
+          td.headerTitle div.outer .inner-div .dropdown .dots:after {
+            content: '\2807';
+            font-size: 20px; }
+          td.headerTitle div.outer .inner-div .dropdown .dots .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 160px;
+            overflow: auto;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1; }
+            td.headerTitle div.outer .inner-div .dropdown .dots .dropdown-content a {
+              color: black;
+              padding: 12px 16px;
+              text-decoration: none;
+              display: block; }
+              td.headerTitle div.outer .inner-div .dropdown .dots .dropdown-content a:hover {
+                background-color: #ddd; }

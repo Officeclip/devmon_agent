@@ -2,6 +2,7 @@
 using devmon_library.Models;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -28,21 +29,9 @@ namespace Geheb.DevMon.Agent
                 bool goAgain = true;
                 while (goAgain)
                 {
-                    //char ch = Console.ReadKey(true).KeyChar;
-                    //switch (ch)
-                    //{
-                    //    case 'c':
-                    //        _tokenSource.Cancel();
-                    //        return;
-                    //    default:
-                    //        break;
-                    //}
                     Thread.Sleep(1000);
                 }
 
-                //var pingerTask = PingerLoop(tokenSource.Token);
-                //pingerTask.Wait();
-                //tokenSource.Cancel();
             }
 
             catch (Exception ex)
@@ -55,15 +44,17 @@ namespace Geheb.DevMon.Agent
         {
             try
             {
+                var staticFrequencyInMins = Convert.ToInt32(ConfigurationManager.AppSettings["StaticFrequencyInMins"]);
+                var commandFrequencyInSecs = Convert.ToInt32(ConfigurationManager.AppSettings["CommandFrequencyInSecs"]);
                 var pingerJobCount = 0;
                 while (!token.IsCancellationRequested)
                 {
                     await (new PingerJob()).Execute();
-                    if (pingerJobCount++ % 30 == 0)
+                    if (pingerJobCount++ % staticFrequencyInMins == 0)
                     {
                         await (new StaticJob()).Execute();
                     }
-                    await Task.Delay(60 * 1000, token);
+                    await Task.Delay(commandFrequencyInSecs * 1000, token);
                 }
             }
             catch (OperationCanceledException ex)

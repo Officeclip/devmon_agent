@@ -314,39 +314,37 @@ namespace dev_web_api
         public static string GenerateHtmlString(List<Agent> agents, int i, string ipAddress, string clientCity)
         {
             var str = $@"   
-       <div class='outer' style='white-space:nowrap;'>
-                                <div style='display:inline-block; width: 90%'>
-                                     <div style = 'border-bottom: 1px dashed black'>
-                                     <div style = 'white-space:nowrap'>
-                                         {agents[i].MachineName}
-                                      </div>
-                                         </div>
+      <div class='outer'>
+                                <div class='outer-div'>
+                                    <div class='outer-div-div'>
+                                        <div>
+                                          {agents[i].MachineName}
+                                        </div>
+                                    </div>
 
-                                      <div style='font-size:small;font-weight:normal'>
-                                          {ipAddress}
-                                          </br>
-                                                {clientCity}
-                                           {agents[i].ClientCountry}                                      
+                                    <div class='more-info'>
+                                      {ipAddress}
+                                       <br />
+                                        {clientCity}
+                                       {agents[i].ClientCountry}
                                     </div>
                                 </div>
-                                <div style ='display:inline-block; vertical-align:top'>
- 
-                                     <div class='dropdown'>
+                                <div class='inner-div'> 
+                                    <div class='dropdown'>
                                         <div class='dots'
-                                             style='visibility:hidden; white-space:normal'
                                              onclick=""myFunction('myDropdown_{agents[i].AgentId}')"">
-                                            <div id ='myDropdown_{agents[i].AgentId}' class='dropdown-content'>
-                                                <a href=""hardware.aspx?id={agents[i].AgentId}"">Hardware</a>
-                                                <a href=""software.aspx?id={agents[i].AgentId}"">Software</a> 
-                                              </div>
-  
-                                          </div>
-  
-                                      </div>
-  
-                                  </div>
-  
-                              </div>";
+                                            <div id = 'myDropdown_{agents[i].AgentId}' class='dropdown-content'>
+                                                <a href = 'hardware.aspx?id=18' > Hardware </a>
+                                                <a href='software.aspx?id=18'>Software</a>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>";
   
             return str;
         }

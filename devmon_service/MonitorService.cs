@@ -24,6 +24,7 @@ namespace devmon_service
         {
             _logger.Info("Method OnStart()");
             _tokenSource = new CancellationTokenSource();
+            
             _processSmsQueueTask =
                     Task.Run(() => PingerLoop(_tokenSource.Token));
             
@@ -56,9 +57,11 @@ namespace devmon_service
                 while (!token.IsCancellationRequested)
                 {
                     await (new PingerJob()).Execute();
+                    _logger.Info($"Pingerloop: PingerJob executed");
                     if (pingerJobCount++ % staticFrequencyInMins == 0)
                     {
                         await (new StaticJob()).Execute();
+                        _logger.Info($"Pingerloop: StaticJob executed");
                     }
                     await Task.Delay(commandFrequencyInSecs * 1000, token);
                 }

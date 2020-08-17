@@ -73,10 +73,10 @@ td.headerTitle {
     td.headerTitle div.outer .outer-div {
       display: inline-block;
       width: 90%; }
-      td.headerTitle div.outer .outer-div .outer-div-div {
-        border-bottom: 1px dashed black; }
-        td.headerTitle div.outer .outer-div .outer-div-div div {
-          white-space: nowrap; }
+      td.headerTitle div.outer .outer-div .outer-div-div div {
+        white-space: nowrap;
+        display: inline-block;
+        border-bottom: 1px dashed #000; }
       td.headerTitle div.outer .outer-div .more-info {
         font-size: small;
         font-weight: normal; }

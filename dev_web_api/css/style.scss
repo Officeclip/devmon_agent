@@ -105,12 +105,10 @@ td.headerTitle {
             display: inline-block;
             width: 90%;
 
-            .outer-div-div {
-                border-bottom: 1px dashed black;
-
-                div {
-                    white-space: nowrap;
-                }
+            .outer-div-div div {
+                white-space: nowrap;
+                display: inline-block;
+                border-bottom: 1px dashed #000;
             }
 
             .more-info {

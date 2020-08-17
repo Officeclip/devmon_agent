@@ -16,7 +16,7 @@
         
     </style>
 
-    <div style="width: 85%">
+    <div style="width: 50%">
         <div class="p-t-12">
             <div>
                 <div>
@@ -25,7 +25,7 @@
             </div>
 
         </div>
-        <div class=" p-l-12 inputForm" style="float: right; border: 1px solid gray">
+        <div class=" p-l-12 inputForm" >
 
             <table >
                 <tr>
@@ -73,7 +73,7 @@
                 OnRowDataBound="grdGroups_DataBound"
                 CellPadding="4"
                 ForeColor="#333333"
-                GridLines="None" Width="50%">
+                GridLines="None" Width="85%">
                 <AlternatingRowStyle BackColor="White" />
                 <Columns>
                     <asp:CommandField

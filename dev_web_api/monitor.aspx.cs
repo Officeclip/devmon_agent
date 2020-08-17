@@ -190,8 +190,8 @@ namespace dev_web_api
                     returnValue = true;
                 }
                 if (
-                   (arg2Length == 0 && monitorCommandHelp.Arg1 != string.Empty) ||
-                   (arg2Length > 0 && monitorCommandHelp.Arg2.Length == 0))
+                   (arg2Length == 0 && monitorCommandHelp.Arg2 != string.Empty) ||
+                   (arg2Length > 0 && monitorCommandHelp.Arg2 == string.Empty))
                 {
                     lblError.Text += "<br/>Arg2 is incorrect";
                     returnValue = true;

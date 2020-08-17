@@ -249,68 +249,12 @@ namespace dev_web_api
                     clientCity = $"{agents[i].ClientCity},";
                 }
                 var str = GenerateHtmlString(agents, i, ipAddress, clientCity);
-                //   PlaceHolder placeHolder = GenerateHtml(agents, i, ipAddress, clientCity);
-                //  monitorTable.Rows[i + 1].Cells[0].Controls.Add(placeHolder);
                 monitorTable.Rows[i + 1].Cells[0].InnerHtml = str;
                 var title = $"Last Response {agents[i].LastReplyReceived.ToFriendlyDateTime()}";
                 monitorTable.Rows[i + 1].Cells[0].Attributes.Add("title", title);
                 monitorTable.Rows[i + 1].Cells[0].Attributes.Add("class", "headerTitle");
             }
         }
-
-        private static PlaceHolder GenerateHtml(List<Agent> agents, int i, string ipAddress, string clientCity)
-        {
-            PlaceHolder ph = new PlaceHolder();
-            HtmlGenericControl divItem = new HtmlGenericControl("div");
-            divItem.Attributes.Add("class", "outer");
-
-            HtmlGenericControl innerDivItem = new HtmlGenericControl("div");
-            innerDivItem.Style.Add("display", "inline-block");
-            innerDivItem.Style.Add("width", "90%");
-
-
-            HtmlGenericControl innerChildDivItem1 = new HtmlGenericControl("div");
-            innerChildDivItem1.Style.Add("white-space", "nowrap");
-            innerChildDivItem1.InnerHtml = agents[i].ScreenName;
-            innerDivItem.Controls.Add(innerChildDivItem1);
-
-            HtmlGenericControl innerChildDivItem2 = new HtmlGenericControl("div");
-            innerChildDivItem2.Style.Add("font-size", "small");
-            innerChildDivItem2.Style.Add("font-weight", "normal");
-            innerChildDivItem2.InnerHtml = $"{ipAddress}</br>{clientCity}";
-            innerDivItem.Controls.Add(innerChildDivItem2);
-            divItem.Controls.Add(innerDivItem);
-
-
-            HtmlGenericControl innerDivItem2 = new HtmlGenericControl("div");
-            innerDivItem2.Style.Add("display", "inline-block");
-            innerDivItem2.Style.Add("vertical-align", "top");
-
-            innerChildDivItem1 = new HtmlGenericControl("div");
-            innerChildDivItem1.Attributes.Add("class", "dropdown");
-            innerChildDivItem2.Attributes.Add("class", "dots");
-            innerChildDivItem2.Attributes.Add("onclick", $"myFunction('myDropdown-{agents[i].AgentId}')");
-            innerChildDivItem2.Style.Add("visibility", "hidden");
-            HtmlGenericControl innerChildDivItem3 = new HtmlGenericControl("div");
-            innerChildDivItem3.ID = $"myDropdown-{agents[i].AgentId}";
-            innerChildDivItem3.Attributes.Add("class", $"myDdl-{agents[i].AgentId}");
-            innerChildDivItem3.Attributes.Add("class", "dropdown-content");
-            HtmlGenericControl hwSpan = new HtmlGenericControl("span");
-            HtmlGenericControl swSpan = new HtmlGenericControl("span");
-            hwSpan.InnerHtml = "Hardware";
-            swSpan.InnerHtml = "Software";
-            hwSpan.Attributes.Add("onclick", $"window.open('hardware.aspx?id={agents[i].AgentId}','name','width=600,height=600')");
-            swSpan.Attributes.Add("onclick", $"window.open('software.aspx?id={agents[i].AgentId}','name','width=600,height=600')");
-            innerChildDivItem3.Controls.Add(hwSpan);
-            innerChildDivItem3.Controls.Add(swSpan);
-            innerChildDivItem2.Controls.Add(innerChildDivItem3);
-            innerChildDivItem1.Controls.Add(innerChildDivItem2);
-            innerDivItem2.Controls.Add(innerChildDivItem1);
-            divItem.Controls.Add(innerDivItem2);
-            ph.Controls.Add(divItem);
-            return ph;
-        }
-
         public static string GenerateHtmlString(List<Agent> agents, int i, string ipAddress, string clientCity)
         {
             var str = $@"   
@@ -321,10 +265,7 @@ namespace dev_web_api
                                           {agents[i].MachineName}
                                         </div>
                                     </div>
-
-                                    <div class='more-info'>
-                                      {ipAddress}
-                                       <br />
+                                    <div title='{ipAddress}' class='more-info'>                                                                           
                                         {clientCity}
                                        {agents[i].ClientCountry}
                                     </div>
@@ -508,7 +449,7 @@ namespace dev_web_api
                     {
                         case "OK":
                             cityName = ipResult.City;
-                            countryName = ipResult.CountryLong;
+                            countryName = ipResult.CountryShort;
                             break;
                         case "EMPTY_IP_ADDRESS":
                             throw new Exception("IP Address cannot be blank.");
@@ -532,65 +473,6 @@ namespace dev_web_api
 
             return isCountry == true ? countryName : cityName;
         }
-
-        //public static void AddChartItem(
-        //            List<ChartLine> chartLines,
-        //            int agentId,
-        //            string agentName,
-        //            int timeUnits,
-        //            int value)
-        //{
-        //    ChartLine chartLine = null;
-        //    chartLine = chartLines.Find(x => x.AgentId == agentId);
-        //    if (chartLine == null)
-        //    {
-        //        chartLine = new ChartLine()
-        //        {
-        //            AgentId = agentId,
-        //            AgentName = agentName
-        //        };
-        //        chartLines.Add(chartLine);
-        //    }
-        //    var chartPoint = new ChartPoint()
-        //    {
-        //        Unit = timeUnits,
-        //        Value = value
-        //    };
-        //    if (chartLine.ChartPoints == null)
-        //    {
-        //        chartLine.ChartPoints = new List<ChartPoint>();
-        //    }
-        //    chartLine.ChartPoints.Add(chartPoint);
-        //}
-
-        //public static ChartLine FixChart(
-        //                        ChartLine chartLine,
-        //                        int chartRange)
-        //{
-        //    chartLine.ChartPoints.RemoveAll(x => x.Unit > chartRange);
-        //    var maxMinutes = chartLine.ChartPoints.Max(x => x.Unit);
-        //    var newChartPoints = new List<ChartPoint>();
-        //    for (int mins = 0; mins <= maxMinutes; mins++)
-        //    {
-        //        var chartPoint = chartLine.ChartPoints.Find(x => x.Unit == mins);
-        //        if (chartPoint == null)
-        //        {
-        //            chartPoint = new ChartPoint()
-        //            {
-        //                Unit = mins,
-        //                Value = -50
-        //            };
-        //        }
-        //        newChartPoints.Add(chartPoint);
-        //    }
-        //    var newChartLine = new ChartLine()
-        //    {
-        //        AgentId = chartLine.AgentId,
-        //        AgentName = chartLine.AgentName,
-        //        ChartPoints = newChartPoints
-        //    };
-        //    return newChartLine;
-        //}
 
     }
 }

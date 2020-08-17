@@ -10,7 +10,7 @@
         /// </summary>
         public static string ToFriendlyDateTime(this DateTime dateTime)
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
 
             // Work out difference
             var diff = now.Subtract(dateTime);

@@ -9,6 +9,7 @@ namespace devmon_library
 {
     public static class Util
     {
+        public static string CurrentVersion = "0.5.2";
         public static string GetAgentGuid()
         {
             string productId = null;

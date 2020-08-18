@@ -80,7 +80,7 @@
             </asp:ContentPlaceHolder>
             <hr />
             <footer>
-                <p>&copy; <%: DateTime.Now.Year %> - OfficeClp Monitor</p>
+                <p>&copy; <%: DateTime.Now.Year %> - OfficeClip Monitor</p>
             </footer>
         </div>
 

@@ -51,10 +51,11 @@ namespace dev_web_api.Controllers
                     MachineName = headers.GetValues("machine_name").First(),
                     RegistrationDate = DateTime.UtcNow,
                     LastQueried = DateTime.UtcNow,
-                    ClientIpAddress = new WebClient().DownloadString("https://checkip.amazonaws.com/").Trim()
                 };
                 //CR: 20200818: Use different function for city and country,
                 // also it can go inside initializer
+                //agent.ClientIpAddress = new WebClient().DownloadString("https://checkip.amazonaws.com/").Trim();
+                agent.ClientIpAddress = GetClientIpAddress(Request) ?? string.Empty;
                 agent.ClientCity = Util.GetIpInfo(agent.ClientIpAddress, false);
                 agent.ClientCountry = Util.GetIpInfo(agent.ClientIpAddress, true);
                 _logger.Debug($"Agent Extracted: {ObjectDumper.Dump(agent)}");

@@ -441,7 +441,7 @@ namespace dev_web_api
             IPResult ipResult = new IP2Location.IPResult();
             try
             {
-                if (ipAddress != "" && ipAddress != null)
+                if (!string.IsNullOrEmpty(ipAddress))
                 {
                     var ip2Component = new IP2Location.Component();
                     ip2Component.IPDatabasePath =
@@ -465,6 +465,10 @@ namespace dev_web_api
                         case "MISSING_FILE":
                             throw new Exception("Invalid Database Path.");
                     }
+                }
+                else
+                {
+                    return "Unknown";
                 }
             }
             catch (Exception ex)

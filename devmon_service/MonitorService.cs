@@ -32,7 +32,6 @@ namespace devmon_service
 
         protected override void OnStop()
         {
-            //Trace.WriteLine("Monitor OnStop");
             _logger.Info("Method OnStop()");
             _tokenSource.Cancel();
             try

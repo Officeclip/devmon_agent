@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
@@ -443,7 +444,11 @@ namespace dev_web_api
                 if (ipAddress != "" && ipAddress != null)
                 {
                     var ip2Component = new IP2Location.Component();
-                    ip2Component.IPDatabasePath = "C:\\officeclipnew\\opensource\\devmon_agent\\dev_web_api\\App_Data\\IP2LOCATION-LITE-DB3.BIN";
+                    ip2Component.IPDatabasePath =
+                        System.IO.Path.GetFullPath(
+                                            HostingEnvironment.MapPath(
+                                                        "~/App_Data/IP2LOCATION-LITE-DB3.BIN"));
+                        //"C:\\officeclipnew\\opensource\\devmon_agent\\dev_web_api\\App_Data\\IP2LOCATION-LITE-DB3.BIN";
                     ipResult = ip2Component.IPQuery(ipAddress);
                     switch (ipResult.Status.ToString())
                     {

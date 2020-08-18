@@ -40,6 +40,7 @@ namespace devmon_library
                 return;
             }
             var body = response.Content;
+            _logger.Info("Body: " + body);
             var commands = JsonConvert.DeserializeObject<List<CommandInfo>>(body);
             _logger.Debug("**** CommandInfo List ****");
             _logger.Debug(JsonConvert.SerializeObject(commands));

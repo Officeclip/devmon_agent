@@ -14,13 +14,12 @@ namespace dev_web_api
 {
     public partial class history : System.Web.UI.Page
     {
-        MonitorDb monitorDb = new MonitorDb();
-        List<MonitorCommand> monitorCommands; 
+      
         protected string chartConfigString;
         public dev_web_api.Graphcontrol graphCtrlHrs;
         protected void Page_Init(object sender, EventArgs e)
         {
-            monitorCommands = monitorDb.GetMonitorCommands();
+         
         }
 
         protected void Page_Load(object sender, EventArgs e)

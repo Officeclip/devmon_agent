@@ -38,16 +38,23 @@ namespace dev_web_api
 
         private List<MonitorCommandHelp> GetCommandHelp()
         {
-            var json = Util.ReadFile(
-                                    Server.MapPath(
-                                        @"~/App_Data/monitorCommands.json"));
-            var command = new MonitorCommandHelp()
+            try
             {
-                Type = "-- select --"
-            };
-            var commandHelp = JsonConvert.DeserializeObject<List<MonitorCommandHelp>>(json);
-            commandHelp.Insert(0, command);
-            return commandHelp;
+                var json = Util.ReadFile(
+                                        Server.MapPath(
+                                            @"~/App_Data/monitorCommands.json"));
+                var command = new MonitorCommandHelp()
+                {
+                    Type = "-- select --"
+                };
+                var commandHelp = JsonConvert.DeserializeObject<List<MonitorCommandHelp>>(json);
+                commandHelp.Insert(0, command);
+                return commandHelp;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Exception: {ex.Message}");
+            }
         }
 
         private void LoadData()
@@ -111,6 +118,11 @@ namespace dev_web_api
             {
                 return;
             }
+            InsertMonitorCommands();
+        }
+
+        private void InsertMonitorCommands()
+        {
             HiddenField1.Value = "Insert";
             var monitorCommand = new MonitorCommand()
             {
@@ -119,11 +131,19 @@ namespace dev_web_api
                 Arg1 = txtArg1.Text.Trim(),
                 Arg2 = txtArg2.Text.Trim()
             };
-            monitorCommand.Unit =
+            try
+            {
+                monitorCommand.Unit =
                    monitorCommandHelps.Find
                                         (x => x.Type == monitorCommand.Type).Unit;
-            monitorDb.InsertMonitorCommand(monitorCommand);
-            Response.Redirect(Request.RawUrl);
+                monitorDb.InsertMonitorCommand(monitorCommand);
+                Response.Redirect(Request.RawUrl);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Exception:{ex.Message}");
+            }
+
         }
 
         protected void GridView1_RowEditing(object sender, GridViewEditEventArgs e)
@@ -142,8 +162,12 @@ namespace dev_web_api
         {
             HiddenField1.Value = "Delete";
             int id = int.Parse(GridView1.DataKeys[e.RowIndex].Value.ToString());
-            monitorDb.DeleteMonitorCommand(id);
-            LoadData();
+            if (id > 0)
+            {
+                monitorDb.DeleteMonitorCommand(id);
+                LoadData();
+            }
+            
         }
 
         private string GetGridViewText(GridViewUpdateEventArgs e, int position)
@@ -163,47 +187,55 @@ namespace dev_web_api
         private bool IsError()
         {
             var returnValue = false;
-            lblError.Text = "";
-            if (txtName.Text.Trim().Length == 0)
-            {
-                lblError.Text += "<br/>Name is required";
-                returnValue = true;
-            }
-
-            var monitorCommandHelp = monitorCommandHelps.Find
-                                                            (x => x.Type == ddlType.SelectedValue.Trim());
-            if (monitorCommandHelp == null)
-            {
-                lblError.Text += "<br/>Type is incorrect";
-                returnValue = true;
-            }
-            else
+            try
             {
 
-                var arg1Length = txtArg1.Text.Trim().Length;
-                var arg2Length = txtArg2.Text.Trim().Length;
-                if (
-                    (arg1Length == 0 && monitorCommandHelp.Arg1 != string.Empty) ||
-                    (arg1Length > 0 && monitorCommandHelp.Arg1.Length == 0))
+                lblError.Text = "";
+                if (txtName.Text.Trim().Length == 0)
                 {
-                    lblError.Text += "<br/>Arg1 is incorrect";
+                    lblError.Text += "<br/>Name is required";
                     returnValue = true;
                 }
-                if (
-                   (arg2Length == 0 && monitorCommandHelp.Arg2 != string.Empty) ||
-                   (arg2Length > 0 && monitorCommandHelp.Arg2 == string.Empty))
+
+                var monitorCommandHelp = monitorCommandHelps.Find
+                                                                (x => x.Type == ddlType.SelectedValue.Trim());
+                if (monitorCommandHelp == null)
                 {
-                    lblError.Text += "<br/>Arg2 is incorrect";
+                    lblError.Text += "<br/>Type is incorrect";
                     returnValue = true;
                 }
+                else
+                {
+
+                    var arg1Length = txtArg1.Text.Trim().Length;
+                    var arg2Length = txtArg2.Text.Trim().Length;
+                    if (
+                        (arg1Length == 0 && monitorCommandHelp.Arg1 != string.Empty) ||
+                        (arg1Length > 0 && monitorCommandHelp.Arg1.Length == 0))
+                    {
+                        lblError.Text += "<br/>Arg1 is incorrect";
+                        returnValue = true;
+                    }
+                    if (
+                       (arg2Length == 0 && monitorCommandHelp.Arg2 != string.Empty) ||
+                       (arg2Length > 0 && monitorCommandHelp.Arg2 == string.Empty))
+                    {
+                        lblError.Text += "<br/>Arg2 is incorrect";
+                        returnValue = true;
+                    }
+                }
+                return returnValue;
             }
-            return returnValue;
+            catch (Exception ex)
+            {
+                throw new Exception($"Exception:{ex.Message}");
+            }
         }
 
         private bool IsGrdInputValid(MonitorCommand monitorCommand)
         {
             var returnValue = false;
-            
+
 
             var monitorCommandHelp = monitorCommandHelps.Find
                                                             (x => x.Type == monitorCommand.Type.Trim());
@@ -240,7 +272,7 @@ namespace dev_web_api
 
         protected void GridView1_RowUpdating(object sender, GridViewUpdateEventArgs e)
         {
-            
+
             int id = int.Parse(GridView1.DataKeys[e.RowIndex].Value.ToString());
             HiddenField1.Value = "update";
             var monitorCommand = new MonitorCommand()

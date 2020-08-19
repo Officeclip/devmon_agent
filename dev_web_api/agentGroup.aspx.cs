@@ -34,21 +34,32 @@ namespace dev_web_api
 
         protected void btnSave_Click(object sender, EventArgs e)
         {
-
-            if (txtName.Text != string.Empty && !isGroupSaved)
-            {
-                monitorDb.InsertAgentGroup(txtName.Text);
-                txtName.Text = "";
-                isGroupSaved = true;
-            }
-            else
-            {
-                lblmsg.Visible = true;
-                lblmsg.Text = "Input can not be empty!";
-            }
-            LoadData();
+            InsertAgent();
         }
 
+        private void InsertAgent()
+        {
+            try
+            {
+                if (txtName.Text != string.Empty && !isGroupSaved)
+                {
+                    monitorDb.InsertAgentGroup(txtName.Text);
+                    txtName.Text = "";
+                    isGroupSaved = true;
+                }
+                else
+                {
+                    lblmsg.Visible = true;
+                    lblmsg.Text = "Input can not be empty!";
+                }
+                LoadData();
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Unable to insert the Agent:{e.Message}");
+            }
+
+        }
 
         protected void btnBack_Click(object sender, EventArgs e)
         {
@@ -72,8 +83,12 @@ namespace dev_web_api
 
             HiddenField1.Value = "Delete";
             int id = int.Parse(grdGroups.DataKeys[e.RowIndex].Value.ToString());
-            monitorDb.DeleteAgentGroup(id);
-            LoadData();
+            if (id > 0)
+            {
+                monitorDb.DeleteAgentGroup(id);
+                LoadData();
+            }
+
         }
 
         protected void grdGroups_RowUpdating(object sender, GridViewUpdateEventArgs e)
@@ -85,9 +100,21 @@ namespace dev_web_api
                 AgentGroupId = id,
                 AgentGroupName = GetGridViewText(e, 2)
             };
-            monitorDb.UpdateAgentGroup(agentGroup);
-            grdGroups.EditIndex = -1;
-            LoadData();
+            try
+            {
+                if (agentGroup != null)
+                {
+                    monitorDb.UpdateAgentGroup(agentGroup);
+                    grdGroups.EditIndex = -1;
+                    LoadData();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Exception:{ex.Message}");
+            }
+
+
         }
         private string GetGridViewText(GridViewUpdateEventArgs e, int position)
         {
@@ -104,7 +131,7 @@ namespace dev_web_api
                 lnkAgents.NavigateUrl = GetAgentScreenWindow(item.AgentGroupId);
             }
         }
-       // txtGrps
+        // txtGrps
 
         private string GetAgentScreenWindow(int agentGroupId)
         {

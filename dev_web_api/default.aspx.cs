@@ -43,6 +43,9 @@ namespace dev_web_api
             monitorCommand = monitorDb.GetMonitorCommands();
             var monitorValues = monitorDb.GetMonitorValues();
             monitorCommandLimits = monitorDb.GetMonitorCommandLimits();
+            try
+            {
+
             Util.SetupMonitorTable(
                             tblMonitor,
                             agents,
@@ -56,6 +59,11 @@ namespace dev_web_api
                             monitorValues,
                             monitorCommandLimits,
                             monitorCommand);
+            }
+            }
+            catch(Exception ex)
+            {
+                throw new Exception($"Exception: {ex.Message}");
             }
         }
 
@@ -115,30 +123,7 @@ namespace dev_web_api
         protected void ddlAgentGroups_SelectedIndexChanged(object sender, EventArgs e)
         {
             ProcessAndLoadAgents();
-            //CR: 2020-08-13: Can we replace this code with ProcessAndLoadAgents
-            //var agentGroupId = Convert.ToInt32(ddlAgentGroups.SelectedValue);
-            //if (agentGroupId > 0)
-            //{
-            //    agents = monitorDb.GetAgentsBySelectedGroup(agentGroupId);
-            //}
-            //else
-            //{
-            //    agents = monitorDb.GetEnabledAgents();
-            //}
-            //monitorCommand = monitorDb.GetMonitorCommands();
-            //var monitorValues = monitorDb.GetMonitorValues();
-            //monitorCommandLimits = monitorDb.GetMonitorCommandLimits();
-            //Util.SetupMonitorTable(
-            //                tblMonitor,
-            //                agents,
-            //                monitorCommand,
-            //                monitorValues,
-            //                monitorCommandLimits);
-            //Util.SendMonitorLimitEmail(
-            //                agents,
-            //                monitorValues,
-            //                monitorCommandLimits,
-            //                monitorCommand);
+         
         }
 
         protected void chkEmailOpt_CheckedChanged(object sender, EventArgs e)

@@ -39,25 +39,34 @@ namespace dev_web_api.Controllers
             {
                 throw new HttpResponseException(HttpStatusCode.Unauthorized);
             }
-            var agent = new Agent()
+            try
             {
-                Guid = headers.GetValues("agent_guid").First(),
-                OrgId = 1, // currently hardcoding but will be read from the header
-                MachineName = headers.GetValues("machine_name").First(),
-                RegistrationDate = DateTime.UtcNow,
-                LastQueried = DateTime.UtcNow,
-                ClientIpAddress = new WebClient().DownloadString("https://checkip.amazonaws.com/").Trim()
-            };
-            agent.ClientCity = Util.GetIpInfo(agent.ClientIpAddress, false);
-            agent.ClientCountry = Util.GetIpInfo(agent.ClientIpAddress, true);
-            _logger.Info($"Client Ip address:--{agent.ClientIpAddress}--");
+                var agent = new Agent()
+                {
+                    Guid = headers.GetValues("agent_guid").First(),
+                    OrgId = 1, // currently hardcoding but will be read from the header
+                    MachineName = headers.GetValues("machine_name").First(),
+                    RegistrationDate = DateTime.UtcNow,
+                    LastQueried = DateTime.UtcNow,
+                    ClientIpAddress = new WebClient().DownloadString("https://checkip.amazonaws.com/").Trim()
+                };
+                agent.ClientCity = Util.GetIpInfo(agent.ClientIpAddress, false);
+                agent.ClientCountry = Util.GetIpInfo(agent.ClientIpAddress, true);
+                _logger.Info($"Client Ip address:--{agent.ClientIpAddress}--");
+                _logger.Debug($"MonitorCommandsController : UpsertAgent()");
+                monitorDb.UpsertAgent(agent);
+                var monitorCommands = monitorDb.GetMonitorCommands();
+                _logger.Info("Monitor Commands...");
 
-            monitorDb.UpsertAgent(agent);
-            var monitorCommands = monitorDb.GetMonitorCommands();
-            _logger.Info("Monitor Commands...");
+                _logger.Info(ObjectDumper.Dump(monitorCommands));
+                return monitorCommands;
+            }
+            catch(Exception e)
+            {
+                _logger.Info($"GetMonitorCommands Exception:{e.Message}");
+                return null;
+            }
 
-            _logger.Info(ObjectDumper.Dump(monitorCommands));
-            return monitorCommands;
         }
         // Reference for this function https://stackoverflow.com/questions/15297620/request-userhostaddress-return-ip-address-of-load-balancer
         public static string GetClientIpAddress(HttpRequestMessage request)

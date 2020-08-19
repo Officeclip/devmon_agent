@@ -64,38 +64,51 @@ namespace dev_web_api
 
         protected void btnSave_Click(object sender, EventArgs e)
         {
-            for (int item = 0; item < rptCommandLimits.Items.Count; item++)
+            UpsertMonitorMonitorCommandLimits();
+        }
+
+        private void UpsertMonitorMonitorCommandLimits()
+        {
+            try
             {
-                var monitorLimit = new MonitorCommandLimit();
-                var repeaterItem = rptCommandLimits.Items[item];
 
-                var command = repeaterItem.FindControl("lblType") as Label;
-                monitorLimit.Type = command.Text;
-
-                var warningLimit = repeaterItem.FindControl("txtWarningLimit") as TextBox;
-                monitorLimit.WarningLimit =
-                                warningLimit.Text == string.Empty
-                                ? (int?)null
-                                : Convert.ToInt32(warningLimit.Text.Trim());
-
-                TextBox errorLimit = repeaterItem.FindControl("txtErrorLimit") as TextBox;
-                monitorLimit.ErrorLimit =
-                                errorLimit.Text == string.Empty
-                                ? (int?)null
-                                : Convert.ToInt32(errorLimit.Text.Trim());
-
-                var isLowLimit = repeaterItem.FindControl("chkIsLowLimit") as CheckBox;
-                monitorLimit.IsLowLimit = isLowLimit.Checked;
-
-                if (
-                    (monitorLimit.WarningLimit == null) &&
-                    (monitorLimit.ErrorLimit == null))
+                for (int item = 0; item < rptCommandLimits.Items.Count; item++)
                 {
-                    continue;
+                    var monitorLimit = new MonitorCommandLimit();
+                    var repeaterItem = rptCommandLimits.Items[item];
+
+                    var command = repeaterItem.FindControl("lblType") as Label;
+                    monitorLimit.Type = command.Text;
+
+                    var warningLimit = repeaterItem.FindControl("txtWarningLimit") as TextBox;
+                    monitorLimit.WarningLimit =
+                                    warningLimit.Text == string.Empty
+                                    ? (int?)null
+                                    : Convert.ToInt32(warningLimit.Text.Trim());
+
+                    TextBox errorLimit = repeaterItem.FindControl("txtErrorLimit") as TextBox;
+                    monitorLimit.ErrorLimit =
+                                    errorLimit.Text == string.Empty
+                                    ? (int?)null
+                                    : Convert.ToInt32(errorLimit.Text.Trim());
+
+                    var isLowLimit = repeaterItem.FindControl("chkIsLowLimit") as CheckBox;
+                    monitorLimit.IsLowLimit = isLowLimit.Checked;
+
+                    if (
+                        (monitorLimit.WarningLimit == null) &&
+                        (monitorLimit.ErrorLimit == null))
+                    {
+                        continue;
+                    }
+                    monitorDb.UpsertMonitorCommandLimit(monitorLimit);
                 }
-                monitorDb.UpsertMonitorCommandLimit(monitorLimit);
+                LoadValues();
             }
-            LoadValues();
+            catch(Exception ex)
+            {
+                throw new Exception($"Exception: {ex.Message}");
+            }
         }
 
         protected void btnBack_Click(object sender, EventArgs e)

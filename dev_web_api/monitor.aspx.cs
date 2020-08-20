@@ -240,7 +240,7 @@ namespace dev_web_api
 
         protected void GridView1_RowUpdating(object sender, GridViewUpdateEventArgs e)
         {
-            var isInputValid = false;
+            
             int id = int.Parse(GridView1.DataKeys[e.RowIndex].Value.ToString());
             HiddenField1.Value = "update";
             var monitorCommand = new MonitorCommand()

@@ -60,21 +60,11 @@ namespace dev_web_api.Controllers
                 agent.ClientCountry = Util.GetIpInfo(agent.ClientIpAddress, true);
                 _logger.Debug($"Agent Extracted: {ObjectDumper.Dump(agent)}");
 
-                monitorDb.UpsertAgent(agent);
-                monitorCommands = monitorDb.GetMonitorCommands();
-                _logger.Info("Monitor Commands...");
+            monitorDb.UpsertAgent(agent);
+            var monitorCommands = monitorDb.GetMonitorCommands();
+            _logger.Info("Monitor Commands...");
 
-                _logger.Info(ObjectDumper.Dump(monitorCommands));
-            }
-            catch (HttpResponseException ex)
-            {
-                throw new HttpResponseException(HttpStatusCode.Unauthorized);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"Exception Message: {ex.Message}");
-                _logger.Error($"Exception Stack: {ex.StackTrace}");
-            }
+            _logger.Info(ObjectDumper.Dump(monitorCommands));
             return monitorCommands;
         }
         // Reference for this function https://stackoverflow.com/questions/15297620/request-userhostaddress-return-ip-address-of-load-balancer

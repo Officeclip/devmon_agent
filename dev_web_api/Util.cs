@@ -263,7 +263,7 @@ namespace dev_web_api
                                 <div class='outer-div'>
                                     <div class='outer-div-div'>
                                         <div>
-                                          {agents[i].MachineName}
+                                          {agents[i].ScreenName}
                                         </div>
                                     </div>
                                     <div title='{ipAddress}' class='more-info'>                                                                           
@@ -276,8 +276,8 @@ namespace dev_web_api
                                         <div class='dots'
                                              onclick=""myFunction('myDropdown_{agents[i].AgentId}')"">
                                             <div id = 'myDropdown_{agents[i].AgentId}' class='dropdown-content'>
-                                                <a href = 'hardware.aspx?id=18' > Hardware </a>
-                                                <a href='software.aspx?id=18'>Software</a>
+                                                <a href = 'hardware.aspx?id={agents[i].AgentId}' > Hardware </a>
+                                                <a href='software.aspx?id={agents[i].AgentId}'>Software</a>
                                             </div>
 
                                         </div>

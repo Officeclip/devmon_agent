@@ -28,8 +28,8 @@ namespace dev_web_api
             {
                 ddlAgents.DataSource = monitorDb.GetEnabledAgents();
                 ddlAgents.DataValueField = "AgentId";
-                ddlAgents.DataTextField = "ScreenName";
-                ddlAgents.SelectedValue = AgentId.ToString();
+                ddlAgents.DataTextField = "MachineName";
+                ddlAgents.SelectedValue = Convert.ToString(AgentId);
                 ddlAgents.DataBind();
             }
             else

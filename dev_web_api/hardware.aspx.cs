@@ -21,12 +21,12 @@ namespace dev_web_api
             {
                 AgentId = Convert.ToInt32(Request.QueryString["id"]);
             }
-
+            
             if (AgentId > 0)
             {
                 ddlAgents.DataSource = monitorDb.GetEnabledAgents();
                 ddlAgents.DataValueField = "AgentId";
-                ddlAgents.DataTextField = "ScreenName";
+                ddlAgents.DataTextField = "MachineName";
                 ddlAgents.SelectedValue = AgentId.ToString();
                 ddlAgents.DataBind();
             }

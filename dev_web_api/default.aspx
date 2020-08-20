@@ -112,6 +112,41 @@
 
         <table id="tblMonitor" class="monitor" runat="server" />
 
+        <table style="margin-top: 24px" border="1">
+            <tr>
+            <asp:Repeater ID="rptHeader" runat="server">
+                <HeaderTemplate>
+                <th>
+                </th>
+                </HeaderTemplate>
+                <ItemTemplate>
+                <th>
+                    <%# Eval("Name")  %>
+                </th>
+                </ItemTemplate>
+            </asp:Repeater>
+            </tr>
+            <asp:Repeater ID="rptRowItem" runat="server" 
+                OnItemDataBound="rptRowItem_ItemDataBound">
+                <ItemTemplate>
+                <tr>
+                    <td>
+                        <%# GetHeader(Container.ItemIndex) %>
+                    </td>
+                    <asp:Repeater ID="rptCellItem" runat="server">
+                        <HeaderTemplate>
+                        </HeaderTemplate>
+                        <ItemTemplate>
+                            <td>
+                                <%# Container.DataItem %>
+                            </td>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </tr>
+                </ItemTemplate>
+            </asp:Repeater>
+        </table>
+
         <div style="margin-top: 50px">
             <span class="heading">Agent Installation:</span>
             <ul>

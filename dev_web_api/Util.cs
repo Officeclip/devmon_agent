@@ -256,7 +256,7 @@ namespace dev_web_api
             {
                 var dataColumn = new DataColumn(
                                         index.ToString(),
-                                        typeof(Int32));
+                                        typeof(String));
                 monitorValueTable.Columns.Add(dataColumn);
             }
             // create empty row to be filled in later
@@ -272,7 +272,8 @@ namespace dev_web_api
                                             a => a.AgentId == monitorValue.AgentId);
                 var monitorCommandIndex = monitorCommands.FindIndex(
                                             a => a.MonitorCommandId == monitorValue.MonitorCommandId);
-                monitorValueTable.Rows[agentIndex][monitorCommandIndex] = monitorValue.Value;
+                monitorValueTable.Rows[agentIndex][monitorCommandIndex] = 
+                                            $"{monitorValue.Value} {monitorCommands[monitorCommandIndex].Unit}";
             }
             dataSet.Tables.Add(monitorValueTable);
             return dataSet;

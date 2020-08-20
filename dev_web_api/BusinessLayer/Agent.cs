@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibChart;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -19,6 +20,14 @@ namespace dev_web_api.BusinessLayer
         public string ClientIpAddress { get; set; }
         public string ClientCity { get; set; }
         public string ClientCountry { get; set; }
+
+        public string ProductVersion
+        {
+            get
+            {
+                return Util.Prodcutversion;
+            }
+        }
 
         public string ScreenName
         {

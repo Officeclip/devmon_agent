@@ -56,17 +56,31 @@ namespace dev_web_api
         protected void btnSave_Click(object sender, EventArgs e)
         {
             var monitorDb = new MonitorDb();
-            foreach (GridViewRow gvr in grdAgents.Rows)
-            {
-                var hdnAgentId = Convert.ToInt32(((HiddenField)gvr.FindControl("hdnAgentId")).Value);
-                if (((CheckBox)gvr.FindControl("chkAgent")).Checked == true)
-                {
-                    monitorDb.AddAgentsIntoAgentGroup(AgentGroupId, hdnAgentId);
-                }
-            }
+            AddAgents(monitorDb);                    
             Response.Write("<script>window.close();</" + "script>");
             Response.End();
         }
+
+        private void AddAgents(MonitorDb monitorDb)
+        {
+            try
+            {
+                foreach (GridViewRow gvr in grdAgents.Rows)
+                {
+                    var hdnAgentId = Convert.ToInt32(((HiddenField)gvr.FindControl("hdnAgentId")).Value);
+                    if (((CheckBox)gvr.FindControl("chkAgent")).Checked == true)
+                    {
+                        monitorDb.AddAgentsIntoAgentGroup(AgentGroupId, hdnAgentId);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Method AddAgents: {ex.Message}");
+            }
+            
+        }
+
         protected void btnCancel_Click(object sender, EventArgs e)
         {
             Response.Write("<script>window.close();</" + "script>");

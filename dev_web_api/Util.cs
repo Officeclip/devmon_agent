@@ -19,6 +19,7 @@ namespace dev_web_api
 {
     public static class Util
     {
+        public static string Prodcutversion = "0.5.3";
         private static string GetType(
                             MonitorValue monitorValue,
                             List<MonitorCommand> monitorCommands)
@@ -251,9 +252,15 @@ namespace dev_web_api
                 }
                 var str = GenerateHtmlString(agents, i, ipAddress, clientCity);
                 monitorTable.Rows[i + 1].Cells[0].InnerHtml = str;
-                var title = $"Last Response {agents[i].LastReplyReceived.ToFriendlyDateTime()}";
+                var title = $"{ipAddress}" + "\n" +
+                    $"{clientCity}{agents[i].ClientCountry}" + "\n" +
+                    $"Product Version: {agents[i].ProductVersion}" + "\n" +
+                    $"Last Response {agents[i].LastReplyReceived.ToFriendlyDateTime()} ";
                 monitorTable.Rows[i + 1].Cells[0].Attributes.Add("title", title);
                 monitorTable.Rows[i + 1].Cells[0].Attributes.Add("class", "headerTitle");
+                monitorTable.Rows[i + 1].Cells[0].Attributes.Add("data-html", "true");
+
+
             }
         }
         public static string GenerateHtmlString(List<Agent> agents, int i, string ipAddress, string clientCity)
@@ -265,11 +272,7 @@ namespace dev_web_api
                                         <div>
                                           {agents[i].ScreenName}
                                         </div>
-                                    </div>
-                                    <div title='{ipAddress}' class='more-info'>                                                                           
-                                        {clientCity}
-                                       {agents[i].ClientCountry}
-                                    </div>
+                                    </div>                                    
                                 </div>
                                 <div class='inner-div'> 
                                     <div class='dropdown'>
@@ -287,7 +290,7 @@ namespace dev_web_api
                                 </div>
 
                             </div>";
-  
+
             return str;
         }
 
@@ -448,7 +451,7 @@ namespace dev_web_api
                         System.IO.Path.GetFullPath(
                                             HostingEnvironment.MapPath(
                                                         "~/App_Data/IP2LOCATION-LITE-DB3.BIN"));
-                        //"C:\\officeclipnew\\opensource\\devmon_agent\\dev_web_api\\App_Data\\IP2LOCATION-LITE-DB3.BIN";
+                    //"C:\\officeclipnew\\opensource\\devmon_agent\\dev_web_api\\App_Data\\IP2LOCATION-LITE-DB3.BIN";
                     ipResult = ip2Component.IPQuery(ipAddress);
                     switch (ipResult.Status.ToString())
                     {

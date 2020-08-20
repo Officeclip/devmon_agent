@@ -34,6 +34,7 @@ namespace dev_web_api.Controllers
             List<MonitorCommand> monitorCommands = null;
             try
             {
+<<<<<<< HEAD
                 var headers = Request.Headers;
                 _logger.Info("Request Headers...");
                 _logger.Info(headers);
@@ -44,6 +45,12 @@ namespace dev_web_api.Controllers
                     _logger.Error("Error: Server Guid Invalid");
                     throw new HttpResponseException(HttpStatusCode.Unauthorized);
                 }
+=======
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+            }
+            try
+            {
+>>>>>>> 6a33d84840a0312a714f2c4ca0299270d063a523
                 var agent = new Agent()
                 {
                     Guid = headers.GetValues("agent_guid").First(),
@@ -51,6 +58,7 @@ namespace dev_web_api.Controllers
                     MachineName = headers.GetValues("machine_name").First(),
                     RegistrationDate = DateTime.UtcNow,
                     LastQueried = DateTime.UtcNow,
+<<<<<<< HEAD
                 };
                 //CR: 20200818: Use different function for city and country,
                 // also it can go inside initializer
@@ -59,13 +67,27 @@ namespace dev_web_api.Controllers
                 agent.ClientCity = Util.GetIpInfo(agent.ClientIpAddress, false);
                 agent.ClientCountry = Util.GetIpInfo(agent.ClientIpAddress, true);
                 _logger.Debug($"Agent Extracted: {ObjectDumper.Dump(agent)}");
+=======
+                    ClientIpAddress = new WebClient().DownloadString("https://checkip.amazonaws.com/").Trim()
+                };
+                agent.ClientCity = Util.GetIpInfo(agent.ClientIpAddress, false);
+                agent.ClientCountry = Util.GetIpInfo(agent.ClientIpAddress, true);
+                _logger.Info($"Client Ip address:--{agent.ClientIpAddress}--");
+                _logger.Debug($"MonitorCommandsController : UpsertAgent()");
+                monitorDb.UpsertAgent(agent);
+                var monitorCommands = monitorDb.GetMonitorCommands();
+                _logger.Info("Monitor Commands...");
+>>>>>>> 6a33d84840a0312a714f2c4ca0299270d063a523
 
-            monitorDb.UpsertAgent(agent);
-            var monitorCommands = monitorDb.GetMonitorCommands();
-            _logger.Info("Monitor Commands...");
+                _logger.Info(ObjectDumper.Dump(monitorCommands));
+                return monitorCommands;
+            }
+            catch(Exception e)
+            {
+                _logger.Info($"GetMonitorCommands Exception:{e.Message}");
+                return null;
+            }
 
-            _logger.Info(ObjectDumper.Dump(monitorCommands));
-            return monitorCommands;
         }
         // Reference for this function https://stackoverflow.com/questions/15297620/request-userhostaddress-return-ip-address-of-load-balancer
         public static string GetClientIpAddress(HttpRequestMessage request)

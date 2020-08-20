@@ -24,24 +24,36 @@ namespace dev_web_api.Controllers
             {
                 throw new HttpResponseException(HttpStatusCode.Unauthorized);
             }
-            var guid = headers.GetValues("agent_guid").First();
-            var agent = monitorDb.GetAgentByGuid(guid); 
-            
-            monitorDb.DeleteOldHistory( DateTime.UtcNow);
-            foreach (var commandValue in commandValues)
+            try
             {
-                var MonitorValue = new BusinessLayer.MonitorValue()
+                var guid = headers.GetValues("agent_guid").First();
+                var agent = monitorDb.GetAgentByGuid(guid);
+
+                monitorDb.DeleteOldHistory(DateTime.UtcNow);
+                foreach (var commandValue in commandValues)
                 {
-                    AgentId = agent.AgentId, // This should be derived from header
-                    MonitorCommandId = commandValue.Id,
-                    ReturnCode = commandValue.ReturnCode,
-                    Value = commandValue.Value,
-                    ErrorMessage = commandValue.ErrorMessage
-                };
-                monitorDb.UpsertMonitorValue(MonitorValue);
-                monitorDb.UpdateLastReceivedReply(agent.AgentId);
+                    var MonitorValue = new BusinessLayer.MonitorValue()
+                    {
+                        AgentId = agent.AgentId, // This should be derived from header
+                        MonitorCommandId = commandValue.Id,
+                        ReturnCode = commandValue.ReturnCode,
+                        Value = commandValue.Value,
+                        ErrorMessage = commandValue.ErrorMessage
+                    };
+                    _logger.Debug($"MonitorValuesController : UpsertMonitorValue");
+                    monitorDb.UpsertMonitorValue(MonitorValue);
+                    _logger.Debug($"MonitorValuesController : UpdateLastReceivedReply");
+                    monitorDb.UpdateLastReceivedReply(agent.AgentId);
+                }
+                return Ok();
             }
-            return Ok();
+            catch (Exception e)
+            {
+                _logger.Error($"Post method Exception:{e.Message}");
+                return BadRequest(); 
+            }
+           
+            
         }
     }
 }

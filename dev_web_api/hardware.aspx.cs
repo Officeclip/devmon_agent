@@ -21,7 +21,7 @@ namespace dev_web_api
             {
                 AgentId = Convert.ToInt32(Request.QueryString["id"]);
             }
-            
+
             if (AgentId > 0)
             {
                 ddlAgents.DataSource = monitorDb.GetEnabledAgents();
@@ -50,25 +50,33 @@ namespace dev_web_api
 
         private void LoadData()
         {
-            var agentResource = monitorDb.GetAgentResource(
-                                                Convert.ToInt32(ddlAgents.SelectedValue));
-            if (agentResource != null)
+            try
             {
-                treeView1.Visible = (agentResource != null);
-                lblEmptyData.Visible = (agentResource == null);
+                var agentResource = monitorDb.GetAgentResource(
+                                               Convert.ToInt32(ddlAgents.SelectedValue));
                 if (agentResource != null)
                 {
-                    LoadJsonToTreeView(treeView1, agentResource.StableDeviceJson);
+                    treeView1.Visible = (agentResource != null);
+                    lblEmptyData.Visible = (agentResource == null);
+                    if (agentResource != null)
+                    {
+                        LoadJsonToTreeView(treeView1, agentResource.StableDeviceJson);
+                    }
+                    treeView1.ExpandAll();
+                    litDate.Text = $"Last Updated: {agentResource.LastUpdatedDate} UTC";
                 }
-                treeView1.ExpandAll();
-                litDate.Text = $"Last Updated: {agentResource.LastUpdatedDate} UTC";
+                else
+                {
+                    treeView1.Visible = false;
+                    lblError.Visible = true;
+                    lblError.Text = "Unable to get the server Data";
+                }
             }
-            else
+            catch (Exception ex)
             {
-                treeView1.Visible = false;
-                lblError.Visible = true;
-                lblError.Text = "Unable to get the server Data";
+                throw new Exception($"Expception:{ex.Message}");
             }
+
 
         }
 

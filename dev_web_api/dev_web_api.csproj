@@ -430,7 +430,6 @@
     <Compile Include="logon.aspx.designer.cs">
       <DependentUpon>logon.aspx</DependentUpon>
     </Compile>
-    <Compile Include="monitorCommands.cs" />
     <Compile Include="setup.aspx.cs">
       <DependentUpon>setup.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

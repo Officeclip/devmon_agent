@@ -24,22 +24,34 @@ namespace dev_web_api.Controllers
             data = Regex.Replace(data, @"\s+", " ", RegexOptions.Compiled);
             _logger.Info("StableDevice Results...");
             _logger.Info(data);
-            var headers = Request.Headers;
-            var serverGuid = headers.GetValues("server_guid").First();
-            if (!Util.IsServerGuidValid(serverGuid))
+            try
             {
-                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+                var headers = Request.Headers;
+                var serverGuid = headers.GetValues("server_guid").First();
+                if (!Util.IsServerGuidValid(serverGuid))
+                {
+                    throw new HttpResponseException(HttpStatusCode.Unauthorized);
+                }
+
+                var guid = headers.GetValues("agent_guid").First();
+                var agent = monitorDb.GetAgentByGuid(guid);
+                var agentResource = new AgentResource()
+                {
+                    AgentId = agent.AgentId,
+                    StableDeviceJson = data,
+                    LastUpdatedDate = DateTime.UtcNow
+                };
+                _logger.Debug($"Stable Device controller : UpsertAgentResource");
+               
+                monitorDb.UpsertAgentResource(agentResource);
+                return Ok();
             }
-            var guid = headers.GetValues("agent_guid").First();
-            var agent = monitorDb.GetAgentByGuid(guid);
-            var agentResource = new AgentResource()
+            catch (Exception e)
             {
-                AgentId = agent.AgentId,
-                StableDeviceJson = data,
-                LastUpdatedDate = DateTime.UtcNow
-            };
-            monitorDb.UpsertAgentResource(agentResource);
-            return Ok();
+                _logger.Error($" Stable Device controller :Post method Exception:{e.Message}");
+                return BadRequest();
+            }
+
         }
     }
 }

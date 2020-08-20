@@ -11,6 +11,7 @@ using System.Web.UI.WebControls;
 
 namespace dev_web_api
 {
+
     public partial class Graphcontrol : System.Web.UI.UserControl
     {
         MonitorDb monitorDb = new MonitorDb();
@@ -38,7 +39,6 @@ namespace dev_web_api
 
         protected void LoadGraph(int monitorCommandId, int selecedFrequency = 0)
         {
-            // var monitorCommandId = Convert.ToInt32(ddlMonitorCommands.SelectedValue);
             var chartConfig = CreateServerConfiguration(monitorCommandId, selecedFrequency);
             chartConfigStringForDay = chartConfig?.MakeChart();
         }
@@ -62,61 +62,64 @@ namespace dev_web_api
                 return null;
 
             }
-            var unit = monitorCommands
-                                .Find(x => x.MonitorCommandId == monitorCommandId).Unit;
+            
             var dataSets = new List<DataSetItem>();
-            for (int i = 0; i < charts.Count; i++)
+            try
             {
-                var chart = charts[i];
-                var colorCount = LibChart.Util.GetColors().Count;
-                var dataSetItem = new DataSetItem()
+
+                for (int i = 0; i < charts.Count; i++)
                 {
-                    Label = chart.AgentName,
-                    Data = chart.ReverseChartPointValues,
-                    BorderWidth = 1,
-                    BackgroundColor = LibChart.Util.GetColors(i % colorCount),
-                    BorderColor = LibChart.Util.GetColors()[i % colorCount],
-                    Fill = false
+                    var chart = charts[i];
+                    var colorCount = LibChart.Util.GetColors().Count;
+                    var dataSetItem = new DataSetItem()
+                    {
+                        Label = chart.AgentName,
+                        Data = chart.ReverseChartPointValues,
+                        BorderWidth = 1,
+                        BackgroundColor = LibChart.Util.GetColors(i % colorCount),
+                        BorderColor = LibChart.Util.GetColors()[i % colorCount],
+                        Fill = false
+                    };
+                    dataSets.Add(dataSetItem);
+                }
+                var unit = monitorCommands
+                                .Find(x => x.MonitorCommandId == monitorCommandId).Unit;
+                var xAxesCallback = GetxAxesCallback(frequency);
+                var units = GetMaxUnits(frequency);
+                var xAxesTicks = new Ticks()
+                {
+                    Display = true,
+                    BeginAtZero = true,
+                    Max = units,
+                    MaxTicksLimit = 12,
+                    Callback = (new JRaw(xAxesCallback))
                 };
-                dataSets.Add(dataSetItem);
-            }
 
-            var xAxesCallback = GetxAxesCallback(frequency);
-            var units = GetMaxUnits(frequency);
-            var xAxesTicks = new Ticks()
-            {
-                Display = true,
-                BeginAtZero = true,
-                Max = units,
-                MaxTicksLimit = 12,
-                Callback = (new JRaw(xAxesCallback))
-            };
-
-            var xAxesTicksItem = new TicksItem() { ticks = xAxesTicks };
+                var xAxesTicksItem = new TicksItem() { ticks = xAxesTicks };
 
 
-            var yAxesCallback = $@"function (value, index, values) {{
+                var yAxesCallback = $@"function (value, index, values) {{
                                         return value + ' {unit}';
                                     }}";
 
-            var yAxesTicks = new Ticks()
-            {
-                Callback = new JRaw(yAxesCallback)
-            };
+                var yAxesTicks = new Ticks()
+                {
+                    Callback = new JRaw(yAxesCallback)
+                };
 
-            var yAxesTicksItem = new TicksItem() { ticks = yAxesTicks };
+                var yAxesTicksItem = new TicksItem() { ticks = yAxesTicks };
 
-            var chartConfig = new ChartConfiguration
-            {
-                Type = ChartType.line.GetChartType(),
-                Data =
+                var chartConfig = new ChartConfiguration
+                {
+                    Type = ChartType.line.GetChartType(),
+                    Data =
                 {
                     Labels = charts[0]
                                     .ReverseChartPointMinutes
                                     .ConvertAll<string>(x => x.ToString()),
                     Datasets = dataSets
                 },
-                Options =
+                    Options =
                 {
                   //  SpanGaps = true,
                     Title =
@@ -135,15 +138,20 @@ namespace dev_web_api
                         }
                     }
                 }
-            };
-            return chartConfig;
+                };
+                return chartConfig;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Exception:{ex.Message}");
+            }
         }
 
         private string GetxAxesCallback(int frequency)
         {
             //var maxIndex = GetMaxUnits(frequency) - 1;
             var sb = new StringBuilder("function (value, index, values)");
-            sb.Append ("{if (value == 0) { return 'Now'; } if (value > 0) {value = -1 * value;}") ;
+            sb.Append("{if (value == 0) { return 'Now'; } if (value > 0) {value = -1 * value;}");
             sb.Append($" return value + ' {GetUnitString(frequency)}';");
             sb.Append('}');
             return sb.ToString();

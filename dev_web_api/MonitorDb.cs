@@ -1992,8 +1992,8 @@ namespace dev_web_api
                 transaction = sqlLiteConn.BeginTransaction();
                 var cmd = new SQLiteCommand(sqlLiteConn);
                 _logger.Debug("--- sql command--");
-                cmd.CommandText = $@"
-                    INSERT INTO agent_group_agent
+                cmd.CommandText = $@"                  
+                     INSERT INTO agent_group_agent
                     (
                         agent_group_id,
                        agent_id

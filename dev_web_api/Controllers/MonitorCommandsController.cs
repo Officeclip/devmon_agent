@@ -8,13 +8,11 @@ using System.Net.Http;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Routing;
-
 namespace dev_web_api.Controllers
 {
     public class MonitorCommandsController : ApiController
     {
         static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
-
         private const string HttpContext = "MS_HttpContext";
         private const string RemoteEndpointMessage = "System.ServiceModel.Channels.RemoteEndpointMessageProperty";
         private const string OwinContext = "MS_OwinContext";
@@ -27,30 +25,19 @@ namespace dev_web_api.Controllers
         {
             _logger.Info("-----------------------------------------");
             _logger.Info("Method GetAllMonitorCommands()...");
-
             // Check to make sure if the org-id and the user-id matches
-            // correctly. Also, match the guid to create an register agent 
+            // correctly. Also, match the guid to create an register agent
             // if not present
-            List<MonitorCommand> monitorCommands = null;
-            try
+            var headers = Request.Headers;
+            _logger.Info("Request Headers...");
+            _logger.Info(headers);
+            var serverGuid = headers.GetValues("server_guid").First();
+            if (!Util.IsServerGuidValid(serverGuid))
             {
-<<<<<<< HEAD
-                var headers = Request.Headers;
-                _logger.Info("Request Headers...");
-                _logger.Info(headers);
-                var serverGuid = headers.GetValues("server_guid").First();
-                _logger.Debug($"serverGuid: {serverGuid}");
-                if (!Util.IsServerGuidValid(serverGuid))
-                {
-                    _logger.Error("Error: Server Guid Invalid");
-                    throw new HttpResponseException(HttpStatusCode.Unauthorized);
-                }
-=======
                 throw new HttpResponseException(HttpStatusCode.Unauthorized);
             }
             try
             {
->>>>>>> 6a33d84840a0312a714f2c4ca0299270d063a523
                 var agent = new Agent()
                 {
                     Guid = headers.GetValues("agent_guid").First(),
@@ -58,37 +45,23 @@ namespace dev_web_api.Controllers
                     MachineName = headers.GetValues("machine_name").First(),
                     RegistrationDate = DateTime.UtcNow,
                     LastQueried = DateTime.UtcNow,
-<<<<<<< HEAD
-                };
-                //CR: 20200818: Use different function for city and country,
-                // also it can go inside initializer
-                //agent.ClientIpAddress = new WebClient().DownloadString("https://checkip.amazonaws.com/").Trim();
-                agent.ClientIpAddress = GetClientIpAddress(Request) ?? string.Empty;
-                agent.ClientCity = Util.GetIpInfo(agent.ClientIpAddress, false);
-                agent.ClientCountry = Util.GetIpInfo(agent.ClientIpAddress, true);
-                _logger.Debug($"Agent Extracted: {ObjectDumper.Dump(agent)}");
-=======
                     ClientIpAddress = new WebClient().DownloadString("https://checkip.amazonaws.com/").Trim()
                 };
                 agent.ClientCity = Util.GetIpInfo(agent.ClientIpAddress, false);
                 agent.ClientCountry = Util.GetIpInfo(agent.ClientIpAddress, true);
-                agent.ClientCountryLong = Util.GetIpFullInfo(agent.ClientIpAddress);
                 _logger.Info($"Client Ip address:--{agent.ClientIpAddress}--");
                 _logger.Debug($"MonitorCommandsController : UpsertAgent()");
                 monitorDb.UpsertAgent(agent);
                 var monitorCommands = monitorDb.GetMonitorCommands();
                 _logger.Info("Monitor Commands...");
->>>>>>> 6a33d84840a0312a714f2c4ca0299270d063a523
-
                 _logger.Info(ObjectDumper.Dump(monitorCommands));
                 return monitorCommands;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _logger.Info($"GetMonitorCommands Exception:{e.Message}");
                 return null;
             }
-
         }
         // Reference for this function https://stackoverflow.com/questions/15297620/request-userhostaddress-return-ip-address-of-load-balancer
         public static string GetClientIpAddress(HttpRequestMessage request)
@@ -101,7 +74,6 @@ namespace dev_web_api.Controllers
                     return ctx.Request.UserHostAddress;
                 }
             }
-
             if (request.Properties.ContainsKey(RemoteEndpointMessage))
             {
                 dynamic remoteEndpoint = request.Properties[RemoteEndpointMessage];
@@ -111,7 +83,6 @@ namespace dev_web_api.Controllers
                 }
             }
             return null;
-
         }
     }
 }

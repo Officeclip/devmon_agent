@@ -56,6 +56,7 @@ namespace dev_web_api
             // 3. Add difference to all the times...
             var db = new simulatorDb();
             db.UpdateHistoryWithCurrentTime();
+            db.UpdatAgentsDate();
         }
     }
 

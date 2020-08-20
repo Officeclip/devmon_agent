@@ -214,6 +214,23 @@ namespace dev_web_api
             UpdateHistoryDate((int)Math.Round(seconds));
         }
 
+
+        public void UpdatAgentsDate()
+        {
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            var cmd = new SQLiteCommand(sqlLiteConn)
+            {
+                CommandText = $@" 
+                        update agents SET
+                        last_reply_received = '{DateTime.UtcNow:o}', 
+                        last_queried = '{DateTime.UtcNow:o}'"
+            };
+            cmd.ExecuteNonQuery();
+            sqlLiteConn.Close();
+        }
+
+
         private void UpdateHistoryDate(int seconds)
         {
             var sqlLiteConn = new SQLiteConnection(ConnectionString);

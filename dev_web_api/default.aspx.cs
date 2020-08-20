@@ -43,6 +43,16 @@ namespace dev_web_api
             monitorCommand = monitorDb.GetMonitorCommands();
             var monitorValues = monitorDb.GetMonitorValues();
             monitorCommandLimits = monitorDb.GetMonitorCommandLimits();
+            var filteredMonitorValues = monitorValues
+                   .Where(x => agents.Any(y => y.AgentId == x.AgentId));
+            //PersonResultList = from personResult in PersonResultList
+            //                   join person in PersonList on personResult.PersonId equals person.PersonId
+            //                   select personResult;
+
+            var outPut = from monitorResult in monitorValues
+                         join agent in agents on monitorResult.AgentId equals agent.AgentId
+                         select monitorResult;
+            var ouputList = outPut.ToList();
             try
             {
 
@@ -50,13 +60,13 @@ namespace dev_web_api
                             tblMonitor,
                             agents,
                             monitorCommand,
-                            monitorValues,
+                            ouputList,
                             monitorCommandLimits);
             if (chkEmailOpt.Checked)
             {
                 Util.SendMonitorLimitEmail(
                             agents,
-                            monitorValues,
+                            ouputList,
                             monitorCommandLimits,
                             monitorCommand);
             }

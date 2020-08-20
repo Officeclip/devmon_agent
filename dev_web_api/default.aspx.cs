@@ -62,6 +62,12 @@ namespace dev_web_api
 
             try
             {
+                var dataSet = Util.CreateMonitorDataSet(
+                                agents,
+                                monitorCommand,
+                                monitorValues,
+                                monitorCommandLimits);
+
                 Util.SetupMonitorTable(
                                 tblMonitor,
                                 agents,

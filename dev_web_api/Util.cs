@@ -4,6 +4,7 @@ using FriendlyTime;
 using IP2Location;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -204,7 +205,77 @@ namespace dev_web_api
                 }
                 row.Cells.Add(cell);
             }
+        }
 
+        /// <summary>
+        /// Convert a list to a table. See: https://stackoverflow.com/a/5805044/89256
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static DataTable ToDataTable<T>(this IList<T> data)
+        {
+            PropertyDescriptorCollection properties =
+                TypeDescriptor.GetProperties(typeof(T));
+            DataTable table = new DataTable();
+            foreach (PropertyDescriptor prop in properties)
+                table.Columns.Add(prop.Name, Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType);
+            foreach (T item in data)
+            {
+                DataRow row = table.NewRow();
+                foreach (PropertyDescriptor prop in properties)
+                    row[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
+                table.Rows.Add(row);
+            }
+            return table;
+        }
+
+        public static DataSet CreateMonitorDataSet(
+                                    List<Agent> agents,
+                                    List<MonitorCommand> monitorCommands,
+                                    List<MonitorValue> monitorValues,
+                                    List<MonitorCommandLimit> monitorCommandLimits)
+        {
+            var dataSet = new DataSet();
+
+            var agentTable = ToDataTable<Agent>(agents);
+            agentTable.TableName = "Agent";
+            dataSet.Tables.Add(agentTable);
+
+            var monitorCommandTable = ToDataTable<MonitorCommand>(monitorCommands);
+            monitorCommandTable.TableName = "MonitorCommand";
+            dataSet.Tables.Add(monitorCommandTable);
+
+            var monitorCommandLimitTable = ToDataTable<MonitorCommandLimit>(monitorCommandLimits);
+            monitorCommandLimitTable.TableName = "MonitorCommandLimit";
+            dataSet.Tables.Add(monitorCommandLimitTable);
+
+            // Make a empty dataset for the values
+            var monitorValueTable = new DataTable("MonitorValue");
+            for (var index=0; index < monitorCommands.Count; index++)
+            {
+                var dataColumn = new DataColumn(
+                                        index.ToString(),
+                                        typeof(Int32));
+                monitorValueTable.Columns.Add(dataColumn);
+            }
+            // create empty row to be filled in later
+            foreach (var agent in agents)
+            {
+                var dataRow = monitorValueTable.NewRow();
+                monitorValueTable.Rows.Add(dataRow);
+            }
+            // Now we need to fill in the empty dataset
+            foreach (var monitorValue in monitorValues)
+            {
+                var agentIndex = agents.FindIndex(
+                                            a => a.AgentId == monitorValue.AgentId);
+                var monitorCommandIndex = monitorCommands.FindIndex(
+                                            a => a.MonitorCommandId == monitorValue.MonitorCommandId);
+                monitorValueTable.Rows[agentIndex][monitorCommandIndex] = monitorValue.Value;
+            }
+            dataSet.Tables.Add(monitorValueTable);
+            return dataSet;
         }
 
         public static void SetupMonitorTable(

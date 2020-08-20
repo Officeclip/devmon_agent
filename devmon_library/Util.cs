@@ -12,6 +12,13 @@ namespace devmon_library
         public static string CurrentVersion = "0.5.3";
         public static string GetAgentGuid()
         {
+
+            return Guid.NewGuid().ToString();
+
+        }
+
+        private static string GetProductId()
+        {
             string productId = null;
             try
             {
@@ -25,15 +32,14 @@ namespace devmon_library
                             productId = o.ToString();
                         }
                     }
-                }               
+                }
             }
             catch (Exception e)
             {
-
+                throw new Exception($"Exception:{e.Message}");
             }
-            return string.IsNullOrEmpty(productId)
-                 ? Guid.NewGuid().ToString()
-                 : productId;
+
+            return productId;
         }
 
         private static RegistryKey GetRegistryRoot(int byteSize)

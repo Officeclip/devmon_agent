@@ -26,24 +26,32 @@ namespace devmon_test.Extensions
 
             var @params = new List<object>();
 
-            foreach (var t in types)
+            try
             {
-                if (t == typeof(TCollector))
+                foreach (var t in types)
                 {
-                    @params.Add(mock.Object);
+                    if (t == typeof(TCollector))
+                    {
+                        @params.Add(mock.Object);
+                    }
+                    else
+                    {
+                        var mockType = typeof(Mock<>);
+                        var mockGenericType = mockType.MakeGenericType(t);
+                        var mockInstance = Activator.CreateInstance(mockGenericType);
+                        var mockObject = mockGenericType.GetProperty(nameof(mock.Object), t).GetValue(mockInstance, null);
+                        @params.Add(mockObject);
+                    }
                 }
-                else
-                {
-                    var mockType = typeof(Mock<>);
-                    var mockGenericType = mockType.MakeGenericType(t);
-                    var mockInstance = Activator.CreateInstance(mockGenericType);
-                    var mockObject = mockGenericType.GetProperty(nameof(mock.Object), t).GetValue(mockInstance, null);
-                    @params.Add(mockObject);
-                }
-            }
 
-            var instance = Activator.CreateInstance(typeof(T), @params.ToArray());
-            return instance as T;
+                var instance = Activator.CreateInstance(typeof(T), @params.ToArray());
+                return instance as T;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception($"Exception:{ex.Message}");
+            }
+            
         }
     }
 }

@@ -216,15 +216,15 @@ namespace dev_web_api
             var agent = new Agent();
             try
             {
-                 agent = new Agent()
+                agent = new Agent()
                 {
                     AgentId = Convert.ToInt32(sqlite_datareader["agent_id"]),
                     Guid = sqlite_datareader["guid"].ToString(),
                     MachineName = sqlite_datareader["machine_name"].ToString(),
                     Alias =
-                       sqlite_datareader["alias"] == DBNull.Value
-                       ? string.Empty
-                       : sqlite_datareader["alias"].ToString(),
+                      sqlite_datareader["alias"] == DBNull.Value
+                      ? string.Empty
+                      : sqlite_datareader["alias"].ToString(),
                     Enabled = Convert.ToBoolean(sqlite_datareader["enabled"])
                 };
                 agent.RegistrationDate =
@@ -254,7 +254,7 @@ namespace dev_web_api
             catch (Exception ex)
             {
                 _logger.Error($"General Error: {ex.Message}");
-            }            
+            }
             return agent;
         }
 
@@ -274,12 +274,7 @@ namespace dev_web_api
             sqlite_datareader = sqlite_cmd.ExecuteReader();
             try
             {
-
-                while (sqlite_datareader.Read())
-                {
-                    agents = ExtractAgents(sqlite_datareader);
-                }
-
+                agents = ExtractAgents(sqlite_datareader);
             }
             catch (SQLiteException ex)
             {
@@ -2032,6 +2027,47 @@ namespace dev_web_api
             }
 
         }
+        public void UpdateAgentsGroupsByGroupId(int grpId, int agentId)
+
+        {
+            _logger.Debug("Method AddAgentsIntoAgentGroup(...)");
+            _logger.Info("Method AddAgentsIntoAgentGroup(...)");
+            using (var sqlLiteConn = new SQLiteConnection(ConnectionString))
+            {
+                sqlLiteConn.Open();
+                SQLiteTransaction transaction;
+                transaction = sqlLiteConn.BeginTransaction();
+                var cmd = new SQLiteCommand(sqlLiteConn);
+                _logger.Debug("--- sql command--");
+                cmd.CommandText = $@"
+                    DELETE FROM agent_group_agent WHERE agent_group_id = {grpId} AND agent_id = {agentId}";
+                _logger.Info(cmd.CommandText);
+                _logger.Debug(cmd.CommandText);
+
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                    transaction.Commit();
+                }
+                catch (SQLiteException ex)
+                {
+                    transaction.Rollback();
+                    _logger.Error($"Database Error: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    _logger.Error($"General Error: {ex.Message}");
+                }
+                finally
+                {
+                    sqlLiteConn.Close();
+                }
+            }
+
+        }
+
+
         public List<AgentGroups> GetAgentGroups(int orgId)
         {
 

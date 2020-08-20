@@ -111,7 +111,7 @@ namespace dev_web_api
             HtmlGenericControl ctrl = new HtmlGenericControl("meta");
             ctrl.Attributes["http-equiv"] = "refresh";
             ctrl.Attributes["content"] = ConfigurationManager.AppSettings["RefreshFrequency"];
-            this.Page.Header.Controls.Add(ctrl);
+           this.Page.Header.Controls.Add(ctrl);
         }
         private int GetRandomNumber()
         {

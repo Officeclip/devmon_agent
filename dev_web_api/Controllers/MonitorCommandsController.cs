@@ -31,16 +31,26 @@ namespace dev_web_api.Controllers
             // Check to make sure if the org-id and the user-id matches
             // correctly. Also, match the guid to create an register agent 
             // if not present
-            var headers = Request.Headers;
-            _logger.Info("Request Headers...");
-            _logger.Info(headers);
-            var serverGuid = headers.GetValues("server_guid").First();
-            if (!Util.IsServerGuidValid(serverGuid))
+            List<MonitorCommand> monitorCommands = null;
+            try
             {
+<<<<<<< HEAD
+                var headers = Request.Headers;
+                _logger.Info("Request Headers...");
+                _logger.Info(headers);
+                var serverGuid = headers.GetValues("server_guid").First();
+                _logger.Debug($"serverGuid: {serverGuid}");
+                if (!Util.IsServerGuidValid(serverGuid))
+                {
+                    _logger.Error("Error: Server Guid Invalid");
+                    throw new HttpResponseException(HttpStatusCode.Unauthorized);
+                }
+=======
                 throw new HttpResponseException(HttpStatusCode.Unauthorized);
             }
             try
             {
+>>>>>>> 6a33d84840a0312a714f2c4ca0299270d063a523
                 var agent = new Agent()
                 {
                     Guid = headers.GetValues("agent_guid").First(),
@@ -48,6 +58,16 @@ namespace dev_web_api.Controllers
                     MachineName = headers.GetValues("machine_name").First(),
                     RegistrationDate = DateTime.UtcNow,
                     LastQueried = DateTime.UtcNow,
+<<<<<<< HEAD
+                };
+                //CR: 20200818: Use different function for city and country,
+                // also it can go inside initializer
+                //agent.ClientIpAddress = new WebClient().DownloadString("https://checkip.amazonaws.com/").Trim();
+                agent.ClientIpAddress = GetClientIpAddress(Request) ?? string.Empty;
+                agent.ClientCity = Util.GetIpInfo(agent.ClientIpAddress, false);
+                agent.ClientCountry = Util.GetIpInfo(agent.ClientIpAddress, true);
+                _logger.Debug($"Agent Extracted: {ObjectDumper.Dump(agent)}");
+=======
                     ClientIpAddress = new WebClient().DownloadString("https://checkip.amazonaws.com/").Trim()
                 };
                 agent.ClientCity = Util.GetIpInfo(agent.ClientIpAddress, false);
@@ -58,6 +78,7 @@ namespace dev_web_api.Controllers
                 monitorDb.UpsertAgent(agent);
                 var monitorCommands = monitorDb.GetMonitorCommands();
                 _logger.Info("Monitor Commands...");
+>>>>>>> 6a33d84840a0312a714f2c4ca0299270d063a523
 
                 _logger.Info(ObjectDumper.Dump(monitorCommands));
                 return monitorCommands;

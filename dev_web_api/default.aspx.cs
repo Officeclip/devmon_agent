@@ -34,44 +34,51 @@ namespace dev_web_api
 
         private void ProcessAndLoadAgents()
         {
-            var agentGroupId = Convert.ToInt32(ddlAgentGroups.SelectedValue);
-
-            agents = (agentGroupId > 0) 
-                        ? monitorDb.GetAgentsBySelectedGroup(agentGroupId)
-                        : monitorDb.GetEnabledAgents();
-
+            var agents = monitorDb.GetEnabledAgents();
             monitorCommand = monitorDb.GetMonitorCommands();
             var monitorValues = monitorDb.GetMonitorValues();
             monitorCommandLimits = monitorDb.GetMonitorCommandLimits();
-            var filteredMonitorValues = monitorValues
-                   .Where(x => agents.Any(y => y.AgentId == x.AgentId));
-            //PersonResultList = from personResult in PersonResultList
-            //                   join person in PersonList on personResult.PersonId equals person.PersonId
-            //                   select personResult;
 
-            var outPut = from monitorResult in monitorValues
-                         join agent in agents on monitorResult.AgentId equals agent.AgentId
-                         select monitorResult;
-            var ouputList = outPut.ToList();
+            var agentGroupId = Convert.ToInt32(ddlAgentGroups.SelectedValue);
+
+            if (agentGroupId > 0)
+            {
+                var agentIds = monitorDb.GetAgentIdByAgentGroup(
+                                                         agentGroupId);
+                var agentEnumerated =
+                        from agentResult in agents
+                        join agent in agentIds on agentResult.AgentId equals agent
+                        select agentResult;
+
+                agents = agentEnumerated.ToList();
+
+                var monitorValueEnumerated =
+                    from monitorResult in monitorValues
+                    join agent in agentIds on monitorResult.AgentId equals agent
+                    select monitorResult;
+
+                monitorValues = monitorValueEnumerated.ToList();
+            }
+
             try
             {
+                Util.SetupMonitorTable(
+                                tblMonitor,
+                                agents,
+                                monitorCommand,
+                                monitorValues,
+                                monitorCommandLimits);
 
-            Util.SetupMonitorTable(
-                            tblMonitor,
-                            agents,
-                            monitorCommand,
-                            ouputList,
-                            monitorCommandLimits);
-            if (chkEmailOpt.Checked)
-            {
-                Util.SendMonitorLimitEmail(
-                            agents,
-                            ouputList,
-                            monitorCommandLimits,
-                            monitorCommand);
+                if (chkEmailOpt.Checked)
+                {
+                    Util.SendMonitorLimitEmail(
+                                agents,
+                                monitorValues,
+                                monitorCommandLimits,
+                                monitorCommand);
+                }
             }
-            }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception($"Exception: {ex.Message}");
             }

@@ -21,13 +21,7 @@ namespace dev_web_api
         public MonitorDb()
         {
             _logger.Info("*** Monitordb() ***");
-            //var dbPath = Path.Combine(HttpRuntime.AppDomainAppPath, "monitor.sqlite");
-            //ConnectionString = $"Data Source={dbPath}";
             ConnectionString = ConfigurationManager.ConnectionStrings["dbString"].ConnectionString;
-            //if (!File.Exists(dbPath))
-            //{
-            //    CreateNewDatabase(dbPath);
-            //}
         }
 
         private void CreateNewDatabase(string dbPath)
@@ -256,6 +250,43 @@ namespace dev_web_api
                 _logger.Error($"General Error: {ex.Message}");
             }
             return agent;
+        }
+
+        public List<int> GetAgentIdByAgentGroup(int agentGroupId)
+        {
+            _logger.Info("*** GetAgentIdByAgentGroup(---) ***");
+            var agentIds = new List<int>();
+            SQLiteDataReader sqlite_datareader;
+            SQLiteCommand sqlite_cmd;
+            var sqlLiteConn = new SQLiteConnection(ConnectionString);
+            sqlLiteConn.Open();
+            sqlite_cmd = sqlLiteConn.CreateCommand();
+            sqlite_cmd.CommandText = 
+                $"SELECT agent_id from agent_group_agent where agent_group_id={agentGroupId}";
+            _logger.Debug(sqlite_cmd.CommandText);
+            var agents = new List<Agent>();
+            sqlite_datareader = sqlite_cmd.ExecuteReader();
+            try
+            {
+                while (sqlite_datareader.Read())
+                {
+                    agentIds.Add(Convert.ToInt32(sqlite_datareader["agent_id"]));
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                _logger.Error($"Database Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"General Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlite_datareader.Close();
+                sqlLiteConn.Close();
+            }
+            return agentIds;
         }
 
         public List<Agent> GetAgentsBySelectedGroup(int agentGroupId)

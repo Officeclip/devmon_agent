@@ -26,7 +26,7 @@ namespace dev_web_api
             {
                 ddlAgents.DataSource = monitorDb.GetEnabledAgents();
                 ddlAgents.DataValueField = "AgentId";
-                ddlAgents.DataTextField = "MachineName";
+                ddlAgents.DataTextField = "ScreenName";
                 ddlAgents.SelectedValue = AgentId.ToString();
                 ddlAgents.DataBind();
             }

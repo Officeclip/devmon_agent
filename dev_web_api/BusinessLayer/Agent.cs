@@ -20,6 +20,7 @@ namespace dev_web_api.BusinessLayer
         public string ClientIpAddress { get; set; }
         public string ClientCity { get; set; }
         public string ClientCountry { get; set; }
+        public string ClientCountryLong { get; set; }
 
         public string ProductVersion
         {

@@ -52,6 +52,7 @@ namespace dev_web_api.Controllers
                 };
                 agent.ClientCity = Util.GetIpInfo(agent.ClientIpAddress, false);
                 agent.ClientCountry = Util.GetIpInfo(agent.ClientIpAddress, true);
+                agent.ClientCountryLong = Util.GetIpFullInfo(agent.ClientIpAddress);
                 _logger.Info($"Client Ip address:--{agent.ClientIpAddress}--");
                 _logger.Debug($"MonitorCommandsController : UpsertAgent()");
                 monitorDb.UpsertAgent(agent);

@@ -46,7 +46,7 @@
                                 <ItemTemplate>
                                     <asp:CheckBox ID="chkAgent" runat="server" />
                                     <asp:HiddenField ID="hdnAgentId" runat="server" />
-                                    <asp:Label ID="lblAgentName" runat="server" Text='<%#Eval("MachineName")%>' />
+                                    <asp:Label ID="lblAgentName" runat="server" Text='<%#Eval("ScreenName")%>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
                         </Columns>

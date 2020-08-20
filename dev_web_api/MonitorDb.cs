@@ -213,9 +213,10 @@ namespace dev_web_api
 
         private Agent GetEnabledAgent(SQLiteDataReader sqlite_datareader)
         {
+            var agent = new Agent();
             try
             {
-                var agent = new Agent()
+                 agent = new Agent()
                 {
                     AgentId = Convert.ToInt32(sqlite_datareader["agent_id"]),
                     Guid = sqlite_datareader["guid"].ToString(),
@@ -244,13 +245,17 @@ namespace dev_web_api
                 agent.ClientCountry =
                                 Convert.ToString(
                                                     sqlite_datareader["country"]);
-                return agent;
+
             }
             catch (SQLiteException ex)
             {
-                throw new Exception($"excpetion: {ex.Message}");
+                _logger.Error($"Database Error: {ex.Message}");
             }
-
+            catch (Exception ex)
+            {
+                _logger.Error($"General Error: {ex.Message}");
+            }            
+            return agent;
         }
 
         public List<Agent> GetAgentsBySelectedGroup(int agentGroupId)

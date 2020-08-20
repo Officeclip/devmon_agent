@@ -245,6 +245,7 @@ namespace dev_web_api
             {
                 var ipAddress = string.Empty;
                 var clientCity = string.Empty;
+                var CountryLong = string.Empty;
                 if (agents[i].ClientIpAddress != string.Empty && agents[i].ClientCity != string.Empty)
                 {
                     ipAddress = $"IP: {agents[i].ClientIpAddress}";
@@ -252,9 +253,10 @@ namespace dev_web_api
                 }
                 var str = GenerateHtmlString(agents, i, ipAddress, clientCity);
                 monitorTable.Rows[i + 1].Cells[0].InnerHtml = str;
-                var title = $"{ipAddress}" + "\n" +
-                    $"{clientCity}{agents[i].ClientCountry}" + "\n" +
-                    $"Product Version: {agents[i].ProductVersion}" + "\n" +
+                var title = $"Ip: {ipAddress}" + "\n" +
+                    $"City: {clientCity}" + "\n" +
+                    $"Country: {Util.GetIpFullInfo(agents[i].ClientIpAddress)}" + "\n" +
+                    $"Agent Version: {agents[i].ProductVersion}" + "\n" +
                     $"Last Response {agents[i].LastReplyReceived.ToFriendlyDateTime()} ";
                 monitorTable.Rows[i + 1].Cells[0].Attributes.Add("title", title);
                 monitorTable.Rows[i + 1].Cells[0].Attributes.Add("class", "headerTitle");
@@ -266,13 +268,17 @@ namespace dev_web_api
         public static string GenerateHtmlString(List<Agent> agents, int i, string ipAddress, string clientCity)
         {
             var str = $@"   
-      <div class='outer'>
+                            <div class='outer'>
                                 <div class='outer-div'>
                                     <div class='outer-div-div'>
                                         <div>
                                           {agents[i].ScreenName}
                                         </div>
-                                    </div>                                    
+                                    </div>
+                                    <div class='more-info'>                                                                           
+                                        {clientCity}
+                                       {agents[i].ClientCountry}
+                                    </div>
                                 </div>
                                 <div class='inner-div'> 
                                     <div class='dropdown'>
@@ -480,6 +486,54 @@ namespace dev_web_api
             }
 
             return isCountry == true ? countryName : cityName;
+        }
+
+        /// <summary>
+        /// Retunrn the Full country name like United States of America
+        /// </summary>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        public static string GetIpFullInfo(string ipAddress)
+        {
+            var cityName = string.Empty;
+            var countryName = string.Empty;
+            IPResult ipResult = new IP2Location.IPResult();
+            try
+            {
+                if (ipAddress != "" && ipAddress != null)
+                {
+                    var ip2Component = new IP2Location.Component();
+                    ip2Component.IPDatabasePath =
+                        System.IO.Path.GetFullPath(
+                                            HostingEnvironment.MapPath(
+                                                        "~/App_Data/IP2LOCATION-LITE-DB3.BIN"));                    
+                    ipResult = ip2Component.IPQuery(ipAddress);
+                    switch (ipResult.Status.ToString())
+                    {
+                        case "OK":
+                            cityName = ipResult.City;
+                            countryName = ipResult.CountryLong;
+                            break;
+                        case "EMPTY_IP_ADDRESS":
+                            throw new Exception("IP Address cannot be blank.");
+
+                        case "INVALID_IP_ADDRESS":
+                            throw new Exception("Invalid IP Address.");
+
+                        case "MISSING_FILE":
+                            throw new Exception("Invalid Database Path.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                ipResult = null;
+            }
+            return  countryName;
         }
 
     }

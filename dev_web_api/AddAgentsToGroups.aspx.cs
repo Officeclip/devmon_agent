@@ -40,7 +40,7 @@ namespace dev_web_api
                 Label lbl = (Label)e.Row.FindControl("lblAgentName");
                 CheckBox chkAgent = (CheckBox)e.Row.FindControl("chkAgent");
                 var hdnAgentId = (HiddenField)e.Row.FindControl("hdnAgentId");
-                lbl.Text = item.MachineName;
+                lbl.Text = item.ScreenName;
                 hdnAgentId.Value = item.AgentId.ToString();
                 var hdnAgentValue = Convert.ToInt32(hdnAgentId.Value);
                 foreach (var agent in selectedAgents)

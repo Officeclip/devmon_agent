@@ -207,29 +207,6 @@ namespace dev_web_api
             }
         }
 
-        /// <summary>
-        /// Convert a list to a table. See: https://stackoverflow.com/a/5805044/89256
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        //public static DataTable ToDataTable<T>(this IList<T> data)
-        //{
-        //    PropertyDescriptorCollection properties =
-        //        TypeDescriptor.GetProperties(typeof(T));
-        //    DataTable table = new DataTable();
-        //    foreach (PropertyDescriptor prop in properties)
-        //        table.Columns.Add(prop.Name, Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType);
-        //    foreach (T item in data)
-        //    {
-        //        DataRow row = table.NewRow();
-        //        foreach (PropertyDescriptor prop in properties)
-        //            row[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
-        //        table.Rows.Add(row);
-        //    }
-        //    return table;
-        //}
-
         public static DataTable CreateMonitorDataSet(
                                     List<Agent> agents,
                                     List<MonitorCommand> monitorCommands,

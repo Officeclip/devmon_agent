@@ -2023,7 +2023,7 @@ namespace dev_web_api
                 transaction = sqlLiteConn.BeginTransaction();
                 var cmd = new SQLiteCommand(sqlLiteConn);
                 _logger.Debug("--- sql command--");
-                cmd.CommandText = $@"                  
+                cmd.CommandText = $@"                                      
                      INSERT INTO agent_group_agent
                     (
                         agent_group_id,
@@ -2058,7 +2058,7 @@ namespace dev_web_api
             }
 
         }
-        public void UpdateAgentsGroupsByGroupId(int grpId, int agentId)
+        public void DeleteAgentsGroupsByGroupId(int grpId)
 
         {
             _logger.Debug("Method AddAgentsIntoAgentGroup(...)");
@@ -2071,7 +2071,7 @@ namespace dev_web_api
                 var cmd = new SQLiteCommand(sqlLiteConn);
                 _logger.Debug("--- sql command--");
                 cmd.CommandText = $@"
-                    DELETE FROM agent_group_agent WHERE agent_group_id = {grpId} AND agent_id = {agentId}";
+                    DELETE FROM agent_group_agent WHERE agent_group_id = {grpId}";
                 _logger.Info(cmd.CommandText);
                 _logger.Debug(cmd.CommandText);
 

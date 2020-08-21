@@ -83,7 +83,7 @@ namespace dev_web_api
             return false;
         }
 
-        private static string GetBackgroundCellClass(
+        public static string GetBackgroundCellClass(
                                 MonitorValue monitorValue,
                                 List<MonitorCommand> monitorCommands,
                                 List<MonitorCommandLimit> monitorCommandLimits)
@@ -110,7 +110,7 @@ namespace dev_web_api
             return (DateTime.UtcNow - agent.LastReplyReceived).TotalMinutes > 10;
         }
 
-        private static string GetColumnTitleLimit(
+        public static string GetColumnTitleLimit(
                                MonitorCommand monitorCommand,
                                List<MonitorCommandLimit> monitorCommandLimits)
         {
@@ -217,7 +217,7 @@ namespace dev_web_api
 
             // Make a empty dataset for the values
             var monitorValueTable = new DataTable("MonitorValue");
-            for (var index=0; index < monitorCommands.Count; index++)
+            for (var index = 0; index < monitorCommands.Count; index++)
             {
                 var dataColumn = new DataColumn(
                                         index.ToString(),
@@ -237,7 +237,7 @@ namespace dev_web_api
                                             a => a.AgentId == monitorValue.AgentId);
                 var monitorCommandIndex = monitorCommands.FindIndex(
                                             a => a.MonitorCommandId == monitorValue.MonitorCommandId);
-                monitorValueTable.Rows[agentIndex][monitorCommandIndex] = 
+                monitorValueTable.Rows[agentIndex][monitorCommandIndex] =
                                             $"{monitorValue.Value} {monitorCommands[monitorCommandIndex].Unit}";
             }
             //dataSet.Tables.Add(monitorValueTable);
@@ -288,7 +288,7 @@ namespace dev_web_api
                     ipAddress = $"IP: {agents[i].ClientIpAddress}";
                     clientCity = $"{agents[i].ClientCity},";
                 }
-                var str = GenerateHtmlString(agents, i, ipAddress, clientCity);
+                var str = GenerateHtmlString(agents, i);
                 monitorTable.Rows[i + 1].Cells[0].InnerHtml = str;
                 var title = $"Ip: {ipAddress}" + "\n" +
                     $"City: {clientCity}" + "\n" +
@@ -302,8 +302,10 @@ namespace dev_web_api
 
             }
         }
-        public static string GenerateHtmlString(List<Agent> agents, int i, string ipAddress, string clientCity)
+
+        public static string GenerateHtmlString(List<Agent> agents, int i)
         {
+            var city = agents[i].ClientCity != string.Empty ? agents[i].ClientCity + "," : agents[i].ClientCity;
             var str = $@"   
                             <div class='outer'>
                                 <div class='outer-div'>
@@ -313,7 +315,7 @@ namespace dev_web_api
                                         </div>
                                     </div>
                                     <div class='more-info'>                                                                           
-                                        {clientCity}
+                                        {city}
                                        {agents[i].ClientCountry}
                                     </div>
                                 </div>
@@ -336,6 +338,42 @@ namespace dev_web_api
 
             return str;
         }
+
+
+        //public static string GenerateHtmlString(List<Agent> agents, int i, string ipAddress, string clientCity)
+        //{
+        //    var str = $@"   
+        //                    <div class='outer'>
+        //                        <div class='outer-div'>
+        //                            <div class='outer-div-div'>
+        //                                <div>
+        //                                  {agents[i].ScreenName}
+        //                                </div>
+        //                            </div>
+        //                            <div class='more-info'>                                                                           
+        //                                {clientCity}
+        //                               {agents[i].ClientCountry}
+        //                            </div>
+        //                        </div>
+        //                        <div class='inner-div'> 
+        //                            <div class='dropdown'>
+        //                                <div class='dots'
+        //                                     onclick=""myFunction('myDropdown_{agents[i].AgentId}')"">
+        //                                    <div id = 'myDropdown_{agents[i].AgentId}' class='dropdown-content'>
+        //                                        <a href = 'hardware.aspx?id={agents[i].AgentId}' > Hardware </a>
+        //                                        <a href='software.aspx?id={agents[i].AgentId}'>Software</a>
+        //                                    </div>
+
+        //                                </div>
+
+        //                            </div>
+
+        //                        </div>
+
+        //                    </div>";
+
+        //    return str;
+        //}
 
         public static bool IsServerGuidValid(string guid)
         {
@@ -547,7 +585,7 @@ namespace dev_web_api
                     ip2Component.IPDatabasePath =
                         System.IO.Path.GetFullPath(
                                             HostingEnvironment.MapPath(
-                                                        "~/App_Data/IP2LOCATION-LITE-DB3.BIN"));                    
+                                                        "~/App_Data/IP2LOCATION-LITE-DB3.BIN"));
                     ipResult = ip2Component.IPQuery(ipAddress);
                     switch (ipResult.Status.ToString())
                     {
@@ -559,22 +597,22 @@ namespace dev_web_api
                             throw new Exception("IP Address cannot be blank.");
 
                         case "INVALID_IP_ADDRESS":
-                            throw new Exception("Invalid IP Address.");
+                            throw new Exception("Invalid IP Address.");    
 
                         case "MISSING_FILE":
                             throw new Exception("Invalid Database Path.");
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                throw new Exception(ex.Message);
+                throw new Exception(e.Message);
             }
             finally
             {
                 ipResult = null;
             }
-            return  countryName;
+            return countryName;
         }
 
     }

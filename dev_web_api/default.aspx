@@ -12,7 +12,7 @@
     <style type="text/css">
         .dots:after {
             content: '\2807';
-            font-size: 20px;       
+            font-size: 20px;
         }
 
         .dots {
@@ -112,40 +112,39 @@
 
         <table id="tblMonitor" class="monitor" runat="server" />
 
-        <table style="margin-top: 24px" border="1">
+        <table class="monitor">
             <tr>
-            <asp:Repeater ID="rptHeader" runat="server">
-                <HeaderTemplate>
-                <th>
-                </th>
-                </HeaderTemplate>
-                <ItemTemplate>
-                <th>
-                    <asp:Literal ID="litColumnHeader" runat="server" 
-                        Text='<%# Eval("Name") %>'>          
-                    </asp:Literal>
-                </th>
-                </ItemTemplate>
-            </asp:Repeater>
+                <asp:Repeater ID="rptHeader" runat="server">
+                    <HeaderTemplate>
+                        <th></th>
+                    </HeaderTemplate>
+                    <ItemTemplate>
+                        <th id="thLimit" title='<%# GetMonitorCommandWarningLimit(Container.ItemIndex)%>'>
+                            <span style="border-bottom: 1px dashed black">
+                                <asp:Literal ID="litColumnHeader" runat="server"
+                                    Text='<%#Eval("Name") %>'>          
+                                </asp:Literal>
+                            </span>
+                        </th>
+                    </ItemTemplate>
+                </asp:Repeater>
             </tr>
-            <asp:Repeater ID="rptRowItem" runat="server" 
+            <asp:Repeater ID="rptRowItem" runat="server"
                 OnItemDataBound="rptRowItem_ItemDataBound">
                 <ItemTemplate>
-                <tr>
-                    <td>
-                        <asp:Literal ID="litRowHeader" runat="server" 
-                            Text='<%# GetHeader(Container.ItemIndex) %>'>          
-                        </asp:Literal>                        
-                    </td>
-                    <asp:Repeater ID="rptCellItem" runat="server"
-                         OnItemDataBound="rptCellItem_ItemDataBound">
-                        <HeaderTemplate>
-                        </HeaderTemplate>
-                        <ItemTemplate>
-                            <%# GetData(Container.ItemIndex, Container.DataItem) %>                                
-                        </ItemTemplate>
-                    </asp:Repeater>
-                </tr>
+                    <tr>
+                        <td id="tdTooltip" title='<%# GetToolTipInfo(Container.ItemIndex) %>' class="headerTitle" runat="server">
+                            <%# GetHeader(Container.ItemIndex) %>                        
+                        </td>
+                        <asp:Repeater ID="rptCellItem" runat="server"
+                            OnItemDataBound="rptCellItem_ItemDataBound">
+                            <HeaderTemplate>
+                            </HeaderTemplate>
+                            <ItemTemplate>
+                                <%# GetData(Container.ItemIndex, Container.DataItem) %>
+                            </ItemTemplate>
+                        </asp:Repeater>
+                    </tr>
                 </ItemTemplate>
             </asp:Repeater>
         </table>

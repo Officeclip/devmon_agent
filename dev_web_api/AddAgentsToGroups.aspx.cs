@@ -65,6 +65,7 @@ namespace dev_web_api
         {
             try
             {
+                monitorDb. DeleteAgentsGroupsByGroupId(AgentGroupId);
                 foreach (GridViewRow gvr in grdAgents.Rows)
                 {
                     var hdnAgentId = Convert.ToInt32(((HiddenField)gvr.FindControl("hdnAgentId")).Value);

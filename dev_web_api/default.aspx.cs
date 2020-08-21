@@ -1,4 +1,5 @@
 ﻿using dev_web_api.BusinessLayer;
+using FriendlyTime;
 using Microsoft.Ajax.Utilities;
 using NLog;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
@@ -20,12 +22,18 @@ namespace dev_web_api
         List<MonitorCommandLimit> monitorCommandLimits;
         List<Agent> agents;
         List<MonitorCommand> monitorCommands;
+        List<MonitorValue> monitorValues;
         MonitorDb monitorDb = new MonitorDb();
         protected string serverGuid = (new MonitorDb()).GetServerGuid(true);
         protected const int OrgId = 1;
         DataTable monitorDataTable;
         protected void Page_Load(object sender, EventArgs e)
         {
+            agents = monitorDb.GetEnabledAgents();
+            monitorValues = monitorDb.GetMonitorValues();
+            monitorCommands = monitorDb.GetMonitorCommands();
+            monitorCommandLimits = monitorDb.GetMonitorCommandLimits();
+
             if (!IsPostBack)
             {
                 LoadUserInfo();
@@ -36,13 +44,7 @@ namespace dev_web_api
 
         private void ProcessAndLoadAgents()
         {
-            agents = monitorDb.GetEnabledAgents();
-            monitorCommands = monitorDb.GetMonitorCommands();
-            var monitorValues = monitorDb.GetMonitorValues();
-            monitorCommandLimits = monitorDb.GetMonitorCommandLimits();
-
             var agentGroupId = Convert.ToInt32(ddlAgentGroups.SelectedValue);
-
             if (agentGroupId > 0)
             {
                 var agentIds = monitorDb.GetAgentIdByAgentGroup(
@@ -65,11 +67,13 @@ namespace dev_web_api
             try
             {
                 monitorDataTable = Util.CreateMonitorDataSet(
-                                agents,
-                                monitorCommands,
-                                monitorValues,
-                                monitorCommandLimits);
+                                                            agents,
+                                                            monitorCommands,
+                                                            monitorValues,
+                                                            monitorCommandLimits);
                 LoadDataSet();
+
+
 
                 Util.SetupMonitorTable(
                                 tblMonitor,
@@ -137,7 +141,7 @@ namespace dev_web_api
             HtmlGenericControl ctrl = new HtmlGenericControl("meta");
             ctrl.Attributes["http-equiv"] = "refresh";
             ctrl.Attributes["content"] = ConfigurationManager.AppSettings["RefreshFrequency"];
-           this.Page.Header.Controls.Add(ctrl);
+            this.Page.Header.Controls.Add(ctrl);
         }
         private int GetRandomNumber()
         {
@@ -149,7 +153,7 @@ namespace dev_web_api
         protected void ddlAgentGroups_SelectedIndexChanged(object sender, EventArgs e)
         {
             ProcessAndLoadAgents();
-         
+
         }
 
         protected void chkEmailOpt_CheckedChanged(object sender, EventArgs e)
@@ -159,7 +163,7 @@ namespace dev_web_api
             // userId is hardcoded here
             monitorDb.InsertEmailOpt(optValue, 1);
             ProcessAndLoadAgents();
-        }    
+        }
 
         private void LoadDataSet()
         {
@@ -169,10 +173,30 @@ namespace dev_web_api
             rptRowItem.DataBind();
         }
 
+        protected string GetMonitorCommandWarningLimit(object dataIndex)
+        {
+            var commands = monitorDb.GetMonitorCommands();
+            var commandLimits = monitorDb.GetMonitorCommandLimits();
+            var title = Util.GetColumnTitleLimit(commands[(int)dataIndex], monitorCommandLimits);
+            return title;
+        }
+
+        protected string GetToolTipInfo(object dataIndex)
+        {
+
+            //var agent = agents[(int)dataIndex];
+            var title = $"Ip: {agents[(int)dataIndex].ClientIpAddress}" + "\n" +
+                    $"City: {agents[(int)dataIndex].ClientCity}" + "\n" +
+                    $"Country: {Util.GetIpFullInfo(agents[(int)dataIndex].ClientIpAddress)}" + "\n" +
+                    $"Agent Version: {agents[(int)dataIndex].ProductVersion}" + "\n" +
+                    $"Last Response {agents[(int)dataIndex].LastReplyReceived.ToFriendlyDateTime()} ";
+            return title;
+
+        }
         protected string GetHeader(object dataIndex)
         {
-            var agent = agents[(int)dataIndex];
-            return agent.ScreenName;
+            var name = Util.GenerateHtmlString(agents, (int)dataIndex);
+            return name;
         }
 
         protected string GetData(object index, object data)
@@ -188,23 +212,78 @@ namespace dev_web_api
                 if (colIndex == 0)
                 {
                     var colSpan = monitorCommands.Count;
-                    return $@"<td colspan=""{colSpan}"">Agent Not Available</td>";
+                    return $@"<td colspan=""{colSpan}"" class=""notAvailable"">Agent Not Available</td>";
                 }
                 else
                 {
                     return string.Empty;
                 }
             }
-            return $"<td>{strData}</td>"; 
+            var rawStr = data.ToString().Replace(",", "");
+            var splitValue = Convert.ToDouble(Regex.Split(rawStr, @"[^0-9\.]+").Where(c => c != "." && c.Trim() != "").ToList()[0]);
+            var cssValue = GetCssClassForTd(splitValue);
+            return $"<td class='{cssValue}'>{strData}</td>"; ;
+        }
+
+        public string GetCssClassForTd(double value)
+        {
+            var cssClass = string.Empty;
+            var values = monitorDb.GetMonitorValues();
+            var monitorValue = values.Find(x => x.Value == value);
+            if (monitorValue != null)
+            {
+                cssClass = Util.GetBackgroundCellClass(
+                       monitorValue,
+                       monitorCommands,
+                       monitorCommandLimits);
+            }
+            return cssClass;
+        }
+
+
+
+        public string SetTabelCell(double value, string strData)
+        {
+            var values = monitorDb.GetMonitorValues();
+            var monitorValue = values.Find(x => x.Value == value);
+            var tdStr = "";
+            if (monitorValue != null)
+            {
+                //switch (monitorValue.ReturnCode)
+                //{
+                //    //case -2:
+                //    //    tdStr = $@"<td title =""{monitorValue.ErrorMessage}"" class=""notAvailable"">
+                //    //                <span style=""border-bottom: 1px dashed black"">NA</span>
+                //    //                </td>";
+                //    //    break;
+                //    //case -1:
+                //    //    tdStr = $@"<td title =""{monitorValue.ErrorMessage}"" class=""notAvailable"">
+                //    //                <span style=""border-bottom: 1px dashed black"">Error</span>
+                //    //                </td>";
+                //    //    break;
+                //    default:                                       
+                //        break;
+                //}
+                var monitorCommand = monitorCommands
+                                                      .Find(x => x.MonitorCommandId == monitorValue.MonitorCommandId);
+                var cssClass = Util.GetBackgroundCellClass(
+                        monitorValue,
+                        monitorCommands,
+                        monitorCommandLimits);
+                tdStr = $"<td class='{cssClass}'>{strData}</td>";
+            }
+            return tdStr;
         }
 
         protected void rptRowItem_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
             DataRowView dv = e.Item.DataItem as DataRowView;
             var index = e.Item.ItemIndex;
-            if (dv != null) {
+            if (dv != null)
+            {
                 Repeater childRepeater = (Repeater)e.Item.FindControl("rptCellItem");
-                if (childRepeater != null) {
+                if (childRepeater != null)
+                {
                     childRepeater.DataSource = CreateDataSource(index, dv.Row.ItemArray);
                     childRepeater.DataBind();
                 }
@@ -217,7 +296,7 @@ namespace dev_web_api
             foreach (var item in itemArray)
             {
                 dataSource.Add($"{index},{item}");
-            }           
+            }
             return dataSource;
         }
 

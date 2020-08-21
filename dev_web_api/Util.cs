@@ -105,7 +105,7 @@ namespace dev_web_api
             return string.Empty;
         }
 
-        private static bool IsAgentUnavailable(Agent agent)
+        public static bool IsAgentUnavailable(Agent agent)
         {
             return (DateTime.UtcNow - agent.LastReplyReceived).TotalMinutes > 10;
         }

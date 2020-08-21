@@ -19,7 +19,7 @@ namespace dev_web_api
         static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         List<MonitorCommandLimit> monitorCommandLimits;
         List<Agent> agents;
-        List<MonitorCommand> monitorCommand;
+        List<MonitorCommand> monitorCommands;
         MonitorDb monitorDb = new MonitorDb();
         protected string serverGuid = (new MonitorDb()).GetServerGuid(true);
         protected const int OrgId = 1;
@@ -37,7 +37,7 @@ namespace dev_web_api
         private void ProcessAndLoadAgents()
         {
             agents = monitorDb.GetEnabledAgents();
-            monitorCommand = monitorDb.GetMonitorCommands();
+            monitorCommands = monitorDb.GetMonitorCommands();
             var monitorValues = monitorDb.GetMonitorValues();
             monitorCommandLimits = monitorDb.GetMonitorCommandLimits();
 
@@ -66,7 +66,7 @@ namespace dev_web_api
             {
                 monitorDataSet = Util.CreateMonitorDataSet(
                                 agents,
-                                monitorCommand,
+                                monitorCommands,
                                 monitorValues,
                                 monitorCommandLimits);
                 LoadDataSet();
@@ -74,7 +74,7 @@ namespace dev_web_api
                 Util.SetupMonitorTable(
                                 tblMonitor,
                                 agents,
-                                monitorCommand,
+                                monitorCommands,
                                 monitorValues,
                                 monitorCommandLimits);
 
@@ -84,7 +84,7 @@ namespace dev_web_api
                                 agents,
                                 monitorValues,
                                 monitorCommandLimits,
-                                monitorCommand);
+                                monitorCommands);
                 }
             }
             catch (Exception ex)
@@ -169,22 +169,65 @@ namespace dev_web_api
             rptRowItem.DataBind();
         }
 
+        protected string GetColumnSpan()
+        {
+            return "1";
+        }
+
         protected string GetHeader(object dataIndex)
         {
             var agent = agents[(int)dataIndex];
             return agent.ScreenName;
         }
 
+        protected string GetData(object index, object data)
+        {
+            var colIndex = Convert.ToInt32(index);
+            var strData = data.ToString();
+            var commaPosition = strData.IndexOf(",");
+            var rowIndex = Convert.ToInt32(strData.Substring(0, commaPosition));
+            strData = strData.Substring(commaPosition + 1);
+            var isAgentAvailable = !Util.IsAgentUnavailable(agents[rowIndex]);
+            if (!isAgentAvailable)
+            {
+                if (colIndex == 0)
+                {
+                    var colSpan = monitorCommands.Count;
+                    return $@"<td colspan=""{colSpan}"">Agent Not Available</td>";
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+            return $"<td>{strData}</td>"; 
+        }
+
         protected void rptRowItem_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
             DataRowView dv = e.Item.DataItem as DataRowView;
+            var index = e.Item.ItemIndex;
             if (dv != null) {
                 Repeater childRepeater = (Repeater)e.Item.FindControl("rptCellItem");
                 if (childRepeater != null) {
-                    childRepeater.DataSource = dv.Row.ItemArray;
-                    childRepeater.DataBind(); 
+                    childRepeater.DataSource = CreateDataSource(index, dv.Row.ItemArray);
+                    childRepeater.DataBind();
                 }
             }
+        }
+
+        private List<string> CreateDataSource(int index, object[] itemArray)
+        {
+            var dataSource = new List<string>();
+            foreach (var item in itemArray)
+            {
+                dataSource.Add($"{index},{item}");
+            }           
+            return dataSource;
+        }
+
+        protected void rptCellItem_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
 
         }
     }

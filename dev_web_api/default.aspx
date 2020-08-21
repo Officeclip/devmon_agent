@@ -121,7 +121,9 @@
                 </HeaderTemplate>
                 <ItemTemplate>
                 <th>
-                    <%# Eval("Name")  %>
+                    <asp:Literal ID="litColumnHeader" runat="server" 
+                        Text='<%# Eval("Name") %>'>          
+                    </asp:Literal>
                 </th>
                 </ItemTemplate>
             </asp:Repeater>
@@ -131,15 +133,16 @@
                 <ItemTemplate>
                 <tr>
                     <td>
-                        <%# GetHeader(Container.ItemIndex) %>
+                        <asp:Literal ID="litRowHeader" runat="server" 
+                            Text='<%# GetHeader(Container.ItemIndex) %>'>          
+                        </asp:Literal>                        
                     </td>
-                    <asp:Repeater ID="rptCellItem" runat="server">
+                    <asp:Repeater ID="rptCellItem" runat="server"
+                         OnItemDataBound="rptCellItem_ItemDataBound">
                         <HeaderTemplate>
                         </HeaderTemplate>
                         <ItemTemplate>
-                            <td>
-                                <%# Container.DataItem %>
-                            </td>
+                            <%# GetData(Container.ItemIndex, Container.DataItem) %>                                
                         </ItemTemplate>
                     </asp:Repeater>
                 </tr>

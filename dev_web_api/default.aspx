@@ -16,16 +16,12 @@
         }
 
         .dots {
-            /*background-color: #3498DB;
-                    color: white;
-                    padding: 16px;*/
             font-size: 16px;
             border: none;
             cursor: pointer;
         }
 
             .dots:hover, .dots:focus {
-                /*background-color: #2980B9;*/
             }
 
         .dropdown {
@@ -136,8 +132,7 @@
                         <td id="tdTooltip" title='<%# GetToolTipInfo(Container.ItemIndex) %>' class="headerTitle" runat="server">
                             <%# GetHeader(Container.ItemIndex) %>                        
                         </td>
-                        <asp:Repeater ID="rptCellItem" runat="server"
-                            OnItemDataBound="rptCellItem_ItemDataBound">
+                        <asp:Repeater ID="rptCellItem" runat="server">
                             <HeaderTemplate>
                             </HeaderTemplate>
                             <ItemTemplate>

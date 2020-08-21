@@ -53,6 +53,10 @@ table.monitor {
 
 .notAvailable {
     background-color: lightblue;
+
+    span{
+    border-bottom: 1px dashed black;
+    }
 }
 
 li {

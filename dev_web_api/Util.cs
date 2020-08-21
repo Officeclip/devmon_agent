@@ -35,7 +35,7 @@ namespace dev_web_api
             return null;
         }
 
-        private static bool IsMonitorValueLimitError(
+        public static bool IsMonitorValueLimitError(
                                             MonitorValue monitorValue,
                                             MonitorCommandLimit monitorCommandLimit)
         {
@@ -59,7 +59,7 @@ namespace dev_web_api
             return false;
         }
 
-        private static bool IsMonitorValueLimitWarning(
+        public static bool IsMonitorValueLimitWarning(
                                            MonitorValue monitorValue,
                                            MonitorCommandLimit monitorCommandLimit)
         {

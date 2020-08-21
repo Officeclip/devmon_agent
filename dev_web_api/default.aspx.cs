@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Security;
@@ -207,6 +208,7 @@ namespace dev_web_api
             var rowIndex = Convert.ToInt32(strData.Substring(0, commaPosition));
             strData = strData.Substring(commaPosition + 1);
             var isAgentAvailable = !Util.IsAgentUnavailable(agents[rowIndex]);
+            var monitorValue = GetMonitorValue(rowIndex, colIndex);
             if (!isAgentAvailable)
             {
                 if (colIndex == 0)
@@ -219,60 +221,46 @@ namespace dev_web_api
                     return string.Empty;
                 }
             }
-            var rawStr = data.ToString().Replace(",", "");
-            var splitValue = Convert.ToDouble(Regex.Split(rawStr, @"[^0-9\.]+").Where(c => c != "." && c.Trim() != "").ToList()[0]);
-            var cssValue = GetCssClassForTd(splitValue);
-            return $"<td class='{cssValue}'>{strData}</td>"; ;
+            if (strData.StartsWith("-2"))
+            {
+                var title = "";
+                if (monitorValue != null)
+                {
+                    title = monitorValue.ErrorMessage;
+                }
+                return $@"<td class=""notAvailable"" title=""{title}""><span>NA</span></td>";
+            }
+
+            var limitCssClass = string.Empty;
+            var monitorCommandType = monitorCommands[colIndex].Type;
+            var monitorCommandLimit = monitorCommandLimits.Find(x => x.Type == monitorCommandType);
+            if (monitorCommandLimit != null)
+            {
+                if (Util.IsMonitorValueLimitWarning(monitorValue, monitorCommandLimit))
+                {
+                    limitCssClass = "warningLimit";
+                }
+                if (Util.IsMonitorValueLimitError(monitorValue, monitorCommandLimit))
+                {
+                    limitCssClass = "errorLimit";
+                }
+
+            }
+
+            return $"<td class='{limitCssClass}'>{strData}</td>";
         }
 
-        public string GetCssClassForTd(double value)
+        private MonitorValue GetMonitorValue(int rowIndex, int ColIndex)
         {
-            var cssClass = string.Empty;
-            var values = monitorDb.GetMonitorValues();
-            var monitorValue = values.Find(x => x.Value == value);
-            if (monitorValue != null)
-            {
-                cssClass = Util.GetBackgroundCellClass(
-                       monitorValue,
-                       monitorCommands,
-                       monitorCommandLimits);
-            }
-            return cssClass;
-        }
-
-
-
-        public string SetTabelCell(double value, string strData)
-        {
-            var values = monitorDb.GetMonitorValues();
-            var monitorValue = values.Find(x => x.Value == value);
-            var tdStr = "";
-            if (monitorValue != null)
-            {
-                //switch (monitorValue.ReturnCode)
-                //{
-                //    //case -2:
-                //    //    tdStr = $@"<td title =""{monitorValue.ErrorMessage}"" class=""notAvailable"">
-                //    //                <span style=""border-bottom: 1px dashed black"">NA</span>
-                //    //                </td>";
-                //    //    break;
-                //    //case -1:
-                //    //    tdStr = $@"<td title =""{monitorValue.ErrorMessage}"" class=""notAvailable"">
-                //    //                <span style=""border-bottom: 1px dashed black"">Error</span>
-                //    //                </td>";
-                //    //    break;
-                //    default:                                       
-                //        break;
-                //}
-                var monitorCommand = monitorCommands
-                                                      .Find(x => x.MonitorCommandId == monitorValue.MonitorCommandId);
-                var cssClass = Util.GetBackgroundCellClass(
-                        monitorValue,
-                        monitorCommands,
-                        monitorCommandLimits);
-                tdStr = $"<td class='{cssClass}'>{strData}</td>";
-            }
-            return tdStr;
+            var agent = agents[rowIndex];
+            var monitorCommand = monitorCommands[ColIndex];
+            var monitorValue = monitorValues
+                                    .Where(x => x.AgentId == agent.AgentId)
+                                    .Where(x => x.MonitorCommandId == monitorCommand.MonitorCommandId)
+                                    .ToList();
+            return (monitorValue.Count > 0)
+                ? monitorValue[0]
+                : null;
         }
 
         protected void rptRowItem_ItemDataBound(object sender, RepeaterItemEventArgs e)
@@ -300,9 +288,5 @@ namespace dev_web_api
             return dataSource;
         }
 
-        protected void rptCellItem_ItemDataBound(object sender, RepeaterItemEventArgs e)
-        {
-
-        }
     }
 }

@@ -37,6 +37,8 @@ table.monitor {
 
 .notAvailable {
   background-color: lightblue; }
+  .notAvailable span {
+    border-bottom: 1px dashed black; }
 
 li {
   line-height: 1.5em; }

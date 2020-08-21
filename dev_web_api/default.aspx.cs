@@ -23,7 +23,7 @@ namespace dev_web_api
         MonitorDb monitorDb = new MonitorDb();
         protected string serverGuid = (new MonitorDb()).GetServerGuid(true);
         protected const int OrgId = 1;
-        DataSet monitorDataSet;
+        DataTable monitorDataTable;
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -64,7 +64,7 @@ namespace dev_web_api
 
             try
             {
-                monitorDataSet = Util.CreateMonitorDataSet(
+                monitorDataTable = Util.CreateMonitorDataSet(
                                 agents,
                                 monitorCommands,
                                 monitorValues,
@@ -163,15 +163,10 @@ namespace dev_web_api
 
         private void LoadDataSet()
         {
-            rptHeader.DataSource = monitorDataSet.Tables["MonitorCommand"];
+            rptHeader.DataSource = monitorCommands;
             rptHeader.DataBind();
-            rptRowItem.DataSource = monitorDataSet.Tables["MonitorValue"];
+            rptRowItem.DataSource = monitorDataTable;
             rptRowItem.DataBind();
-        }
-
-        protected string GetColumnSpan()
-        {
-            return "1";
         }
 
         protected string GetHeader(object dataIndex)

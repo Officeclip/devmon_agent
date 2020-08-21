@@ -213,42 +213,30 @@ namespace dev_web_api
         /// <typeparam name="T"></typeparam>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static DataTable ToDataTable<T>(this IList<T> data)
-        {
-            PropertyDescriptorCollection properties =
-                TypeDescriptor.GetProperties(typeof(T));
-            DataTable table = new DataTable();
-            foreach (PropertyDescriptor prop in properties)
-                table.Columns.Add(prop.Name, Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType);
-            foreach (T item in data)
-            {
-                DataRow row = table.NewRow();
-                foreach (PropertyDescriptor prop in properties)
-                    row[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
-                table.Rows.Add(row);
-            }
-            return table;
-        }
+        //public static DataTable ToDataTable<T>(this IList<T> data)
+        //{
+        //    PropertyDescriptorCollection properties =
+        //        TypeDescriptor.GetProperties(typeof(T));
+        //    DataTable table = new DataTable();
+        //    foreach (PropertyDescriptor prop in properties)
+        //        table.Columns.Add(prop.Name, Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType);
+        //    foreach (T item in data)
+        //    {
+        //        DataRow row = table.NewRow();
+        //        foreach (PropertyDescriptor prop in properties)
+        //            row[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
+        //        table.Rows.Add(row);
+        //    }
+        //    return table;
+        //}
 
-        public static DataSet CreateMonitorDataSet(
+        public static DataTable CreateMonitorDataSet(
                                     List<Agent> agents,
                                     List<MonitorCommand> monitorCommands,
                                     List<MonitorValue> monitorValues,
                                     List<MonitorCommandLimit> monitorCommandLimits)
         {
             var dataSet = new DataSet();
-
-            var agentTable = ToDataTable<Agent>(agents);
-            agentTable.TableName = "Agent";
-            dataSet.Tables.Add(agentTable);
-
-            var monitorCommandTable = ToDataTable<MonitorCommand>(monitorCommands);
-            monitorCommandTable.TableName = "MonitorCommand";
-            dataSet.Tables.Add(monitorCommandTable);
-
-            var monitorCommandLimitTable = ToDataTable<MonitorCommandLimit>(monitorCommandLimits);
-            monitorCommandLimitTable.TableName = "MonitorCommandLimit";
-            dataSet.Tables.Add(monitorCommandLimitTable);
 
             // Make a empty dataset for the values
             var monitorValueTable = new DataTable("MonitorValue");
@@ -275,8 +263,8 @@ namespace dev_web_api
                 monitorValueTable.Rows[agentIndex][monitorCommandIndex] = 
                                             $"{monitorValue.Value} {monitorCommands[monitorCommandIndex].Unit}";
             }
-            dataSet.Tables.Add(monitorValueTable);
-            return dataSet;
+            //dataSet.Tables.Add(monitorValueTable);
+            return monitorValueTable;
         }
 
         public static void SetupMonitorTable(

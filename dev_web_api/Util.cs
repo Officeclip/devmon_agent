@@ -126,86 +126,7 @@ namespace dev_web_api
             return returnValue;
         }
 
-        private static void SetHeaderRow(
-                                HtmlTable monitorTable,
-                                List<MonitorCommand> monitorCommands,
-                                List<MonitorCommandLimit> monitorCommandLimits)
-        {
-            var row = new HtmlTableRow();
-            monitorTable.Rows.Add(row);
-            foreach (var monitorCommand in monitorCommands)
-            {
-                var cell = new HtmlTableCell("th");
-                cell.InnerText = monitorCommand.Name;
-                var title = GetColumnTitleLimit(monitorCommand, monitorCommandLimits);
-                if (title.Length > 0)
-                {
-                    cell.InnerHtml =
-                        $@"<span style=""border-bottom: 1px dashed black"">{monitorCommand.Name }</span>";
-                    cell.Attributes.Add("title", title);
-                    cell.Attributes.Add("class", "headerTitle");
-                }
-                row.Cells.Add(cell);
-            }
-        }
-
-        private static void SetNotAvailableRow(
-                                        HtmlTable monitorTable,
-                                        int monitorCommandsLength)
-        {
-            var row = new HtmlTableRow();
-            monitorTable.Rows.Add(row);
-            var cell = new HtmlTableCell();
-            row.Cells.Add(cell);
-            cell.ColSpan = monitorCommandsLength;
-            cell.InnerHtml = "Agent Not Available";
-        }
-
-        private static void SetAgentRow(
-                                HtmlTable monitorTable,
-                                Agent agent,
-                                List<MonitorCommand> monitorCommands,
-                                List<MonitorValue> monitorValues,
-                                List<MonitorCommandLimit> monitorCommandLimits)
-        {
-            var row = new HtmlTableRow();
-            monitorTable.Rows.Add(row);
-            var monitorValuesForAgent = monitorValues
-                                                .FindAll(x => x.AgentId == agent.AgentId);
-            foreach (var monitorValue in monitorValuesForAgent)
-            {
-                var cell = new HtmlTableCell();
-                switch (monitorValue.ReturnCode)
-                {
-                    case -2:
-                        cell.InnerHtml = @"<span style=""border-bottom: 1px dashed black"">NA</span>";
-                        cell.Attributes.Add("title", monitorValue.ErrorMessage);
-                        cell.Attributes.Add("class", "notAvailable");
-                        break;
-                    case -1:
-                        cell.InnerHtml = @"<span style=""border-bottom: 1px dashed black"">Error</span>";
-                        cell.Attributes.Add("title", monitorValue.ErrorMessage);
-                        cell.Attributes.Add("class", "systemError");
-                        break;
-                    default:
-                        var monitorCommand = monitorCommands
-                                                        .Find(x => x.MonitorCommandId == monitorValue.MonitorCommandId);
-                        var unit = monitorCommand?.Unit ?? string.Empty;
-                        cell.InnerText = $"{monitorValue.Value} {unit}";
-                        var cssClass = GetBackgroundCellClass(
-                                monitorValue,
-                                monitorCommands,
-                                monitorCommandLimits);
-                        if (cssClass.Length > 0)
-                        {
-                            cell.Attributes.Add("class", cssClass);
-                        }
-                        break;
-
-                }
-                row.Cells.Add(cell);
-            }
-        }
+       
 
         public static DataTable CreateMonitorDataSet(
                                     List<Agent> agents,
@@ -242,67 +163,7 @@ namespace dev_web_api
             }
             //dataSet.Tables.Add(monitorValueTable);
             return monitorValueTable;
-        }
-
-        public static void SetupMonitorTable(
-                                    HtmlTable monitorTable,
-                                    List<Agent> agents,
-                                    List<MonitorCommand> monitorCommands,
-                                    List<MonitorValue> monitorValues,
-                                    List<MonitorCommandLimit> monitorCommandLimits)
-        {
-            SetHeaderRow(monitorTable, monitorCommands, monitorCommandLimits);
-            foreach (var agent in agents)
-            {
-                if (IsAgentUnavailable(agent))
-                {
-                    SetNotAvailableRow(monitorTable, monitorCommands.Count);
-                }
-                else
-                {
-                    SetAgentRow(
-                            monitorTable,
-                            agent,
-                            monitorCommands,
-                            monitorValues,
-                            monitorCommandLimits);
-                }
-            }
-            AddFirstColumn(monitorTable, agents);
-        }
-
-        private static void AddFirstColumn(HtmlTable monitorTable, List<Agent> agents)
-        {
-            foreach (HtmlTableRow row in monitorTable.Rows)
-            {
-                var cell = new HtmlTableCell();
-                row.Cells.Insert(0, cell);
-            }
-            for (int i = 0; i < agents.Count; i++)
-            {
-                var ipAddress = string.Empty;
-                var clientCity = string.Empty;
-                var CountryLong = string.Empty;
-                if (agents[i].ClientIpAddress != string.Empty && agents[i].ClientCity != string.Empty)
-                {
-                    ipAddress = $"IP: {agents[i].ClientIpAddress}";
-                    clientCity = $"{agents[i].ClientCity},";
-                }
-                var str = GenerateHtmlString(agents, i);
-                monitorTable.Rows[i + 1].Cells[0].InnerHtml = str;
-                var title = $"Ip: {ipAddress}" + "\n" +
-                    $"City: {clientCity}" + "\n" +
-                    $"Country: {Util.GetIpFullInfo(agents[i].ClientIpAddress)}" + "\n" +
-                    $"Agent Version: {agents[i].ProductVersion}" + "\n" +
-                    $"Last Response {agents[i].LastReplyReceived.ToFriendlyDateTime()} ";
-                monitorTable.Rows[i + 1].Cells[0].Attributes.Add("title", title);
-                monitorTable.Rows[i + 1].Cells[0].Attributes.Add("class", "headerTitle");
-                monitorTable.Rows[i + 1].Cells[0].Attributes.Add("data-html", "true");
-
-
-            }
-        }
-
+        }     
         public static string GenerateHtmlString(List<Agent> agents, int i)
         {
             var city = agents[i].ClientCity != string.Empty ? agents[i].ClientCity + "," : agents[i].ClientCity;
@@ -323,7 +184,7 @@ namespace dev_web_api
                                     <div class='dropdown'>
                                         <div class='dots'
                                              onclick=""myFunction('myDropdown_{agents[i].AgentId}')"">
-                                            <div id = 'myDropdown_{agents[i].AgentId}' class='dropdown-content'>
+                                            <div id = ""myDropdown_{agents[i].AgentId}"" class='dropdown-content'>
                                                 <a href = 'hardware.aspx?id={agents[i].AgentId}' > Hardware </a>
                                                 <a href='software.aspx?id={agents[i].AgentId}'>Software</a>
                                             </div>
@@ -340,40 +201,7 @@ namespace dev_web_api
         }
 
 
-        //public static string GenerateHtmlString(List<Agent> agents, int i, string ipAddress, string clientCity)
-        //{
-        //    var str = $@"   
-        //                    <div class='outer'>
-        //                        <div class='outer-div'>
-        //                            <div class='outer-div-div'>
-        //                                <div>
-        //                                  {agents[i].ScreenName}
-        //                                </div>
-        //                            </div>
-        //                            <div class='more-info'>                                                                           
-        //                                {clientCity}
-        //                               {agents[i].ClientCountry}
-        //                            </div>
-        //                        </div>
-        //                        <div class='inner-div'> 
-        //                            <div class='dropdown'>
-        //                                <div class='dots'
-        //                                     onclick=""myFunction('myDropdown_{agents[i].AgentId}')"">
-        //                                    <div id = 'myDropdown_{agents[i].AgentId}' class='dropdown-content'>
-        //                                        <a href = 'hardware.aspx?id={agents[i].AgentId}' > Hardware </a>
-        //                                        <a href='software.aspx?id={agents[i].AgentId}'>Software</a>
-        //                                    </div>
-
-        //                                </div>
-
-        //                            </div>
-
-        //                        </div>
-
-        //                    </div>";
-
-        //    return str;
-        //}
+      
 
         public static bool IsServerGuidValid(string guid)
         {

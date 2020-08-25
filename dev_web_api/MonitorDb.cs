@@ -445,7 +445,7 @@ namespace dev_web_api
             sqlLiteConn.Open();
             sqlite_cmd = sqlLiteConn.CreateCommand();
             _logger.Debug("*** GetMonitorValues(---) ***");
-            sqlite_cmd.CommandText = "SELECT * FROM MonitorValues ORDER BY agent_id, monitor_command_id";
+            sqlite_cmd.CommandText = "SELECT * FROM MonitorValues where agent_id in (select agent_id from agents where enabled = 1 )";
             _logger.Debug(sqlite_cmd.CommandText);
             var monitorValues = new List<MonitorValue>();
             sqlite_datareader = sqlite_cmd.ExecuteReader();

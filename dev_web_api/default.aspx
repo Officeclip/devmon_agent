@@ -106,7 +106,7 @@
 
         </div>
 
-        <table id="tblMonitor" class="monitor" runat="server" />
+        <table id="tblMonitor" class="monitor" runat="server" visible="false" />
 
         <table class="monitor">
             <tr>

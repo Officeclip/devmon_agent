@@ -30,17 +30,20 @@ namespace dev_web_api
         DataTable monitorDataTable;
         protected void Page_Load(object sender, EventArgs e)
         {
+
             agents = monitorDb.GetEnabledAgents();
             monitorValues = monitorDb.GetMonitorValues();
             monitorCommands = monitorDb.GetMonitorCommands();
             monitorCommandLimits = monitorDb.GetMonitorCommandLimits();
-
             if (!IsPostBack)
             {
                 LoadUserInfo();
                 LoadAgentGroups();
                 ProcessAndLoadAgents();
             }
+         
+
+           
         }
 
         private void ProcessAndLoadAgents()
@@ -76,12 +79,12 @@ namespace dev_web_api
 
 
 
-                Util.SetupMonitorTable(
-                                tblMonitor,
-                                agents,
-                                monitorCommands,
-                                monitorValues,
-                                monitorCommandLimits);
+                //Util.SetupMonitorTable(
+                //                tblMonitor,
+                //                agents,
+                //                monitorCommands,
+                //                monitorValues,
+                //                monitorCommandLimits);
 
                 if (chkEmailOpt.Checked)
                 {
@@ -244,9 +247,7 @@ namespace dev_web_api
                 {
                     limitCssClass = "errorLimit";
                 }
-
             }
-
             return $"<td class='{limitCssClass}'>{strData}</td>";
         }
 

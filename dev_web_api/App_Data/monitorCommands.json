@@ -13,13 +13,13 @@
     "arg2": "Regular exression to match",
     "unit": "ms"
   },
-  {
-    "type": "url.site",
-    "description": "Checks the url and gets the ping time of the website",
-    "arg1": "The url to ping to (e.g. https://www.dropbox.com)",
-    "arg2": "",
-    "unit": "ms"
-  },
+  //{
+  //  "type": "url.site",
+  //  "description": "Checks the url and gets the ping time of the website",
+  //  "arg1": "The url to ping to (e.g. https://www.dropbox.com)",
+  //  "arg2": "",
+  //  "unit": "ms"
+  //},
   {
     "type": "cpu.percent",
     "description": "Returns the percentage cpu load",

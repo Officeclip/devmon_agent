@@ -41,9 +41,9 @@ namespace dev_web_api
                 LoadAgentGroups();
                 ProcessAndLoadAgents();
             }
-         
 
-           
+
+
         }
 
         private void ProcessAndLoadAgents()
@@ -76,18 +76,9 @@ namespace dev_web_api
                                                             monitorValues,
                                                             monitorCommandLimits);
                 LoadDataSet();
-
-
-
-                //Util.SetupMonitorTable(
-                //                tblMonitor,
-                //                agents,
-                //                monitorCommands,
-                //                monitorValues,
-                //                monitorCommandLimits);
-
                 if (chkEmailOpt.Checked)
                 {
+
                     Util.SendMonitorLimitEmail(
                                 agents,
                                 monitorValues,
@@ -241,14 +232,14 @@ namespace dev_web_api
             {
                 if (Util.IsMonitorValueLimitWarning(monitorValue, monitorCommandLimit))
                 {
-                    limitCssClass = "warningLimit";
+                    limitCssClass = "class=warningLimit";
                 }
                 if (Util.IsMonitorValueLimitError(monitorValue, monitorCommandLimit))
                 {
-                    limitCssClass = "errorLimit";
+                    limitCssClass = "class=errorLimit";
                 }
             }
-            return $"<td class='{limitCssClass}'>{strData}</td>";
+            return $"<td {limitCssClass} >{strData}</td>";
         }
 
         private MonitorValue GetMonitorValue(int rowIndex, int ColIndex)

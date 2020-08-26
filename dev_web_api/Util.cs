@@ -126,7 +126,7 @@ namespace dev_web_api
             return returnValue;
         }
 
-       
+
 
         public static DataTable CreateMonitorDataSet(
                                     List<Agent> agents,
@@ -163,7 +163,7 @@ namespace dev_web_api
             }
             //dataSet.Tables.Add(monitorValueTable);
             return monitorValueTable;
-        }     
+        }
         public static string GenerateHtmlString(List<Agent> agents, int i)
         {
             var city = agents[i].ClientCity != string.Empty ? agents[i].ClientCity + "," : agents[i].ClientCity;
@@ -201,7 +201,7 @@ namespace dev_web_api
         }
 
 
-      
+
 
         public static bool IsServerGuidValid(string guid)
         {
@@ -293,7 +293,7 @@ namespace dev_web_api
                                                                     monitorValue.MonitorCommandId);
                         }
                         if (DateTime.UtcNow.Subtract(
-                                            userNotification.LastNotified).Hours > 1)
+                                                        userNotification.LastNotified).TotalMinutes > 60)
                         {
                             SendEmail(
                                     userNotification.EmailAddress,
@@ -325,20 +325,29 @@ namespace dev_web_api
                                 string body)
         {
             var monitorSettings = GetMonitorSettings();
-            var smtpClient = new SmtpClient(monitorSettings.Email.Server)
+            try
             {
-                Port = monitorSettings.Email.Port,
-                Credentials = new NetworkCredential(
-                                            monitorSettings.Email.Login,
-                                            monitorSettings.Email.Password),
-                EnableSsl = monitorSettings.Email.IsSsl,
-            };
 
-            smtpClient.Send(
-                        monitorSettings.Email.FromEmail,
-                        toEmailAddress,
-                        subject,
-                        body);
+                var smtpClient = new SmtpClient(monitorSettings.Email.Server)
+                {
+                    Port = monitorSettings.Email.Port,
+                    Credentials = new NetworkCredential(
+                                                monitorSettings.Email.Login,
+                                                monitorSettings.Email.Password),
+                    EnableSsl = monitorSettings.Email.IsSsl,
+                    UseDefaultCredentials = true
+                };
+
+                smtpClient.Send(
+                            monitorSettings.Email.FromEmail,
+                            toEmailAddress,
+                            subject,
+                            body);
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"EmailException:{e.Message}");
+            }
         }
 
         public static string ReadFile(string path)
@@ -425,7 +434,7 @@ namespace dev_web_api
                             throw new Exception("IP Address cannot be blank.");
 
                         case "INVALID_IP_ADDRESS":
-                            throw new Exception("Invalid IP Address.");    
+                            throw new Exception("Invalid IP Address.");
 
                         case "MISSING_FILE":
                             throw new Exception("Invalid Database Path.");

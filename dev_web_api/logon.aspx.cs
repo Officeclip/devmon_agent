@@ -19,6 +19,7 @@ namespace dev_web_api
                 {
                     Response.Redirect("setup.aspx");
                 }
+                Msg.Visible = false;
             }
         }
 
@@ -33,9 +34,11 @@ namespace dev_web_api
             {
                 FormsAuthentication.RedirectFromLoginPage(UserEmail.Text, Persist.Checked);
                 Response.Redirect("default.aspx");
+                Msg.Visible = false;
             }
             else
             {
+                Msg.Visible = true;
                 Msg.Text = "Invalid credentials. Please try again.";
             }
         }

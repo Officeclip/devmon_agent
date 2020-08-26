@@ -62,6 +62,13 @@ namespace dev_web_api
             return monitorCommandLimits;
         }
 
+        protected string GetText(object value)
+        {
+            var islimitExceeded = Convert.ToBoolean(value);
+
+            return islimitExceeded == true ? "Yes" : "No";
+        }
+
         protected void btnSave_Click(object sender, EventArgs e)
         {
             UpsertMonitorMonitorCommandLimits();
@@ -92,8 +99,8 @@ namespace dev_web_api
                                     ? (int?)null
                                     : Convert.ToInt32(errorLimit.Text.Trim());
 
-                    var isLowLimit = repeaterItem.FindControl("chkIsLowLimit") as CheckBox;
-                    monitorLimit.IsLowLimit = isLowLimit.Checked;
+                    //var isLowLimit = repeaterItem.FindControl("chkIsLowLimit") as CheckBox;
+                    //monitorLimit.IsLowLimit = isLowLimit.Checked;
 
                     if (
                         (monitorLimit.WarningLimit == null) &&
@@ -105,7 +112,7 @@ namespace dev_web_api
                 }
                 LoadValues();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception($"Exception: {ex.Message}");
             }

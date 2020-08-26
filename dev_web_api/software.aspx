@@ -6,6 +6,12 @@
     Inherits="dev_web_api.software" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <style type="text/css">
+        td {
+            padding-left: 10px;
+            white-space: nowrap;
+        }
+    </style>
     <link rel="stylesheet" href="css/style.min.css">
     <link rel="stylesheet" href="css/spacings.min.css">
     <div style="margin: 20px">

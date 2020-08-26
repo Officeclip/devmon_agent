@@ -78,6 +78,15 @@ namespace dev_web_api
         protected global::System.Web.UI.WebControls.CheckBox Persist;
 
         /// <summary>
+        /// test control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button test;
+
+        /// <summary>
         /// Submit1 control.
         /// </summary>
         /// <remarks>

@@ -59,7 +59,7 @@
                             <a runat="server" href="~/agentGroup.aspx">Agent Groups</a>
                         </li>
                         <li>
-                            <a runat="server" href="~/monitor.aspx">Edit Monitors</a>
+                            <a runat="server" href="~/monitor.aspx">Edit Monitor Commands</a>
                         </li>
                         <li>
                             <a runat="server" href="~/commandLimits.aspx">Command Limits</a>

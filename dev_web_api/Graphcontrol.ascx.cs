@@ -18,7 +18,7 @@ namespace dev_web_api
         List<MonitorCommand> monitorCommands;
         protected string chartConfigStringForDay;
         public int frequency = -1;
-
+        private const int OrgId = 1;
         protected void Page_Init(object sender, EventArgs e)
         {
             monitorCommands = monitorDb.GetMonitorCommands();
@@ -26,6 +26,7 @@ namespace dev_web_api
             ddlMonitorCommands.DataTextField = "Name";
             ddlMonitorCommands.DataValueField = "MonitorCommandId";
             ddlMonitorCommands.DataBind();
+            LoadAgentGroups();
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -33,26 +34,44 @@ namespace dev_web_api
             if (!Page.IsPostBack)
             {
                 ddlMonitorCommands.SelectedIndex = ddlFrequancy.SelectedIndex = 0;
-                LoadGraph(Convert.ToInt32(ddlMonitorCommands.SelectedValue), Convert.ToInt32(ddlFrequancy.SelectedValue));
+                LoadGraph(Convert.ToInt32(ddlMonitorCommands.SelectedValue), Convert.ToInt32(ddlAgentGroups.SelectedValue), Convert.ToInt32(ddlFrequancy.SelectedValue));
             }
         }
-
-        protected void LoadGraph(int monitorCommandId, int selecedFrequency = 0)
+        private void LoadAgentGroups()
         {
-            var chartConfig = CreateServerConfiguration(monitorCommandId, selecedFrequency);
+            ddlAgentGroups.Items.Clear();                                                                   
+            var info = new AgentGroups()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+            {
+                AgentGroupId = -1,
+                AgentGroupName = "- All -"
+            };
+            var agentGroupInfo = monitorDb.GetAgentGroups(OrgId);
+            agentGroupInfo.Insert(0, info);
+            ddlAgentGroups.DataSource = agentGroupInfo;
+            ddlAgentGroups.DataValueField = "AgentGroupId";
+            ddlAgentGroups.DataTextField = "AgentGroupName";
+            ddlAgentGroups.SelectedValue = "-1";
+            ddlAgentGroups.DataBind();
+        }
+
+        protected void LoadGraph(int monitorCommandId, int agentGrpId, int selecedFrequency = 0)
+        {
+            var chartConfig = CreateServerConfiguration(monitorCommandId, selecedFrequency, agentGrpId);
             chartConfigStringForDay = chartConfig?.MakeChart();
         }
 
         private void LoadPage()
         {
             var monitorCommandId = Convert.ToInt32(ddlMonitorCommands.SelectedValue);
-            var chartConfig = CreateServerConfiguration(monitorCommandId, frequency);
+            var agentGrpId = Convert.ToInt32(ddlAgentGroups.SelectedValue);
+
+            var chartConfig = CreateServerConfiguration(monitorCommandId, frequency, agentGrpId);
             chartConfigStringForDay = chartConfig?.MakeChart();
         }
 
-        private ChartConfiguration CreateServerConfiguration(int monitorCommandId, int frequency)
+        private ChartConfiguration CreateServerConfiguration(int monitorCommandId, int frequency, int agentGroupId)
         {
-            var charts = (new MonitorDb()).GetChart(monitorCommandId, frequency);
+            var charts = (new MonitorDb()).GetChart(monitorCommandId, frequency, agentGroupId);
             var unitStr = GetUnitString(frequency);
             if (
                 (charts == null) ||
@@ -62,7 +81,7 @@ namespace dev_web_api
                 return null;
 
             }
-            
+
             var dataSets = new List<DataSetItem>();
             try
             {
@@ -121,7 +140,7 @@ namespace dev_web_api
                 },
                     Options =
                 {
-                  //  SpanGaps = true,
+                    //SpanGaps = true,
                     Title =
                     {
                         Text = ddlMonitorCommands.SelectedItem.Text
@@ -194,17 +213,28 @@ namespace dev_web_api
 
         protected void ddlMonitorCommands_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LoadGraph(Convert.ToInt32(ddlMonitorCommands.SelectedValue), Convert.ToInt32(ddlFrequancy.SelectedValue));
+            LoadGraph(Convert.ToInt32(ddlMonitorCommands.SelectedValue),
+                         Convert.ToInt32(ddlAgentGroups.SelectedValue),
+                         Convert.ToInt32(ddlFrequancy.SelectedValue));
         }
 
         protected void ddlFrequancy_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LoadGraph(Convert.ToInt32(ddlMonitorCommands.SelectedValue), Convert.ToInt32(ddlFrequancy.SelectedValue));
+            LoadGraph(Convert.ToInt32(ddlMonitorCommands.SelectedValue),
+                          Convert.ToInt32(ddlAgentGroups.SelectedValue),
+                          Convert.ToInt32(ddlFrequancy.SelectedValue));
         }
 
         protected void btnBack_Click(object sender, EventArgs e)
         {
             Response.Redirect("default.aspx");
+        }
+
+        protected void ddlAgents_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadGraph(Convert.ToInt32(ddlMonitorCommands.SelectedValue),
+                            Convert.ToInt32(ddlAgentGroups.SelectedValue),
+                            Convert.ToInt32(ddlFrequancy.SelectedValue));
         }
     }
 }

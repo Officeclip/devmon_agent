@@ -33,6 +33,15 @@ namespace dev_web_api
         protected global::System.Web.UI.WebControls.DropDownList ddlFrequancy;
 
         /// <summary>
+        /// ddlAgentGroups control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlAgentGroups;
+
+        /// <summary>
         /// litDate control.
         /// </summary>
         /// <remarks>

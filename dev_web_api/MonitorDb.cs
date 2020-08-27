@@ -261,7 +261,7 @@ namespace dev_web_api
             var sqlLiteConn = new SQLiteConnection(ConnectionString);
             sqlLiteConn.Open();
             sqlite_cmd = sqlLiteConn.CreateCommand();
-            sqlite_cmd.CommandText = 
+            sqlite_cmd.CommandText =
                 $"SELECT agent_id from agent_group_agent where agent_group_id={agentGroupId}";
             _logger.Debug(sqlite_cmd.CommandText);
             var agents = new List<Agent>();
@@ -1830,27 +1830,45 @@ namespace dev_web_api
             }
         }
 
-        public List<ChartLine> GetChart(int monitorCommandId, int frequency)
+        public List<ChartLine> GetChart(int monitorCommandId, int frequency, int agentGrpId)
         {
 
             _logger.Info("Method GetChart(...)");
             _logger.Debug("Method GetChart(...)");
+
             SQLiteDataReader sqlite_datareader;
             SQLiteCommand sqlite_cmd;
             var sqlLiteConn = new SQLiteConnection(ConnectionString);
             sqlLiteConn.Open();
             _logger.Debug("----sql command");
             sqlite_cmd = sqlLiteConn.CreateCommand();
-            sqlite_cmd.CommandText =
+            if (agentGrpId > 0)
+            {
+                sqlite_cmd.CommandText =
+                                $@"
+                    SELECT * FROM 
+                        agent_group_agent aa, history his
+                    WHERE
+                        aa.agent_id = his.agent_id AND
+                        his.monitor_command_id = {monitorCommandId} AND 
+                        frequency = {frequency} AND aa.agent_group_id = {agentGrpId}
+                    ORDER BY
+                        aa.agent_id, his.date";
+            }
+            else
+            {
+                sqlite_cmd.CommandText =
                 $@"
                     SELECT * FROM 
                         agents a, history his
                     WHERE
                         a.agent_id = his.agent_id AND
                         his.monitor_command_id = {monitorCommandId} AND 
-                        frequency = {frequency}
+                        frequency = {frequency} 
                     ORDER BY
                         a.agent_id, his.date";
+            }
+
             _logger.Debug(sqlite_cmd.CommandText);
 
             sqlite_datareader = sqlite_cmd.ExecuteReader();
@@ -1861,7 +1879,7 @@ namespace dev_web_api
                 while (sqlite_datareader.Read())
                 {
                     var agentId = Convert.ToInt32(sqlite_datareader["agent_id"]);
-                    var agentName = GetAgentName(sqlite_datareader);
+                    var agentName = GetAgents(agentId)[0].MachineName;
                     var date = ConvertToDateTime(sqlite_datareader["date"]);
                     var timeUnits = GetTimeUnits(frequency, date);
                     var value = Convert.ToInt32(sqlite_datareader["value"]);

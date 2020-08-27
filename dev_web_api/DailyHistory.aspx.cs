@@ -41,7 +41,7 @@ namespace dev_web_api
 
         private ChartConfiguration CreateServerConfiguration(int monitorCommandId, int frequency)
         {
-            var charts = (new MonitorDb()).GetChart(monitorCommandId, frequency);
+            var charts = (new MonitorDb()).GetChart(monitorCommandId, frequency, -1);
             if (
                 (charts == null) ||
                 (charts.Count == 0))

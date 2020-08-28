@@ -63,8 +63,8 @@
     "unit": "mins"
   },
   {
-    "type": "machine.idletime",
-    "description": "Time since the machine is idle",
+    "type": "os.idlepercent",
+    "description": "Percentage of time machine is idle",
     "arg1": "",
     "arg2": "",
     "unit": "%"

@@ -78,6 +78,8 @@ namespace devmon_library
                 case "os.pendingupdates":
                 case "os.lastupdated":
                 case "os.idletime":
+                case "os.idlepercent":
+
                     return await OsTask(commandInfo);
                 default:
                     return null;
@@ -169,6 +171,20 @@ namespace devmon_library
                         break;
                     case "os.idletime":
                         value = osUtilization.IdleTime.ToString();
+                        break;
+                    case "os.idlepercent":
+                        var val = osUtilization.IdleTime;
+                        value = (val > 0)
+                            ? "100"
+                            : "0";
+                        //if (val > 0)
+                        //{
+                        //    value = "100";
+                        //}
+                        //else
+                        //{
+                        //    value = "0";
+                        //}
                         break;
                 }
 
@@ -315,7 +331,7 @@ namespace devmon_library
                     var messageString = await result.Content.ReadAsStringAsync();
                     HtmlDocument doc = new HtmlDocument();
                     doc.LoadHtml(messageString);
-                    string body = doc.DocumentNode.SelectSingleNode("/html/body").InnerText.ToLower();                   
+                    string body = doc.DocumentNode.SelectSingleNode("/html/body").InnerText.ToLower();
                     var match = Regex.Matches(body, commandInfo.Arg2.ToLower(), RegexOptions.IgnoreCase);
                     if (match.Count > 0)
                     {

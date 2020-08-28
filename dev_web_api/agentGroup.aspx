@@ -1,5 +1,5 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="agentGroup.aspx.cs" Inherits="dev_web_api.agentGroup"
-    MasterPageFile="~/Site.Master" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="agentGroup.aspx.cs" Inherits="dev_web_api.AgentGroup"
+MasterPageFile="~/Site.Master" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <link rel="stylesheet" href="css/style.min.css">
@@ -25,11 +25,12 @@
             </div>
 
         </div>
-        <div class=" p-l-12 inputForm" >
+        <div class=" p-l-12 inputForm">
 
             <table >
                 <tr>
-                    <th>Add new Group
+                    <th>
+                        Add new Group
                     </th>
                 </tr>
                 <tr>
@@ -46,14 +47,14 @@
                 <tr>
                     <td>
                         <asp:Button ID="btnSave" runat="server"
-                            Text="Add"
-                            Font-Bold="true"
-                            OnClick="btnSave_Click" />
+                                    Text="Add"
+                                    Font-Bold="true"
+                                    OnClick="btnSave_Click"/>
                     </td>
                     <td>
                         <asp:Button ID="btnBack" runat="server"
-                            Text="Back to Monitor"
-                            Font-Bold="true" OnClick="btnBack_Click" />
+                                    Text="Back to Monitor"
+                                    Font-Bold="true" OnClick="btnBack_Click"/>
                     </td>
                 </tr>
             </table>
@@ -63,35 +64,35 @@
             <span>
                 <h5>Agent Groups</h5>
             </span>
-            <asp:HiddenField ID="HiddenField1" runat="server" />
+            <asp:HiddenField ID="HiddenField1" runat="server"/>
             <asp:GridView ID="grdGroups" runat="server" AutoGenerateColumns="false"
-                DataKeyNames="AgentGroupId"
-                OnRowEditing="grdGroups_RowEditing"
-                OnRowCancelingEdit="grdGroups_RowCancelingEdit"
-                OnRowDeleting="grdGroups_RowDeleting"
-                OnRowUpdating="grdGroups_RowUpdating"
-                OnRowDataBound="grdGroups_DataBound"
-                CellPadding="4"
-                ForeColor="#333333"
-                GridLines="None" Width="85%">
-                <AlternatingRowStyle BackColor="White" />
+                          DataKeyNames="AgentGroupId"
+                          OnRowEditing="grdGroups_RowEditing"
+                          OnRowCancelingEdit="grdGroups_RowCancelingEdit"
+                          OnRowDeleting="grdGroups_RowDeleting"
+                          OnRowUpdating="grdGroups_RowUpdating"
+                          OnRowDataBound="grdGroups_DataBound"
+                          CellPadding="4"
+                          ForeColor="#333333"
+                          GridLines="None" Width="85%">
+                <AlternatingRowStyle BackColor="White"></AlternatingRowStyle>
                 <Columns>
                     <asp:CommandField
                         ButtonType="Image"
                         CancelImageUrl="~/images/delete.png"
                         EditImageUrl="~/images/edit.png"
                         ShowEditButton="True"
-                        UpdateImageUrl="~/Images/save.png" />
+                        UpdateImageUrl="~/Images/save.png"/>
                     <asp:CommandField
                         ButtonType="Image"
                         DeleteImageUrl="~/Images/delete.png"
-                        ShowDeleteButton="True" />
+                        ShowDeleteButton="True"/>
                     <asp:TemplateField HeaderText="Group name">
                         <ItemTemplate>
-                            <asp:Label ID="lblGrpName" runat="server" Text='<%#Eval("AgentGroupName")%>'></asp:Label>
+                            <asp:Label ID="lblGrpName" runat="server" Text='<%#Eval("AgentGroupName") %>'></asp:Label>
                         </ItemTemplate>
                         <EditItemTemplate>
-                            <asp:TextBox ID="txtGrpName" runat="server" Text='<%#Eval("AgentGroupName")%>'></asp:TextBox>
+                            <asp:TextBox ID="txtGrpName" runat="server" Text='<%#Eval("AgentGroupName") %>'></asp:TextBox>
                         </EditItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Actions">
@@ -100,15 +101,15 @@
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>
-                <FooterStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
-                <HeaderStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
-                <PagerStyle BackColor="#FFCC66" ForeColor="#333333" HorizontalAlign="Center" />
-                <RowStyle BackColor="#FFFBD6" ForeColor="#333333" />
-                <SelectedRowStyle BackColor="#FFCC66" Font-Bold="True" ForeColor="Navy" />
-                <SortedAscendingCellStyle BackColor="#FDF5AC" />
-                <SortedAscendingHeaderStyle BackColor="#4D0000" />
-                <SortedDescendingCellStyle BackColor="#FCF6C0" />
-                <SortedDescendingHeaderStyle BackColor="#820000" />
+                <FooterStyle BackColor="#990000" Font-Bold="True" ForeColor="White"/>
+                <HeaderStyle BackColor="#990000" Font-Bold="True" ForeColor="White"/>
+                <PagerStyle BackColor="#FFCC66" ForeColor="#333333" HorizontalAlign="Center"/>
+                <RowStyle BackColor="#FFFBD6" ForeColor="#333333"/>
+                <SelectedRowStyle BackColor="#FFCC66" Font-Bold="True" ForeColor="Navy"/>
+                <SortedAscendingCellStyle BackColor="#FDF5AC"/>
+                <SortedAscendingHeaderStyle BackColor="#4D0000"/>
+                <SortedDescendingCellStyle BackColor="#FCF6C0"/>
+                <SortedDescendingHeaderStyle BackColor="#820000"/>
             </asp:GridView>
 
         </div>

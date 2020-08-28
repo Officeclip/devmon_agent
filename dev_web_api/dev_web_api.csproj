@@ -144,8 +144,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="About.aspx" />
-    <Content Include="default.html" />
-    <Content Include="default1.html" />
     <Content Include="history.html" />
     <Content Include="images\cancel.png" />
     <Content Include="images\delete.png" />
@@ -339,7 +337,6 @@
     <Content Include="software.aspx" />
     <Content Include="hardware.aspx" />
     <Content Include="monitor.aspx" />
-    <Content Include="test.html" />
     <Content Include="ViewSwitcher.ascx" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -351,6 +348,7 @@
     <Compile Include="About.aspx.designer.cs">
       <DependentUpon>About.aspx</DependentUpon>
     </Compile>
+    <Compile Include="FrequencyTypes.cs" />
     <Compile Include="FriendlyTime.cs" />
     <Compile Include="Test.aspx.cs">
       <DependentUpon>Test.aspx</DependentUpon>
@@ -408,7 +406,6 @@
     <Compile Include="DailyHistory.aspx.designer.cs">
       <DependentUpon>DailyHistory.aspx</DependentUpon>
     </Compile>
-    <Compile Include="frequencyEnum.cs" />
     <Compile Include="Graphcontrol.ascx.cs">
       <DependentUpon>Graphcontrol.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

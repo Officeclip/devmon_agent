@@ -12,36 +12,40 @@ namespace dev_web_api
 {
     public partial class AddAgensToGroup : System.Web.UI.Page
     {
+        private int _agentGroupId = -1;
 
-        private int AgentGroupId = -1;
         protected void Page_Load(object sender, EventArgs e)
         {
             var monitorDb = new MonitorDb();
             if (Request.QueryString["id"] != string.Empty)
             {
-                AgentGroupId = Convert.ToInt32(Request.QueryString["id"]);
+                _agentGroupId = Convert.ToInt32(Request.QueryString["id"]);
             }
+
             if (!IsPostBack)
             {
                 var agentInfo = monitorDb.GetAgents();
                 grdAgents.DataSource = agentInfo;
                 grdAgents.DataBind();
             }
-
-
         }
+
         protected void grdAgents_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             var monitorDb = new MonitorDb();
-            var selectedAgents = monitorDb.GetSelectedAgents(AgentGroupId);
+            var selectedAgents = monitorDb.GetSelectedAgents(_agentGroupId);
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 var item = e.Row.DataItem as Agent;
-                Label lbl = (Label)e.Row.FindControl("lblAgentName");
-                CheckBox chkAgent = (CheckBox)e.Row.FindControl("chkAgent");
-                var hdnAgentId = (HiddenField)e.Row.FindControl("hdnAgentId");
-                lbl.Text = item.ScreenName;
-                hdnAgentId.Value = item.AgentId.ToString();
+                Label lbl = (Label) e.Row.FindControl("lblAgentName");
+                CheckBox chkAgent = (CheckBox) e.Row.FindControl("chkAgent");
+                var hdnAgentId = (HiddenField) e.Row.FindControl("hdnAgentId");
+                if (item != null)
+                {
+                    lbl.Text = item.ScreenName;
+                    hdnAgentId.Value = item.AgentId.ToString();
+                }
+
                 var hdnAgentValue = Convert.ToInt32(hdnAgentId.Value);
                 foreach (var agent in selectedAgents)
                 {
@@ -56,7 +60,7 @@ namespace dev_web_api
         protected void btnSave_Click(object sender, EventArgs e)
         {
             var monitorDb = new MonitorDb();
-            AddAgents(monitorDb);                    
+            AddAgents(monitorDb);
             Response.Write("<script>window.close();</" + "script>");
             Response.End();
         }
@@ -65,13 +69,13 @@ namespace dev_web_api
         {
             try
             {
-                monitorDb. DeleteAgentsGroupsByGroupId(AgentGroupId);
+                monitorDb.DeleteAgentsGroupsByGroupId(_agentGroupId);
                 foreach (GridViewRow gvr in grdAgents.Rows)
                 {
-                    var hdnAgentId = Convert.ToInt32(((HiddenField)gvr.FindControl("hdnAgentId")).Value);
-                    if (((CheckBox)gvr.FindControl("chkAgent")).Checked == true)
+                    var hdnAgentId = Convert.ToInt32(((HiddenField) gvr.FindControl("hdnAgentId")).Value);
+                    if (((CheckBox) gvr.FindControl("chkAgent")).Checked == true)
                     {
-                        monitorDb.AddAgentsIntoAgentGroup(AgentGroupId, hdnAgentId);
+                        monitorDb.AddAgentsIntoAgentGroup(_agentGroupId, hdnAgentId);
                     }
                 }
             }
@@ -79,7 +83,6 @@ namespace dev_web_api
             {
                 throw new Exception($"Method AddAgents: {ex.Message}");
             }
-            
         }
 
         protected void btnCancel_Click(object sender, EventArgs e)

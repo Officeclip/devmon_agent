@@ -12,13 +12,13 @@ namespace dev_web_api
 {
     public partial class DailyHistory : System.Web.UI.Page
     {
-        MonitorDb monitorDb = new MonitorDb();
-        List<MonitorCommand> monitorCommands;
+        private readonly MonitorDb _monitorDb = new MonitorDb();
+        private List<MonitorCommand> _monitorCommands;
         protected string chartConfigStringForDay;
         protected void Page_Init(object sender, EventArgs e)
         {
-            monitorCommands = monitorDb.GetMonitorCommands();
-            ddlMonitorCommands.DataSource = monitorDb.GetMonitorCommands();
+            _monitorCommands = _monitorDb.GetMonitorCommands();
+            ddlMonitorCommands.DataSource = _monitorDb.GetMonitorCommands();
             ddlMonitorCommands.DataTextField = "Name";
             ddlMonitorCommands.DataValueField = "MonitorCommandId";
             ddlMonitorCommands.DataBind();
@@ -35,23 +35,21 @@ namespace dev_web_api
         private void LoadPage()
         {
             var monitorCommandId = Convert.ToInt32(ddlMonitorCommands.SelectedValue);
-            var chartConfig = CreateServerConfiguration(monitorCommandId, 1);
+            var chartConfig = CreateServerConfiguration(monitorCommandId, FrequencyTypes.Days);
             chartConfigStringForDay = chartConfig?.MakeChart();
         }
 
-        private ChartConfiguration CreateServerConfiguration(int monitorCommandId, int frequency)
+        private ChartConfiguration CreateServerConfiguration(int monitorCommandId, FrequencyTypes frequency)
         {
             var charts = (new MonitorDb()).GetChart(monitorCommandId, frequency, -1);
-            if (
-                (charts == null) ||
-                (charts.Count == 0))
+            if ( (charts?.Count ?? 0) == 0)
             {
                 return null;
             }
-            var unit = monitorCommands
+            var unit = _monitorCommands
                                 .Find(x => x.MonitorCommandId == monitorCommandId).Unit;
             var dataSets = new List<DataSetItem>();
-            for (int i = 0; i < charts.Count; i++)
+            for (var i = 0; i < charts.Count; i++)
             {
                 var chart = charts[i];
                 var colorCount = LibChart.Util.GetColors().Count;

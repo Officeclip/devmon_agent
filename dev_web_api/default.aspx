@@ -62,8 +62,6 @@
 
         </div>
 
-        <table id="tblMonitor" class="monitor" runat="server" visible="false" />
-
         <table class="monitor">
             <tr>
                 <asp:Repeater ID="rptHeader" runat="server">
@@ -85,8 +83,11 @@
                 OnItemDataBound="rptRowItem_ItemDataBound">
                 <ItemTemplate>
                     <tr>
-                        <td id="tdTooltip" title='<%# GetToolTipInfo(Container.ItemIndex) %>' class="headerTitle" runat="server">
-                            <%# GetHeader(Container.ItemIndex) %>                        
+                        <td 
+                            id="tdTooltip" title='<%# GetToolTipInfo(Container.ItemIndex) %>' 
+                            class="headerTitle" 
+                            runat="server">
+                                <%# GetHeader(Container.ItemIndex) %>                        
                         </td>
                         <asp:Repeater ID="rptCellItem" runat="server">
                             <HeaderTemplate>

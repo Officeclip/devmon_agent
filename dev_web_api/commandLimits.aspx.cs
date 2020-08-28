@@ -85,23 +85,23 @@ namespace dev_web_api
                     var repeaterItem = rptCommandLimits.Items[item];
 
                     var command = repeaterItem.FindControl("lblType") as Label;
+                    if (command == null) return;
                     monitorLimit.Type = command.Text;
 
                     var warningLimit = repeaterItem.FindControl("txtWarningLimit") as TextBox;
+                    if (warningLimit == null) return;
                     monitorLimit.WarningLimit =
                                     warningLimit.Text == string.Empty
                                     ? (int?)null
                                     : Convert.ToInt32(warningLimit.Text.Trim());
 
                     TextBox errorLimit = repeaterItem.FindControl("txtErrorLimit") as TextBox;
+                    if (errorLimit == null) return;
                     monitorLimit.ErrorLimit =
                                     errorLimit.Text == string.Empty
                                     ? (int?)null
                                     : Convert.ToInt32(errorLimit.Text.Trim());
-
-                    //var isLowLimit = repeaterItem.FindControl("chkIsLowLimit") as CheckBox;
-                    //monitorLimit.IsLowLimit = isLowLimit.Checked;
-
+                    
                     if (
                         (monitorLimit.WarningLimit == null) &&
                         (monitorLimit.ErrorLimit == null))

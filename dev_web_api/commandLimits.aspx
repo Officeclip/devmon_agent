@@ -13,7 +13,7 @@
                 Font-Bold="true"
                 OnClick="btnBack_Click" />
         </div>
-        <div style="clear: both" />
+        <div style="clear: both"></div>
     </div>
     <div class="inputForm" style="border: 1px solid gray; padding: 10px; width: 55%">
         <table style="margin-left: 15px;">

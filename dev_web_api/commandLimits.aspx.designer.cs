@@ -7,38 +7,48 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace dev_web_api
-{
-
-
-    public partial class commandLimits
-    {
-
+namespace dev_web_api {
+    
+    
+    public partial class commandLimits {
+        
         /// <summary>
         /// btnBack control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
+        /// To modify, move the field declaration from the designer file to a code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnBack;
-
+        
         /// <summary>
         /// rptCommandLimits control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
+        /// To modify, move the field declaration from the designer file to a code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater rptCommandLimits;
-
+        
         /// <summary>
         /// btnSave control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
+        /// To modify, move the field declaration from the designer file to a code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSave;
+        
+        /// <summary>
+        /// Master property.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated property.
+        /// </remarks>
+        public new dev_web_api.SiteMaster Master {
+            get {
+                return ((dev_web_api.SiteMaster)(base.Master));
+            }
+        }
     }
 }

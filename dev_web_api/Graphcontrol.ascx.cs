@@ -11,18 +11,18 @@ using System.Web.UI.WebControls;
 
 namespace dev_web_api
 {
-
     public partial class Graphcontrol : System.Web.UI.UserControl
     {
-        MonitorDb monitorDb = new MonitorDb();
-        List<MonitorCommand> monitorCommands;
+        private readonly MonitorDb _monitorDb = new MonitorDb();
+        private List<MonitorCommand> _monitorCommands;
         protected string chartConfigStringForDay;
-        public int frequency = -1;
+        //private readonly int _frequency = -1;
         private const int OrgId = 1;
+
         protected void Page_Init(object sender, EventArgs e)
         {
-            monitorCommands = monitorDb.GetMonitorCommands();
-            ddlMonitorCommands.DataSource = monitorDb.GetMonitorCommands();
+            _monitorCommands = _monitorDb.GetMonitorCommands();
+            ddlMonitorCommands.DataSource = _monitorDb.GetMonitorCommands();
             ddlMonitorCommands.DataTextField = "Name";
             ddlMonitorCommands.DataValueField = "MonitorCommandId";
             ddlMonitorCommands.DataBind();
@@ -34,18 +34,22 @@ namespace dev_web_api
             if (!Page.IsPostBack)
             {
                 ddlMonitorCommands.SelectedIndex = ddlFrequancy.SelectedIndex = 0;
-                LoadGraph(Convert.ToInt32(ddlMonitorCommands.SelectedValue), Convert.ToInt32(ddlAgentGroups.SelectedValue), Convert.ToInt32(ddlFrequancy.SelectedValue));
+                LoadGraph(Convert.ToInt32(
+                        ddlMonitorCommands.SelectedValue),
+                    Convert.ToInt32(ddlAgentGroups.SelectedValue),
+                    (FrequencyTypes)Convert.ToInt32(ddlFrequancy.SelectedValue));
             }
         }
+
         private void LoadAgentGroups()
         {
-            ddlAgentGroups.Items.Clear();                                                                   
-            var info = new AgentGroups()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+            ddlAgentGroups.Items.Clear();
+            var info = new AgentGroups()
             {
                 AgentGroupId = -1,
                 AgentGroupName = "- All -"
             };
-            var agentGroupInfo = monitorDb.GetAgentGroups(OrgId);
+            var agentGroupInfo = _monitorDb.GetAgentGroups(OrgId);
             agentGroupInfo.Insert(0, info);
             ddlAgentGroups.DataSource = agentGroupInfo;
             ddlAgentGroups.DataValueField = "AgentGroupId";
@@ -54,38 +58,37 @@ namespace dev_web_api
             ddlAgentGroups.DataBind();
         }
 
-        protected void LoadGraph(int monitorCommandId, int agentGrpId, int selecedFrequency = 0)
+        protected void LoadGraph(
+                int monitorCommandId, 
+                int agentGrpId, 
+                FrequencyTypes selectedFrequency)
         {
-            var chartConfig = CreateServerConfiguration(monitorCommandId, selecedFrequency, agentGrpId);
+            var chartConfig = CreateServerConfiguration(
+                monitorCommandId,
+                selectedFrequency,
+                agentGrpId);
             chartConfigStringForDay = chartConfig?.MakeChart();
         }
 
-        private void LoadPage()
+        private ChartConfiguration CreateServerConfiguration(
+            int monitorCommandId, 
+            FrequencyTypes frequency, 
+            int agentGroupId)
         {
-            var monitorCommandId = Convert.ToInt32(ddlMonitorCommands.SelectedValue);
-            var agentGrpId = Convert.ToInt32(ddlAgentGroups.SelectedValue);
-
-            var chartConfig = CreateServerConfiguration(monitorCommandId, frequency, agentGrpId);
-            chartConfigStringForDay = chartConfig?.MakeChart();
-        }
-
-        private ChartConfiguration CreateServerConfiguration(int monitorCommandId, int frequency, int agentGroupId)
-        {
-            var charts = (new MonitorDb()).GetChart(monitorCommandId, frequency, agentGroupId);
-            var unitStr = GetUnitString(frequency);
-            if (
-                (charts == null) ||
-                (charts.Count == 0))
+            var charts = (new MonitorDb()).GetChart(
+                monitorCommandId, 
+                frequency, 
+                agentGroupId);
+            //var unitStr = GetUnitString(frequency);
+            if ((charts?.Count ?? 0) == 0)
             {
                 lblEmptyData.Visible = true;
                 return null;
-
             }
 
             var dataSets = new List<DataSetItem>();
             try
             {
-
                 for (int i = 0; i < charts.Count; i++)
                 {
                     var chart = charts[i];
@@ -101,8 +104,9 @@ namespace dev_web_api
                     };
                     dataSets.Add(dataSetItem);
                 }
-                var unit = monitorCommands
-                                .Find(x => x.MonitorCommandId == monitorCommandId).Unit;
+
+                var unit = _monitorCommands
+                    .Find(x => x.MonitorCommandId == monitorCommandId).Unit;
                 var xAxesCallback = GetxAxesCallback(frequency);
                 var units = GetMaxUnits(frequency);
                 var xAxesTicks = new Ticks()
@@ -114,7 +118,7 @@ namespace dev_web_api
                     Callback = (new JRaw(xAxesCallback))
                 };
 
-                var xAxesTicksItem = new TicksItem() { ticks = xAxesTicks };
+                var xAxesTicksItem = new TicksItem() {ticks = xAxesTicks};
 
 
                 var yAxesCallback = $@"function (value, index, values) {{
@@ -126,37 +130,37 @@ namespace dev_web_api
                     Callback = new JRaw(yAxesCallback)
                 };
 
-                var yAxesTicksItem = new TicksItem() { ticks = yAxesTicks };
+                var yAxesTicksItem = new TicksItem() {ticks = yAxesTicks};
 
                 var chartConfig = new ChartConfiguration
                 {
                     Type = ChartType.line.GetChartType(),
                     Data =
-                {
-                    Labels = charts[0]
-                                    .ReverseChartPointMinutes
-                                    .ConvertAll<string>(x => x.ToString()),
-                    Datasets = dataSets
-                },
-                    Options =
-                {
-                    //SpanGaps = true,
-                    Title =
                     {
-                        Text = ddlMonitorCommands.SelectedItem.Text
+                        Labels = charts[0]
+                            .ReverseChartPointMinutes
+                            .ConvertAll<string>(x => x.ToString()),
+                        Datasets = dataSets
                     },
-                    Scales = new Scales()
+                    Options =
                     {
-                        XAxes = new List<TicksItem>()
+                        //SpanGaps = true,
+                        Title =
                         {
-                            xAxesTicksItem
+                            Text = ddlMonitorCommands.SelectedItem.Text
                         },
-                        YAxes = new List<TicksItem>()
+                        Scales = new Scales()
                         {
-                            yAxesTicksItem
+                            XAxes = new List<TicksItem>()
+                            {
+                                xAxesTicksItem
+                            },
+                            YAxes = new List<TicksItem>()
+                            {
+                                yAxesTicksItem
+                            }
                         }
                     }
-                }
                 };
                 return chartConfig;
             }
@@ -166,47 +170,48 @@ namespace dev_web_api
             }
         }
 
-        private string GetxAxesCallback(int frequency)
+        private string GetxAxesCallback(FrequencyTypes frequency)
         {
-            //var maxIndex = GetMaxUnits(frequency) - 1;
             var sb = new StringBuilder("function (value, index, values)");
             sb.Append("{if (value == 0) { return 'Now'; } if (value > 0) {value = -1 * value;}");
             sb.Append($" return value + ' {GetUnitString(frequency)}';");
             sb.Append('}');
             return sb.ToString();
         }
-        private String GetUnitString(int frequency)
+
+        private String GetUnitString(FrequencyTypes frequency)
         {
             var unitStr = "";
             switch (frequency)
             {
-                case 0:
+                case FrequencyTypes.Minutes:
                     unitStr = "min";
                     break;
-                case 1:
+                case FrequencyTypes.Hours:
                     unitStr = "hour";
                     break;
-                case 2:
+                case FrequencyTypes.Days:
                     unitStr = "day";
                     break;
             }
+
             return unitStr;
         }
 
-        private int GetMaxUnits(int frequency)
+        private int GetMaxUnits(FrequencyTypes frequency)
         {
-            var numOfTicks = -1;
-            if (frequency == 0)
+            int numOfTicks;
+            switch (frequency)
             {
-                numOfTicks = 60;
-            }
-            if (frequency == 1)
-            {
-                numOfTicks = 24;
-            }
-            else
-            {
-                numOfTicks = 30;
+                case FrequencyTypes.Minutes:
+                    numOfTicks = 60;
+                    break;
+                case FrequencyTypes.Hours:
+                    numOfTicks = 24;
+                    break;
+                default:
+                    numOfTicks = 30;
+                    break;
             }
             return numOfTicks;
         }
@@ -214,15 +219,15 @@ namespace dev_web_api
         protected void ddlMonitorCommands_SelectedIndexChanged(object sender, EventArgs e)
         {
             LoadGraph(Convert.ToInt32(ddlMonitorCommands.SelectedValue),
-                         Convert.ToInt32(ddlAgentGroups.SelectedValue),
-                         Convert.ToInt32(ddlFrequancy.SelectedValue));
+                Convert.ToInt32(ddlAgentGroups.SelectedValue),
+                (FrequencyTypes)Convert.ToInt32(ddlFrequancy.SelectedValue));
         }
 
         protected void ddlFrequancy_SelectedIndexChanged(object sender, EventArgs e)
         {
             LoadGraph(Convert.ToInt32(ddlMonitorCommands.SelectedValue),
-                          Convert.ToInt32(ddlAgentGroups.SelectedValue),
-                          Convert.ToInt32(ddlFrequancy.SelectedValue));
+                Convert.ToInt32(ddlAgentGroups.SelectedValue),
+                (FrequencyTypes)Convert.ToInt32(ddlFrequancy.SelectedValue));
         }
 
         protected void btnBack_Click(object sender, EventArgs e)
@@ -233,8 +238,8 @@ namespace dev_web_api
         protected void ddlAgents_SelectedIndexChanged(object sender, EventArgs e)
         {
             LoadGraph(Convert.ToInt32(ddlMonitorCommands.SelectedValue),
-                            Convert.ToInt32(ddlAgentGroups.SelectedValue),
-                            Convert.ToInt32(ddlFrequancy.SelectedValue));
+                Convert.ToInt32(ddlAgentGroups.SelectedValue),
+                (FrequencyTypes)Convert.ToInt32(ddlFrequancy.SelectedValue));
         }
     }
 }

@@ -8,7 +8,6 @@ using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Web;
-using static dev_web_api.frequencyEnum;
 
 namespace dev_web_api
 {
@@ -1830,7 +1829,7 @@ namespace dev_web_api
             }
         }
 
-        public List<ChartLine> GetChart(int monitorCommandId, int frequency, int agentGrpId)
+        public List<ChartLine> GetChart(int monitorCommandId, FrequencyTypes frequency, int agentGrpId)
         {
 
             _logger.Info("Method GetChart(...)");
@@ -1920,7 +1919,7 @@ namespace dev_web_api
             return chartLines;
         }
 
-        private static int GetMaxValue(int frequency)
+        private static int GetMaxValue(FrequencyTypes frequency)
         {
             _logger.Debug("Method GetMaxValue(...)");
             _logger.Info("Method GetMaxValue(...)");
@@ -1929,20 +1928,20 @@ namespace dev_web_api
             var maxValue = 0;
             switch (frequency)
             {
-                case 0:
+                case FrequencyTypes.Minutes:
                     maxValue = 60;
                     break;
-                case 1:
+                case FrequencyTypes.Hours:
                     maxValue = 24;
                     break;
-                case 2:
+                case FrequencyTypes.Days:
                     maxValue = 30;
                     break;
             }
             return maxValue;
         }
 
-        private int GetTimeUnits(int frequency, DateTime date)
+        private int GetTimeUnits(FrequencyTypes frequency, DateTime date)
         {
             _logger.Debug("Method GetTimeUnits(...)");
             _logger.Info("Method GetTimeUnits(...)");
@@ -1950,13 +1949,13 @@ namespace dev_web_api
             var timeSpan = DateTime.UtcNow.Subtract(date);
             switch (frequency)
             {
-                case 0:
+                case FrequencyTypes.Minutes:
                     timeUnits = Convert.ToInt32(timeSpan.TotalMinutes);
                     break;
-                case 1:
+                case FrequencyTypes.Hours:
                     timeUnits = Convert.ToInt32(timeSpan.TotalHours);
                     break;
-                case 2:
+                case FrequencyTypes.Days:
                     timeUnits = Convert.ToInt32(timeSpan.TotalDays);
                     break;
             }

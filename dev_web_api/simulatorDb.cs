@@ -7,7 +7,6 @@ using System.Data.Entity.Migrations.Model;
 using System.Data.SQLite;
 using System.Linq;
 using System.Web;
-using static dev_web_api.frequencyEnum;
 
 namespace dev_web_api
 {

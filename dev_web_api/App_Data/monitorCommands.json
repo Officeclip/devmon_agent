@@ -61,5 +61,12 @@
     "arg1": "",
     "arg2": "",
     "unit": "mins"
+  },
+  {
+    "type": "machine.idletime",
+    "description": "Time since the machine is idle",
+    "arg1": "",
+    "arg2": "",
+    "unit": "%"
   }
 ]

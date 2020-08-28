@@ -1850,7 +1850,7 @@ namespace dev_web_api
                     WHERE
                         aa.agent_id = his.agent_id AND
                         his.monitor_command_id = {monitorCommandId} AND 
-                        frequency = {frequency} AND aa.agent_group_id = {agentGrpId}
+                        frequency = {(int)frequency} AND aa.agent_group_id = {agentGrpId}
                     ORDER BY
                         aa.agent_id, his.date";
             }
@@ -1863,7 +1863,7 @@ namespace dev_web_api
                     WHERE
                         a.agent_id = his.agent_id AND
                         his.monitor_command_id = {monitorCommandId} AND 
-                        frequency = {frequency} 
+                        frequency = {(int)frequency} 
                     ORDER BY
                         a.agent_id, his.date";
             }

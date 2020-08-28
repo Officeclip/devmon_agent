@@ -144,7 +144,7 @@ namespace dev_web_api
                     },
                     Options =
                     {
-                        SpanGaps = true,
+                        //SpanGaps = true,
                         Title =
                         {
                             Text = ddlMonitorCommands.SelectedItem.Text

@@ -41,6 +41,6 @@
 </div>
 <script type="text/javascript">
     var ctxDay = $("#myChart").get(0).getContext("2d");
-    var config = "<%= chartConfigStringForDay %>";
+    var config = <%= chartConfigStringForDay %>;
     var chartforDay = new Chart(ctxDay, config);
 </script>

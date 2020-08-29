@@ -26,7 +26,7 @@ namespace dev_web_api.BusinessLayer
         {
             get
             {
-                return Util.Prodcutversion;
+                return Util.ProductVersion;
             }
         }
 

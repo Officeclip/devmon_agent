@@ -115,7 +115,7 @@ namespace dev_web_api
             {
                 absoluteUri = absoluteUri.Substring(
                     0, 
-                    absoluteUri.Length - startUrl.Length + 1);
+                    absoluteUri.Length - startUrl.Length -1);
             }
             return $"{absoluteUri}/api";
         }

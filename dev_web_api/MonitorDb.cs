@@ -239,7 +239,7 @@ namespace dev_web_api
                                 Convert.ToString(
                                                     sqlite_datareader["country"]);
                 agent.ProductVersion = Convert.ToString(
-                                                    sqlite_datareader["verison"]);
+                                                    sqlite_datareader["version"]);
 
             }
             catch (SQLiteException ex)

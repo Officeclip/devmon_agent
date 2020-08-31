@@ -20,7 +20,7 @@ namespace dev_web_api
 {
     public static class Util
     {
-        public static string ProductVersion = "0.5.4";
+        public static string ProductVersion = "0.5.5";
         private static string GetType(
                             MonitorValue monitorValue,
                             List<MonitorCommand> monitorCommands)

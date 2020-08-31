@@ -45,8 +45,9 @@ namespace dev_web_api.Controllers
                     MachineName = headers.GetValues("machine_name").First(),
                     RegistrationDate = DateTime.UtcNow,
                     LastQueried = DateTime.UtcNow,
-                    ClientIpAddress = new WebClient().DownloadString("https://checkip.amazonaws.com/").Trim()
-                };
+                    ClientIpAddress = GetClientIpAddress(Request) ?? string.Empty,
+                    ProductVersion = headers.GetValues("product_version").First()
+            };
                 agent.ClientCity = Util.GetIpInfo(agent.ClientIpAddress, false);
                 agent.ClientCountry = Util.GetIpInfo(agent.ClientIpAddress, true);
                 _logger.Info($"Client Ip address:--{agent.ClientIpAddress}--");

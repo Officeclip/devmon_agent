@@ -333,7 +333,7 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <None Include="sql\testData.sql" />
-    <None Include="sql\schema.sql" />
+    <Content Include="sql\schema.sql" />
     <Content Include="software.aspx" />
     <Content Include="hardware.aspx" />
     <Content Include="monitor.aspx" />

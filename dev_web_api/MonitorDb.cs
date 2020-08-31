@@ -238,6 +238,8 @@ namespace dev_web_api
                 agent.ClientCountry =
                                 Convert.ToString(
                                                     sqlite_datareader["country"]);
+                agent.ProductVersion = Convert.ToString(
+                                                    sqlite_datareader["verison"]);
 
             }
             catch (SQLiteException ex)
@@ -1373,7 +1375,8 @@ namespace dev_web_api
                         last_queried,
                         ip_address,
                         city,
-                        country
+                        country,
+                        version
                     )
                     VALUES
                     (
@@ -1384,7 +1387,8 @@ namespace dev_web_api
                         '{agent.LastQueried:o}',
                         '{agent.ClientIpAddress}',
                          '{agent.ClientCity}',
-                        '{agent.ClientCountry}'       
+                        '{agent.ClientCountry}',
+                        '{agent.ProductVersion}'
 
                     )
                     ON CONFLICT (guid)
@@ -1393,7 +1397,8 @@ namespace dev_web_api
                             last_queried = '{agent.LastQueried:o}',
                              ip_address =  '{agent.ClientIpAddress}',
                               city=        '{agent.ClientCity}',
-                             country=      '{agent.ClientCountry}'";
+                             country=      '{agent.ClientCountry}',
+                             version =     '{agent.ProductVersion}'";
             _logger.Info($"sqlQuery = {sqlQuery}");
             var cmd = new SQLiteCommand(sqlLiteConn)
             {

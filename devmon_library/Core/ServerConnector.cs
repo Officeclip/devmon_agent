@@ -45,7 +45,7 @@ namespace devmon_library.Core
                         _settings["server_url"] as string);
             request.AddHeader(
                         "server_guid",
-                        _settings["server_guid"] as string); 
+                        _settings["server_guid"] as string);
             request.AddHeader(
                         "agent_guid",
                         _settings["agent_guid"] as string);
@@ -53,6 +53,10 @@ namespace devmon_library.Core
                         "machine_name",
                         Environment.MachineName
                         );
+            request.AddHeader(
+                        "product_version",
+                        devmon_library.Util.CurrentVersion
+                            );
         }
 
         public async Task Send(StableDeviceInfo deviceInfo)
@@ -130,7 +134,7 @@ namespace devmon_library.Core
                 await AddHeaders(request);
                 restResponse = await _restClient.ExecuteAsync(request);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.Error($"Error: {ex.Message}");
                 return null;
@@ -139,8 +143,8 @@ namespace devmon_library.Core
         }
 
         RestRequest CreateRequest(
-                            string resource, 
-                            object body, 
+                            string resource,
+                            object body,
                             Method method = Method.POST)
         {
             var request = new RestRequest(resource, method);

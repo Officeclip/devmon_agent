@@ -1883,7 +1883,7 @@ namespace dev_web_api
                 while (sqlite_datareader.Read())
                 {
                     var agentId = Convert.ToInt32(sqlite_datareader["agent_id"]);
-                    var agentName = GetAgents(agentId)[0].MachineName;
+                    var agentName = GetAgents(agentId)[0].ScreenName;
                     var date = ConvertToDateTime(sqlite_datareader["date"]);
                     var timeUnits = GetTimeUnits(frequency, date);
                     var value = Convert.ToInt32(sqlite_datareader["value"]);

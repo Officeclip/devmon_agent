@@ -338,7 +338,7 @@
     <Content Include="hardware.aspx" />
     <Content Include="monitor.aspx" />
     <Content Include="ViewSwitcher.ascx" />
-    <Content Include="Web.config" />
+    <None Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="About.aspx.cs">
@@ -510,7 +510,9 @@
     </Content>
     <Content Include="monitorSettings.example.json" />
     <Content Include="monitorSettings.json" />
-    <Content Include="App_Data\monitorCommands.json" />
+    <Content Include="App_Data\monitorCommands.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

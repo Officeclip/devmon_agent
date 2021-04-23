@@ -338,11 +338,11 @@ namespace dev_web_api
                     UseDefaultCredentials = true
                 };
 
-                smtpClient.Send(
-                            monitorSettings.Email.FromEmail,
-                            toEmailAddress,
-                            subject,
-                            body);
+                //smtpClient.Send(
+                //            monitorSettings.Email.FromEmail,
+                //            toEmailAddress,
+                //            subject,
+                //            body);
             }
             catch (Exception e)
             {

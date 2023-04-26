@@ -18,16 +18,16 @@ namespace devmon_service
         public MonitorService()
         {
             InitializeComponent();
-       }
+        }
 
         protected override void OnStart(string[] args)
         {
             _logger.Info("Method OnStart()");
             _tokenSource = new CancellationTokenSource();
-            
+
             _processSmsQueueTask =
                     Task.Run(() => PingerLoop(_tokenSource.Token));
-            
+
         }
 
         protected override void OnStop()
@@ -47,32 +47,38 @@ namespace devmon_service
         private async Task PingerLoop(CancellationToken token)
         {
             _logger.Info("Method PingerLoop()");
-            try
-            {
-                var staticFrequencyInMins = Convert.ToInt32(ConfigurationManager.AppSettings["StaticFrequencyInMins"]);
-                var commandFrequencyInSecs = Convert.ToInt32(ConfigurationManager.AppSettings["CommandFrequencyInSecs"]);
 
-                var pingerJobCount = 0;
-                while (!token.IsCancellationRequested)
+            var staticFrequencyInMins = Convert.ToInt32(ConfigurationManager.AppSettings["StaticFrequencyInMins"]);
+            var commandFrequencyInSecs = Convert.ToInt32(ConfigurationManager.AppSettings["CommandFrequencyInSecs"]);
+            var waitOnErrorInMins = 15; // 15 minutes delay if there is an error
+            var pingerJobCount = 0;
+            while (!token.IsCancellationRequested)
+            {
+                try
                 {
                     await (new PingerJob()).Execute();
-                    _logger.Info($"Pingerloop: PingerJob executed");
+                    _logger.Info("Pingerloop: PingerJob executed");
                     if (pingerJobCount++ % staticFrequencyInMins == 0)
                     {
                         await (new StaticJob()).Execute();
-                        _logger.Info($"Pingerloop: StaticJob executed");
+                        _logger.Info("Pingerloop: StaticJob executed");
                     }
                     await Task.Delay(commandFrequencyInSecs * 1000, token);
                 }
+                catch (OperationCanceledException ex)
+                {
+                    _logger.Error($"PingerLoop: Operation cancelled: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error($"PingerLoop: Error: {ex.Message}");
+                }
+                finally
+                {
+                    await Task.Delay(waitOnErrorInMins * 60 * 1000, token);
+                }
             }
-            catch (OperationCanceledException ex)
-            {
-                _logger.Error($"PingerLoop: Operation cancelled: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"PingerLoop: Error: {ex.Message}");
-            }
+
         }
 
     }

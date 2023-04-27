@@ -50,7 +50,7 @@ namespace devmon_service
 
             var staticFrequencyInMins = Convert.ToInt32(ConfigurationManager.AppSettings["StaticFrequencyInMins"]);
             var commandFrequencyInSecs = Convert.ToInt32(ConfigurationManager.AppSettings["CommandFrequencyInSecs"]);
-            var waitOnErrorInMins = 15; // 15 minutes delay if there is an error
+            var waitOnErrorInMins = 5 * 60 * 1000; // 5 minutes delay if there is an error
             var pingerJobCount = 0;
             while (!token.IsCancellationRequested)
             {
@@ -67,15 +67,13 @@ namespace devmon_service
                 }
                 catch (OperationCanceledException ex)
                 {
-                    _logger.Error($"PingerLoop: Operation cancelled: {ex.Message}");
+                    _logger.Error($"PingerLoop: Operation cancelled: {ex.Message}, waiting for ${waitOnErrorInMins} mins");
+                    await Task.Delay(waitOnErrorInMins, token);
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error($"PingerLoop: Error: {ex.Message}");
-                }
-                finally
-                {
-                    await Task.Delay(waitOnErrorInMins * 60 * 1000, token);
+                    _logger.Error($"PingerLoop: Error: {ex.Message}, waiting for ${waitOnErrorInMins} mins");
+                    await Task.Delay(waitOnErrorInMins, token);
                 }
             }
 

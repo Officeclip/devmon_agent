@@ -59,6 +59,10 @@ namespace devmon_library.Core
             else
             {
                 minutesIdle = (int)DateTime.Now.Subtract(lastAction).TotalMinutes;
+                if (minutesIdle <= 5)
+                {
+                    minutesIdle = 0;
+                }
             }
             return minutesIdle;
         }
@@ -68,6 +72,7 @@ namespace devmon_library.Core
             UInt64 readOps = 0;
             try
             {
+                // see: https://www.autoitscript.com/forum/topic/160918-how-to-detect-user-idle-from-system-process-or-service/
                 ManagementObjectSearcher searcher =
                    new ManagementObjectSearcher("root\\CIMV2",
                    "SELECT * FROM Win32_Process where Name = 'csrss.exe'");

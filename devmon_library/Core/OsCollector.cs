@@ -13,11 +13,9 @@ namespace devmon_library.Core
 {
     internal sealed class OsCollector : IOsCollector
     {
-        //[DllImport("user32.dll")]
-        //static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
-
         static DateTime lastAction = DateTime.Now;
         static UInt64 previousReadOpCount = 0;
+        const int AllowedMinutesIdle = 3;
 
         [DllImport("kernel32.dll")]
         public static extern UInt64 GetTickCount64();
@@ -59,7 +57,7 @@ namespace devmon_library.Core
             else
             {
                 minutesIdle = (int)DateTime.Now.Subtract(lastAction).TotalMinutes;
-                if (minutesIdle <= 5)
+                if (minutesIdle <= AllowedMinutesIdle)
                 {
                     minutesIdle = 0;
                 }
@@ -89,23 +87,6 @@ namespace devmon_library.Core
             return 0;
         }
 
-        //private DateTime LastInputTime
-        //{
-        //    get
-        //    {
-        //        LASTINPUTINFO lii = new LASTINPUTINFO();
-        //        lii.cbSize = (uint)Marshal.SizeOf(typeof(LASTINPUTINFO));
-        //        GetLastInputInfo(ref lii);
-
-        //        DateTime lastInputTime = BootTime.AddMilliseconds(lii.dwTime);
-        //        //_logger.Debug($"*** LastInputTime ***: BootTime: {BootTime}");
-        //        //_logger.Debug($"*** LastInputTime ***: lii.dwTime: {lii.dwTime}");
-        //        //_logger.Debug($"*** LastInputTime ***: DateTime.UtcNow: {DateTime.UtcNow}");
-        //        return lastInputTime;
-        //    }
-        //}
-
-
         public Task<OsInfo> ReadOsInfo()
         {
             var computerInfo = new ComputerInfo();
@@ -127,12 +108,8 @@ namespace devmon_library.Core
 
         public async Task<OsUtilization> ReadOsUtilization()
         {
-            //var ticks = (double)Stopwatch.GetTimestamp();
-            //var upTime = TimeSpan.FromSeconds(ticks / Stopwatch.Frequency);
-
             var tickCount64 = GetTickCount64();
             var upTime = TimeSpan.FromTicks((long)tickCount64);
-            //var upTime = MinutesIdle();
 
             var os = new OsUtilization
             {
@@ -169,26 +146,5 @@ namespace devmon_library.Core
 
             return tcs.Task;
         }
-
-        //private async Task<WindowsUpdateInfo> GetLatestUpdateInfo()
-        //{
-        //    var updateSession = new UpdateSession();
-        //    var updateSearcher = updateSession.CreateUpdateSearcher();
-        //    updateSearcher.Online = false;
-
-        //    var searchResult = await SearchUpdatesAsync();
-
-        //    var update = new WindowsUpdateInfo();
-        //    update.PendingUpdates = searchResult.Updates.Count;
-        //    var count = updateSearcher.GetTotalHistoryCount();
-
-        //    if (count > 0)
-        //    {
-        //        var history = updateSearcher.QueryHistory(0, 1);
-        //        update.LastUpdateInstalledAt = history[0].Date;
-        //    }
-
-        //    return update;
-        //}
     }
 }

@@ -79,7 +79,6 @@ namespace devmon_library
                 case "os.lastupdated":
                 case "os.idletime":
                 case "os.idlepercent":
-
                     return await OsTask(commandInfo);
                 default:
                     return null;
@@ -158,7 +157,6 @@ namespace devmon_library
                 var osCollector = new OsCollector(null, _logger);
                 var osUtilization = await osCollector.ReadOsUtilization();
                 var value = string.Empty;
-                //var unit = string.Empty;
                 switch (commandInfo.Type)
                 {
                     case "os.processes":
@@ -177,14 +175,6 @@ namespace devmon_library
                         value = (val > 0)
                             ? "100"
                             : "0";
-                        //if (val > 0)
-                        //{
-                        //    value = "100";
-                        //}
-                        //else
-                        //{
-                        //    value = "0";
-                        //}
                         break;
                 }
 
@@ -212,7 +202,6 @@ namespace devmon_library
                 pingResultInfo = new ResultInfo()
                 {
                     Id = commandInfo.MonitorCommandId,
-                    //Unit = "gb"
                 };
 
                 foreach (var driveUtilization in driveUtilizations)

@@ -13,9 +13,9 @@ namespace devmon_library.Core
 {
     internal sealed class OsCollector : IOsCollector
     {
-        static DateTime lastAction = DateTime.Now;
+        //static DateTime lastAction = DateTime.Now;
         static UInt64 previousReadOpCount = 0;
-        const int AllowedMinutesIdle = 3;
+        //const int AllowedMinutesIdle = 3;
 
         [DllImport("kernel32.dll")]
         public static extern UInt64 GetTickCount64();
@@ -45,25 +45,37 @@ namespace devmon_library.Core
             }
         }
 
-        private int MinutesIdle()
+        private bool IsBusy()
         {
-            UInt64 totalReadOpCount = GetTotalReadOperationCount();
-            var minutesIdle = 0;
+            var totalReadOpCount = GetTotalReadOperationCount();
+            var isBusy = false;
             if (totalReadOpCount != previousReadOpCount)
             {
                 previousReadOpCount = totalReadOpCount;
-                lastAction = DateTime.Now;
+                isBusy = true;
             }
-            else
-            {
-                minutesIdle = (int)DateTime.Now.Subtract(lastAction).TotalMinutes;
-                if (minutesIdle <= AllowedMinutesIdle)
-                {
-                    minutesIdle = 0;
-                }
-            }
-            return minutesIdle;
+            return isBusy;
         }
+
+        //private int MinutesIdle()
+        //{
+        //    UInt64 totalReadOpCount = GetTotalReadOperationCount();
+        //    var minutesIdle = 0;
+        //    if (totalReadOpCount != previousReadOpCount)
+        //    {
+        //        previousReadOpCount = totalReadOpCount;
+        //        lastAction = DateTime.Now;
+        //    }
+        //    else
+        //    {
+        //        minutesIdle = (int)DateTime.Now.Subtract(lastAction).TotalMinutes;
+        //        if (minutesIdle <= AllowedMinutesIdle)
+        //        {
+        //            minutesIdle = 0;
+        //        }
+        //    }
+        //    return minutesIdle;
+        //}
 
         private UInt64 GetTotalReadOperationCount()
         {
@@ -114,8 +126,9 @@ namespace devmon_library.Core
             var os = new OsUtilization
             {
                 Processes = Process.GetProcesses().Length,
-                IdleTime = MinutesIdle(),
-                UpTime = upTime
+                //IdleTime = MinutesIdle(),
+                UpTime = upTime,
+                IsBusy = IsBusy()
             };
 
             return os;
